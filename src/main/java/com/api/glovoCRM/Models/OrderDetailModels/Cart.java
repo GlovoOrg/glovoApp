@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,10 +21,10 @@ import java.util.Set;
 @AllArgsConstructor
 public class Cart extends BaseEntity {
 
-    private double totalCharge = 0;
+    private BigDecimal totalCharge = BigDecimal.valueOf(0);
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<CartItem> items = new HashSet<>();
+    private List<CartItem> items;
 
     @OneToOne
     @JoinColumn(name = "user_id")

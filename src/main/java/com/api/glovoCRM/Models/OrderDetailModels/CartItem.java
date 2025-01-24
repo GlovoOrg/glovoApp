@@ -34,6 +34,6 @@ public class CartItem extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "orderDetail_id")
-    private OrderDetail orderDetail;
+    private Order order;
 
 }

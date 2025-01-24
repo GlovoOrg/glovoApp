@@ -7,10 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "EstablishmentFilter")
+@Table(name = "establishment_filters")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,5 +25,6 @@ public class EstablishmentFilter extends BaseEntity {
     private Establishment establishment;
 
     @ManyToMany(mappedBy = "establishmentFilters")
-    private Set<Product> products;
+    @OrderBy("name asc")
+    private List<Product> products;
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,15 +18,14 @@ public class SubCategory extends BaseEntity {
 
     private String name;
 
+    @Column(name = "image", columnDefinition = "LONGTEXT")
     private String image;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "subcategory", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Establishment> establishment;
-
-
+    @OrderBy("name asc")
+    private List<Establishment> establishment;
 }

@@ -2,13 +2,14 @@ package com.api.glovoCRM.Models.UserModels;
 
 import com.api.glovoCRM.Models.BaseEntity;
 import com.api.glovoCRM.Models.OrderDetailModels.Cart;
-import com.api.glovoCRM.Models.OrderDetailModels.OrderDetail;
+import com.api.glovoCRM.Models.OrderDetailModels.Order;
 import com.api.glovoCRM.constants.EUserStatuses;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,9 +42,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private EUserStatuses status;
 
-    //private Integer failedAttempt;
+    private LocalDateTime lastLoginDate;
 
-    //private LocalDateTime lockTime;
+    private boolean emailVerified;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
@@ -55,7 +56,11 @@ public class User extends BaseEntity implements UserDetails {
     private Cart cart;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<OrderDetail> orders = new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();
+
+    public void updateLastLogin() {
+        this.lastLoginDate = LocalDateTime.now();
+    }
 
     @Override
     public String getPassword() {
@@ -76,22 +81,22 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return this.status != EUserStatuses.USER_STATUS_INACTIVE;
+        return lastLoginDate != null
+                && lastLoginDate.plusMonths(3).isAfter(LocalDateTime.now());
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.status != EUserStatuses.USER_STATUS_BLOCKED;
+        return this.status != EUserStatuses.BLOCKED_BY_ADMIN;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
-        // мб в будущем добавить логику для смены пароля каждые 3 месяца, возможно надо будет создать доп пермемнную для трека последней смены пароля
     }
 
     @Override
     public boolean isEnabled() {
-        return this.status == EUserStatuses.USER_STATUS_ACTIVE;
+        return emailVerified && status != EUserStatuses.PENDING_EMAIL_VERIFICATION;
     }
 }

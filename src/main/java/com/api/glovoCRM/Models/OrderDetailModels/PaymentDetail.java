@@ -20,7 +20,7 @@ public class PaymentDetail extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "orderDetail_id")
-    private OrderDetail orderDetail;
+    private Order order;
 
     private String provider;
 

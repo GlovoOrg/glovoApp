@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -20,10 +22,11 @@ public class Product extends BaseEntity {
     private String description;
 
     @Column(nullable = false)
-    private Double price;
+    private BigDecimal price;
 
+    @Column(name = "image", columnDefinition = "LONGTEXT")
     private String image;
-
+    //todo в будущем надо реализовать эндпоинт чтобы можно было менять значение с ролью Establishment
     private boolean active = true;
 
     @OneToOne(mappedBy = "product", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -39,5 +42,5 @@ public class Product extends BaseEntity {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "establishment_filter_id")
     )
-    private Set<EstablishmentFilter> establishmentFilters;
+    private List<EstablishmentFilter> establishmentFilters;
 }

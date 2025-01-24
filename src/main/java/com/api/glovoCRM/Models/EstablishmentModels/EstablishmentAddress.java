@@ -1,4 +1,4 @@
-package com.api.glovoCRM.Models.OrderDetailModels;
+package com.api.glovoCRM.Models.EstablishmentModels;
 
 import com.api.glovoCRM.Models.BaseEntity;
 import jakarta.persistence.Entity;
@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "addresses")
+@Table(name = "establishment_adresses")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class Address extends BaseEntity {
+@AllArgsConstructor
+public class EstablishmentAddress extends BaseEntity {
 
     private String addressLine;
 
@@ -27,7 +27,6 @@ public class Address extends BaseEntity {
     private double longitude;
 
     @OneToOne
-    @JoinColumn(name = "orderDetail_id")
-    private Order orderDetail;
-
+    @JoinColumn(name = "establishment_id")
+    private Establishment establishment;
 }

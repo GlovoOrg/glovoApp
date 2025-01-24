@@ -2,7 +2,6 @@ package com.api.glovoCRM.Models.OrderDetailModels;
 
 import com.api.glovoCRM.Models.BaseEntity;
 import com.api.glovoCRM.Models.EstablishmentModels.Product;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -26,7 +25,7 @@ public class OrderItem extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "orderDetail_id")
-    private OrderDetail orderDetail;
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "product_id")

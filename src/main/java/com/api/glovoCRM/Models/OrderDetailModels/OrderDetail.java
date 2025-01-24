@@ -1,40 +1,31 @@
 package com.api.glovoCRM.Models.OrderDetailModels;
 
 import com.api.glovoCRM.Models.BaseEntity;
-import com.api.glovoCRM.Models.UserModels.User;
-import com.api.glovoCRM.constants.EStatusOrderDetail;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
-
 @Entity
-@Table(name = "oder_details")
+@Table(name = "order_details")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class OrderDetail extends BaseEntity {
 
-    private double totalAmount;
+    private int timeOfDelivery;
 
-    @Enumerated(EnumType.STRING)
-    private EStatusOrderDetail status;
+    private int costOfDelivery;
 
-    @OneToMany(mappedBy = "orderDetail", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<OrderItem> orderItems;
+    private double distance;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @OneToOne(mappedBy = "orderDetail", cascade = CascadeType.ALL, orphanRemoval = true)
-    private PaymentDetail paymentDetail;
-
-    @OneToOne(mappedBy = "orderDetail", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Address address;
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
 }

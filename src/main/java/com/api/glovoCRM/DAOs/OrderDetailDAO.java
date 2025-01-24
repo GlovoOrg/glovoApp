@@ -1,4 +1,4 @@
-package com.api.glovoCRM.DAO;
+package com.api.glovoCRM.DAOs;
 
 public class OrderDetailDAO {
 }
