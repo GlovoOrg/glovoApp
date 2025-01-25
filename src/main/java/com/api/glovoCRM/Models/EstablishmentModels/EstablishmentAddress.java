@@ -20,8 +20,6 @@ public class EstablishmentAddress extends BaseEntity {
 
     private String addressLine;
 
-    private String featureToGetThere;
-
     private double latitude;
 
     private double longitude;

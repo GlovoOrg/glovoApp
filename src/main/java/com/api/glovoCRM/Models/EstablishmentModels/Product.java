@@ -24,8 +24,8 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(name = "image", columnDefinition = "LONGTEXT")
-    private String image;
+    @Column(name = "image_url")
+    private String imageUrl;
     //todo в будущем надо реализовать эндпоинт чтобы можно было менять значение с ролью Establishment
     private boolean active = true;
 

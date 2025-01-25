@@ -17,5 +17,6 @@ public class EstablishmentShortDTO {
     private int quantityOfRatings;
     private double priceOfDelivery;
     private int timeOfDelivery;
+    //todo это переменной нет в модели, надо узнать, правильно ли все это работает.
     private boolean isOpen;
 }

@@ -20,14 +20,12 @@ public class Address extends BaseEntity {
 
     private String addressLine;
 
-    private String featureToGetThere;
-
     private double latitude;
 
     private double longitude;
 
     @OneToOne
-    @JoinColumn(name = "orderDetail_id")
-    private Order orderDetail;
+    @JoinColumn(name = "order_id")
+    private Order order;
 
 }

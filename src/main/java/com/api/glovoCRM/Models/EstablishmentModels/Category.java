@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -20,10 +22,10 @@ public class Category extends BaseEntity {
 
     private String name;
 
-    @Column(name = "image", columnDefinition = "LONGTEXT")
-    private String image;
+    @Column(name = "image_url")
+    private String imageUrl;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderBy("name asc")
     private List<SubCategory> subCategory;
 }

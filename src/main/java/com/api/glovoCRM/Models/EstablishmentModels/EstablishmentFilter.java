@@ -20,7 +20,7 @@ public class EstablishmentFilter extends BaseEntity {
 
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "establishment_id")
     private Establishment establishment;
 

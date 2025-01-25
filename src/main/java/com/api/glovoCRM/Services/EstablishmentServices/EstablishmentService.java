@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Slf4j
@@ -35,7 +36,7 @@ public class EstablishmentService {
     }
 
     public boolean isOpen(Establishment establishment) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalTime now = LocalTime.now();
         return now.isAfter(establishment.getOpenTime())
                 && now.isBefore(establishment.getCloseTime());
     }

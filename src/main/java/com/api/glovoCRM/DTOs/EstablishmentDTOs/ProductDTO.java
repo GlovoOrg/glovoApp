@@ -15,6 +15,7 @@ public class ProductDTO {
     private Long id;
     private String name;
     private String description;
+    //todo oP и fP это все динамика
     private BigDecimal originalPrice;
     private BigDecimal finalPrice;
     private String image;

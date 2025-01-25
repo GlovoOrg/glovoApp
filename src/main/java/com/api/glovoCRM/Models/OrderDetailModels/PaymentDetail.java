@@ -24,5 +24,5 @@ public class PaymentDetail extends BaseEntity {
 
     private String provider;
 
-    private boolean IsPaid;
+    private boolean isPaid;
 }

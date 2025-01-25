@@ -2,6 +2,7 @@ package com.api.glovoCRM.Models.OrderDetailModels;
 
 import com.api.glovoCRM.Models.BaseEntity;
 import com.api.glovoCRM.Models.UserModels.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,10 +24,11 @@ public class Cart extends BaseEntity {
 
     private BigDecimal totalCharge = BigDecimal.valueOf(0);
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CartItem> items;
 
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 }
+

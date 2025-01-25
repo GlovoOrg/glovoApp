@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
@@ -23,24 +24,24 @@ public class Establishment extends BaseEntity {
 
     private double priceOfDelivery;
 
-    @Column(name = "image", columnDefinition = "LONGTEXT")
-    private String image;
+    @Column(name = "image_url")
+    private String imageUrl;
 
-    private int rating;
+    private int rating; // 1 to 5
 
-    private int quantityOfRatings;
+    private int quantityOfRatings; // max = 500
 
     private int timeOfDelivery;
     
-    private LocalDateTime openTime;
+    private LocalTime openTime;
 
-    private LocalDateTime closeTime;
+    private LocalTime closeTime;
 
-    @OneToMany(mappedBy = "establishment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "establishment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("name asc")
     private List<Product> product;
 
-    @OneToMany(mappedBy = "establishment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "establishment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @OrderBy("name asc")
     private List<EstablishmentFilter> establishment_filter;
 
@@ -52,7 +53,7 @@ public class Establishment extends BaseEntity {
     private EstablishmentAddress establishmentAddress;
 
     public boolean getIsOpen() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalTime now = LocalTime.now();
         return now.isAfter(this.openTime) && now.isBefore(this.closeTime);
     }
 }

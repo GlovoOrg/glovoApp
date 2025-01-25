@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "cart_items")
 @Getter
@@ -23,9 +25,9 @@ public class CartItem extends BaseEntity {
 
     private int quantity;
 
-    private int oneProductPriceCart;
+    private BigDecimal oneProductPriceCart;
 
-    private int quantityOfProducts;
+    private BigDecimal oneProductPriceOrder;
 
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)

@@ -3,7 +3,7 @@ package com.api.glovoCRM.DTOs.EstablishmentDTOs;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,5 +21,6 @@ public class EstablishmentDTO {
     private LocalDateTime openTime;
     private LocalDateTime closeTime;
     private boolean isOpen;
-    private Set<ProductDTO> products;
+    //todo вернется ли здесь list<ProductDTO>
+    private List<ProductDTO> products;
 }

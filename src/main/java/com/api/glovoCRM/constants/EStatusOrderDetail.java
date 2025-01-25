@@ -7,3 +7,4 @@ public enum EStatusOrderDetail {
     PRODUCT_STATUS_DELIVERING,
     PRODUCT_STATUS_DELIVERED,
 }
+

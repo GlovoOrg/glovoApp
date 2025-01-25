@@ -18,8 +18,8 @@ public class SubCategory extends BaseEntity {
 
     private String name;
 
-    @Column(name = "image", columnDefinition = "LONGTEXT")
-    private String image;
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
