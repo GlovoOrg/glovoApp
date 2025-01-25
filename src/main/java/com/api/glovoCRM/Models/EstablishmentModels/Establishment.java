@@ -25,7 +25,7 @@ public class Establishment extends BaseEntity {
     private double priceOfDelivery;
 
     @Column(name = "image_url")
-    private String imageUrl;
+    private String image;
 
     private int rating; // 1 to 5
 

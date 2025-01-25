@@ -23,7 +23,7 @@ public class Category extends BaseEntity {
     private String name;
 
     @Column(name = "image_url")
-    private String imageUrl;
+    private String image;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderBy("name asc")

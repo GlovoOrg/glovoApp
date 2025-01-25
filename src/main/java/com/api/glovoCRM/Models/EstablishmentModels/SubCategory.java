@@ -19,7 +19,7 @@ public class SubCategory extends BaseEntity {
     private String name;
 
     @Column(name = "image_url")
-    private String imageUrl;
+    private String image;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
