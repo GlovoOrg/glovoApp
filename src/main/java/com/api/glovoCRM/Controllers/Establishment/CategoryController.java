@@ -21,7 +21,7 @@ public class CategoryController {
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
 
-    @PostMapping
+    @PostMapping // checked by Alinur
     public ResponseEntity<CategoryDTO> createCategory(
             @RequestParam String name,
             @RequestParam MultipartFile image
@@ -31,13 +31,13 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // checked by Alinur
     public ResponseEntity<CategoryDTO> getCategory(@PathVariable Long id) {
         Category category = categoryService.getCategoryById(id);
         return ResponseEntity.ok(categoryMapper.toDTO(category));
     }
 
-    @GetMapping
+    @GetMapping // checked by Alinur
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         List<Category> categories = categoryService.getAllCategories();
         List<CategoryDTO> dtos = categories.stream()
@@ -46,7 +46,7 @@ public class CategoryController {
         return ResponseEntity.ok(dtos);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // checked by Alinur
     public ResponseEntity<CategoryDTO> updateCategory(
             @PathVariable Long id,
             @RequestParam String name,
@@ -56,7 +56,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryMapper.toDTO(category));
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}") // checked by Alinur
     public ResponseEntity<CategoryDTO> patchCategory(
             @PathVariable Long id,
             @ModelAttribute CategoryPatchRequest request
@@ -65,7 +65,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryMapper.toDTO(category));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // checked by Alinur
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
