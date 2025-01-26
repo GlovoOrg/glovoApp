@@ -7,9 +7,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = ProductMapper.class)
 public abstract class EstablishmentMapper {
     @Mapping(target = "isOpen", expression = "java(establishment.getIsOpen())")
+    @Mapping(target = "products", source = "product") // Добавлен маппинг для products
     public abstract EstablishmentDTO toDTO(Establishment establishment);
 
     @Mapping(target = "isOpen", expression = "java(establishment.getIsOpen())")

@@ -6,13 +6,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
@@ -33,11 +34,27 @@ public class GlobalExceptionHandler{
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationException(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage()));
-        return ResponseEntity.badRequest().body(errors);
+    public ResponseEntity<DetailedError> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+
+        Map<String, String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .filter(fieldError -> fieldError.getDefaultMessage() != null)
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        FieldError::getDefaultMessage));
+
+
+        DetailedError detailedError = DetailedError.builder()
+                .timeStamp(new Date())
+                .message("Ошибка валидации")
+                .detail(errors.toString())
+                .errorCode("VALIDATION_ERROR")
+                .path(request.getRequestURI())
+                .method(request.getMethod())
+                .build();
+
+        return ResponseEntity.badRequest().body(detailedError);
     }
 
     @ExceptionHandler(AlreadyExistsEx.class)
@@ -67,4 +84,5 @@ public class GlobalExceptionHandler{
                 .build();
         return new ResponseEntity<>(errorDetail, HttpStatus.valueOf(404));
     }
+
 }

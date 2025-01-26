@@ -1,5 +1,5 @@
 version: '3.8'
-
+# резервное копирование
 services:
   glovo-postgres:
     image: postgres:15-alpine
@@ -13,6 +13,12 @@ services:
       - "5442:5432"
     volumes:
       - glovo-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "glovoTeam", "-d", "glovoDB" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
 
   minio:
     image: minio/minio
@@ -25,6 +31,11 @@ services:
       - "9001:9001"  # Консоль управления
     volumes:
       - minio_data:/data
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
 
 volumes:
   glovo-data: {}

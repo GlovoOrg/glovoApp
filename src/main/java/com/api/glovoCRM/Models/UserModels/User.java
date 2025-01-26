@@ -5,12 +5,13 @@ import com.api.glovoCRM.Models.OrderDetailModels.Cart;
 import com.api.glovoCRM.Models.OrderDetailModels.Order;
 import com.api.glovoCRM.constants.EUserStatuses;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,35 +31,56 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class User extends BaseEntity implements UserDetails {
 
-    @Column(unique = true, nullable = false)
+    @NotNull(message = "Имя пользователя не может быть null")
+    @NotBlank(message = "Имя пользователя не может быть пустым")
+    @Length(min = 3, max = 50, message = "Имя пользователя должно быть в диапозоне 3-50 символов")
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Имя пользователя может содержать только буквы, цифры и подчеркивания")
+    @Column(name = "username", unique = true, nullable = false)
+    @NaturalId
     private String username;
 
-    @Column(unique = true, nullable = false)
+    @NotNull(message = "Почта пользователя не может быть null")
+    @Email(message = "Невалидная почта")
+    @NotBlank(message = "Почта не может пустой")
+    @Column(name = "email", unique = true, nullable = false, length = 122)
+    @NaturalId
     private String email;
 
-    @Column(nullable = false)
+    @NotNull(message = "Пароль пользователя не может быть null")
+    @NotBlank(message = "Пароль не может быть пустой")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[0-9]).{8,20}$", message = "Пароль должен содержать хотя бы одну заглавную букву, одну цифру и иметь длину от 8 до 20 символов")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false)
     private EUserStatuses status;
 
+    @Column(name = "lastLoginDate")
+    @PastOrPresent(message = "Дата последнего входа должна быть в прошлом или настоящем")
     private LocalDateTime lastLoginDate;
 
-    private boolean emailVerified;
+    @NotNull(message = "Статус верификации email не может быть null")
+    @Column(name = "isEmailVerified", nullable = false)
+    private boolean emailVerified = false;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
                 joinColumns = @JoinColumn(name = "user_id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id"))
-    public Set<Role> roles = new HashSet<>();
+    public List<Role> roles = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
     private Cart cart;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Order> orders = new ArrayList<>();
+    @OrderBy("createdTime desc")
+    private List<Order> orderEntities = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SocialAccount> socialAccounts = new ArrayList<>();
+
+    @PrePersist
     public void updateLastLogin() {
         this.lastLoginDate = LocalDateTime.now();
     }
@@ -76,7 +98,7 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name())) // Используем .name() для ERoles
+                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
     }
 

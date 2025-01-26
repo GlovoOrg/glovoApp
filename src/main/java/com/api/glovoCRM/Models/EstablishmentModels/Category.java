@@ -2,15 +2,16 @@ package com.api.glovoCRM.Models.EstablishmentModels;
 
 import com.api.glovoCRM.Models.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
+
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -20,9 +21,17 @@ import java.util.Set;
 @AllArgsConstructor
 public class Category extends BaseEntity {
 
+    @NotNull(message = "Название категории не может быть null")
+    @NotBlank(message = "Название категории не может быть пустым")
+    @Size(max = 355, message = "Максимальная длина названия — 355 символов")
+    @Column(name = "name",nullable = false, length = 355)
     private String name;
 
-    @Column(name = "image_url")
+    @NotNull(message = "Изображение категории не может быть null")
+    @NotBlank(message = "Изображение категории не может быть пустым")
+    //макс 800 хватит?
+    @Size(max = 800, message = "Максимальная длина URL изображения — 500 символов")
+    @Column(name = "image_url", nullable = false)
     private String image;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

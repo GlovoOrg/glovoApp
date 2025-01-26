@@ -5,20 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO {
+public class CategoryDTO {
     private Long id;
     private String name;
-    private String description;
-    private BigDecimal originalPrice;
-    private BigDecimal finalPrice;
     private String image;
-    private boolean active;
-    private Double discountPercentage;
-    private String discountMessage;
+    private List<SubCategoryDTO> subCategories;
 }

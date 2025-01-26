@@ -14,6 +14,7 @@ public interface ProductMapper {
     @Mapping(target = "finalPrice", source = "product", qualifiedByName = "calculateFinalPrice")
     @Mapping(target = "discountPercentage", source = "product", qualifiedByName = "getDiscountPercentage")
     @Mapping(target = "discountMessage", source = "product", qualifiedByName = "getDiscountMessage")
+        // Убраны некорректные маппинги categoryName и subCategoryName
     ProductDTO toDTO(Product product);
 
     @Named("calculateFinalPrice")
@@ -26,17 +27,19 @@ public interface ProductMapper {
     }
 
     @Named("getDiscountPercentage")
-    default Double getDiscountPercentage(Product product) {
+    default int getDiscountPercentage(Product product) {
+        if (product == null) return 0;
         if (product.getDiscountProduct() != null && product.getDiscountProduct().isActive()) {
             return product.getDiscountProduct().getDiscount() * 100;
         }
-        return null;
+        return 0;
     }
 
     @Named("getDiscountMessage")
     default String getDiscountMessage(Product product) {
+        if (product == null) return null;
         if (product.getDiscountProduct() != null && product.getDiscountProduct().isActive()) {
-            return String.format("Скидка %.0f%%", product.getDiscountProduct().getDiscount() * 100);
+            return String.format("Скидка %d%%", product.getDiscountProduct().getDiscount() * 100);
         }
         return null;
     }

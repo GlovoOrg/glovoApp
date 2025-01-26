@@ -2,6 +2,7 @@ package com.api.glovoCRM.Models.EstablishmentModels;
 
 import com.api.glovoCRM.Models.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,21 +21,43 @@ import java.util.Set;
 @AllArgsConstructor
 public class Establishment extends BaseEntity {
 
+    @NotNull(message = "Название заведения обязательно")
+    @NotBlank(message = "Название заведения не может быть пустым")
+    @Size(max = 455, message = "Максимальная длина названия — 455 символов")
+    @Column(name = "name", nullable = false)
     private String name;
 
+    @Min(value = 50, message = "Минимальная стоимость доставки 50")
+    @PositiveOrZero(message = "Стоимость доставки не может быть отрицательной")
+    @Column(name = "price_of_delivery", nullable = false)
     private double priceOfDelivery;
 
+    @Size(max = 800, message = "Максимальная длина URL изображения — 800 символов")
     @Column(name = "image_url")
     private String image;
 
-    private int rating; // 1 to 5
+    @Min(value = 1, message = "Рейтинг не может быть меньше 1")
+    @Max(value = 5, message = "Рейтинг не может быть больше 5")
+    @Column(name = "rating", nullable = false)
+    private int rating;
 
-    private int quantityOfRatings; // max = 500
+    @Min(value = 0, message = "Количество оценок не может быть отрицательным")
+    @Max(value = 500, message = "Максимальное количество оценок — 500")
+    @Column(name = "quantity_of_ratings", nullable = false)
+    private int quantityOfRatings = 0;
 
+    @Min(value = 10, message = "Время доставки не может быть меньше 10 минут")
+    @Max(value = 60, message = "Время доставки не может быть больше 60 минут")
+    @PositiveOrZero(message = "Время доставки не может быть отрицательным")
+    @Column(name = "time_of_delivery", nullable = false)
     private int timeOfDelivery;
-    
+
+    @NotNull(message = "Время открытия обязательно")
+    @Column(name = "open_time", nullable = false)
     private LocalTime openTime;
 
+    @NotNull(message = "Время закрытия обязательно")
+    @Column(name = "close_time", nullable = false)
     private LocalTime closeTime;
 
     @OneToMany(mappedBy = "establishment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -46,7 +69,8 @@ public class Establishment extends BaseEntity {
     private List<EstablishmentFilter> establishment_filter;
 
     @ManyToOne
-    @JoinColumn(name = "subcategory_id")
+    @JoinColumn(name = "subcategory_id", nullable = false)
+    @NotNull(message = "Подкатегория обязательна")
     private SubCategory subcategory;
 
     @OneToOne(mappedBy = "establishment", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
