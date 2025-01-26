@@ -55,7 +55,7 @@ public class CategoryController {
         Category category = categoryService.updateCategory(id, name, image);
         return ResponseEntity.ok(categoryMapper.toDTO(category));
     }
-
+    // alinru
     @PatchMapping("/{id}")
     public ResponseEntity<CategoryDTO> patchCategory(
             @PathVariable Long id,
