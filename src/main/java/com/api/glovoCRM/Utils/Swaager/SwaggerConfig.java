@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
-import javax.sound.sampled.Port;
+
 import java.util.List;
 
 @Configuration
@@ -19,20 +19,25 @@ public class SwaggerConfig {
     public OpenAPI openAPI(){
         return new OpenAPI()
                 .info(new Info()
-                        .title("API documentation")
-                        .version("1.0")
+                        .title("API documentation GlovoApp")
+                        .version("1.1")
                         .description("Documentation for Open API yourself")
-                        .contact(new Contact()
-                                .name("User name")
-                                .email("email@gmail.com")
-                                .url("https://github.com/UserName")
+                        .contact(new Contact(
+
+                                )
+                                .name("GlovoApp")
+                                .email("@gmail.com")
+                                .url("https://https://github.com/GlovoOrg/glovoApp")
                         )
                 )
                 .servers(List.of(
-                        new Server()
+                        new Server(
+
+                        )
                                 .url("http://localhost:8080")
                                 .description("Local network")
-                ));
+                        )
+                );
 
 
 

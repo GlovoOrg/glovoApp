@@ -5,6 +5,9 @@ import com.api.glovoCRM.Models.EstablishmentModels.Category;
 import com.api.glovoCRM.Rest.Requests.CategoryPatchRequest;
 import com.api.glovoCRM.Services.EstablishmentServices.CategoryService;
 import com.api.glovoCRM.mappers.CategoryMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+
+@Tag(name = "category_method")
 @RestController
 @RequestMapping("/api/v1/categories")
 @RequiredArgsConstructor
@@ -20,6 +25,14 @@ public class CategoryController {
 
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
+
+
+    @Operation(
+            summary = "Создать новую категорию",
+            description = "Создаёт новую категорию"
+    )
+    @ApiResponse(responseCode = "201", description = "Категория успешно создана.")
+    @ApiResponse(responseCode = "400", description = "Некорректные входные данные.")
 
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(
