@@ -31,6 +31,7 @@ public class CategoryController {
             summary = "Создать новую категорию",
             description = "Создаёт новую категорию"
     )
+
     @ApiResponse(responseCode = "201", description = "Категория успешно создана.")
     @ApiResponse(responseCode = "400", description = "Некорректные входные данные.")
 
