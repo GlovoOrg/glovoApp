@@ -1,4 +1,4 @@
-package com.api.glovoCRM.Minio;
+package com.api.glovoCRM.Utils.Minio;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

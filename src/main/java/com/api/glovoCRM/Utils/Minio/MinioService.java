@@ -1,4 +1,4 @@
-package com.api.glovoCRM.Minio;
+package com.api.glovoCRM.Utils.Minio;
 
 import io.minio.*;
 import jakarta.annotation.PostConstruct;
