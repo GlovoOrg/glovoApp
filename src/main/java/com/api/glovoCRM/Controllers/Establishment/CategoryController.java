@@ -28,10 +28,9 @@ public class CategoryController {
 
 
     @Operation(
-            summary = "Создать новую категорию",
-            description = "Создаёт новую категорию"
+            summary = "Создать новую категорию.",
+            description = "Создаёт новую категорию с указанным именем и изображением."
     )
-
     @ApiResponse(responseCode = "201", description = "Категория успешно создана.")
     @ApiResponse(responseCode = "400", description = "Некорректные входные данные.")
 
@@ -44,12 +43,23 @@ public class CategoryController {
         CategoryDTO dto = categoryMapper.toDTO(category);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
+    @Operation(
+            summary = "Получить категорию по ID",
+            description = "Возвращает данные категории по указанному идентификатору."
+    )
+    @ApiResponse(responseCode = "200", description = "Категория успешно найдена.")
+    @ApiResponse(responseCode = "404", description = "Категория с указанным ID не найдена.")
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategory(@PathVariable Long id) {
         Category category = categoryService.getCategoryById(id);
         return ResponseEntity.ok(categoryMapper.toDTO(category));
     }
+    @Operation(
+            summary = "Получить все категории",
+            description = "Возвращает список всех доступных категорий."
+    )
+    @ApiResponse(responseCode = "200", description = "Список категорий успешно получен.")
 
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
@@ -59,6 +69,12 @@ public class CategoryController {
                 .toList();
         return ResponseEntity.ok(dtos);
     }
+    @Operation(
+            summary = "Обновить категорию",
+            description = "Обновляет данные категории по указанному ID. Можно изменить имя категории и/или изображение."
+    )
+    @ApiResponse(responseCode = "200", description = "Категория успешно обновлена.")
+    @ApiResponse(responseCode = "404", description = "Категория с указанным ID не найдена.")
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> updateCategory(
@@ -69,6 +85,12 @@ public class CategoryController {
         Category category = categoryService.updateCategory(id, name, image);
         return ResponseEntity.ok(categoryMapper.toDTO(category));
     }
+    @Operation(
+            summary = "Частично обновить категорию",
+            description = "Обновляет отдельные данные категории по её ID."
+    )
+    @ApiResponse(responseCode = "200", description = "Категория успешно обновлена.")
+    @ApiResponse(responseCode = "404", description = "Категория с указанным ID не найдена.")
 
     @PatchMapping("/{id}")
     public ResponseEntity<CategoryDTO> patchCategory(
@@ -78,6 +100,12 @@ public class CategoryController {
         Category category = categoryService.patchCategory(id, request);
         return ResponseEntity.ok(categoryMapper.toDTO(category));
     }
+    @Operation(
+            summary = "Удалить категорию",
+            description = "Удаляет категорию по указанному идентификатору."
+    )
+    @ApiResponse(responseCode = "204", description = "Категория успешно удалена.")
+    @ApiResponse(responseCode = "404", description = "Категория с указанным ID не найдена.")
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {

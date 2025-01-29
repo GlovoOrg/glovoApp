@@ -18,9 +18,19 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI(){
         return new OpenAPI()
+                .servers(
+                        List.of(
+                                new Server(
+
+                                )
+                                        .url("http://localhost:8080")
+                                        .description("Local network")
+                        )
+                )
+
                 .info(new Info()
-                        .title("API documentation GlovoApp")
-                        .version("1.1")
+                        .title("GLOVO CRM API")
+                        .version("1.0")
                         .description("Documentation for Open API yourself")
                         .contact(new Contact(
 
@@ -29,15 +39,8 @@ public class SwaggerConfig {
                                 .email("@gmail.com")
                                 .url("https://https://github.com/GlovoOrg/glovoApp")
                         )
-                )
-                .servers(List.of(
-                        new Server(
-
-                        )
-                                .url("http://localhost:8080")
-                                .description("Local network")
-                        )
                 );
+
 
 
 
