@@ -6,13 +6,14 @@ import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-
-@Mapper(componentModel = "spring", uses = ProductMapper.class)
-public abstract class EstablishmentMapper {
-    @Mapping(target = "isOpen", expression = "java(establishment.getIsOpen())")
-    @Mapping(target = "products", source = "product") // Добавлен маппинг для products
-    public abstract EstablishmentDTO toDTO(Establishment establishment);
+@Mapper(componentModel = "spring", uses = {ProductMapper.class})
+public interface EstablishmentMapper {
 
     @Mapping(target = "isOpen", expression = "java(establishment.getIsOpen())")
-    public abstract EstablishmentShortDTO toShortDTO(Establishment establishment);
+    @Mapping(target = "products", source = "products")
+    EstablishmentDTO toDTO(Establishment establishment);
+
+    @Mapping(target = "isOpen", expression = "java(establishment.getIsOpen())")
+    EstablishmentShortDTO toShortDTO(Establishment establishment);
 }
+

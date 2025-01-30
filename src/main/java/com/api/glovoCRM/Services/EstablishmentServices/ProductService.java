@@ -54,7 +54,6 @@ import java.util.UUID;
             product.setName(request.getName());
             product.setDescription(request.getDescription());
             product.setPrice(request.getPrice());
-            product.setImage(image);
             product.setEstablishment(establishment);
             product.setEstablishmentFilters(List.of(filter));
 
@@ -72,7 +71,7 @@ import java.util.UUID;
         public void deleteProductById(Long productId) {
             Product product = productDAO.findById(productId)
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Product not found"));
-            minioService.deleteFile("products", extractObjectName(product.getImage()));
+            minioService.deleteFile("products", extractObjectName(null));
             productDAO.delete(product);
         }
 
@@ -119,11 +118,10 @@ import java.util.UUID;
         }
 
         private void updateProductImage(Product product, MultipartFile newImage) {
-            minioService.deleteFile("products", extractObjectName(product.getImage()));
+            minioService.deleteFile("products", extractObjectName(null));
 
             String newObjectId = "product-" + UUID.randomUUID() + ".img";
             String newImageUrl = minioService.uploadFile(newImage, "products", newObjectId);
-            product.setImage(newImageUrl);
         }
 
         private void updateDiscount(Product product, DiscountProductRequest discountRequest) {

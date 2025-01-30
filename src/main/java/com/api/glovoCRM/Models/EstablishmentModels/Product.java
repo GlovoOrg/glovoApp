@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -34,9 +35,6 @@ public class Product extends BaseEntity {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @Size(max = 800, message = "Максимальная длина URL изображения — 800 символов")
-    @Column(name = "image_url")
-    private String image;
     //todo в будущем надо реализовать эндпоинт чтобы можно было менять значение с ролью Establishment
     @Column(name = "active", nullable = false)
     private boolean active = true;
@@ -54,5 +52,5 @@ public class Product extends BaseEntity {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "establishment_filter_id")
     )
-    private List<EstablishmentFilter> establishmentFilters;
+    private List<EstablishmentFilter> establishmentFilters = new ArrayList<>();
 }

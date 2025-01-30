@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,14 +28,7 @@ public class Category extends BaseEntity {
     @Column(name = "name",nullable = false, length = 355)
     private String name;
 
-    @NotNull(message = "Изображение категории не может быть null")
-    @NotBlank(message = "Изображение категории не может быть пустым")
-    //макс 800 хватит?
-    @Size(max = 800, message = "Максимальная длина URL изображения — 500 символов")
-    @Column(name = "image_url", nullable = false)
-    private String image;
-
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("name asc")
-    private List<SubCategory> subCategory;
+    private List<SubCategory> subCategories = new ArrayList<>();
 }

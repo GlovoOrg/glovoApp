@@ -10,11 +10,11 @@ import java.math.BigDecimal;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
+
     @Mapping(target = "originalPrice", source = "price")
     @Mapping(target = "finalPrice", source = "product", qualifiedByName = "calculateFinalPrice")
     @Mapping(target = "discountPercentage", source = "product", qualifiedByName = "getDiscountPercentage")
     @Mapping(target = "discountMessage", source = "product", qualifiedByName = "getDiscountMessage")
-        // Убраны некорректные маппинги categoryName и subCategoryName
     ProductDTO toDTO(Product product);
 
     @Named("calculateFinalPrice")

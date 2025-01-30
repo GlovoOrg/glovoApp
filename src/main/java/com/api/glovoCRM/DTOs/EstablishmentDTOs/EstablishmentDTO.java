@@ -15,12 +15,10 @@ public class EstablishmentDTO {
     private String name;
     private double priceOfDelivery;
     private int timeOfDelivery;
-    private String image;
     private int rating;
     private int quantityOfRatings;
     private LocalTime openTime;
     private LocalTime closeTime;
     private boolean isOpen;
-    //todo вернется ли здесь list<ProductDTO>
     private List<ProductDTO> products;
 }

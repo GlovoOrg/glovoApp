@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,17 +25,12 @@ public class SubCategory extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    //нет смысла на null проверять, так как будет проверка на null в minio сервисе
-    @Size(max = 800, message = "Максимальная длина URL изображения — 500 символов")
-    @Column(name = "image_url")
-    private String image;
-
     @ManyToOne
     @JoinColumn(name = "category_id")
     @NotNull(message = "Категория обязательна")
     private Category category;
 
-    @OneToMany(mappedBy = "subcategory", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "subcategory", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @OrderBy("name asc")
-    private List<Establishment> establishment;
+    private List<Establishment> establishments = new ArrayList<>();
 }

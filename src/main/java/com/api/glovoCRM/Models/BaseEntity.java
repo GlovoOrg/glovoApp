@@ -26,4 +26,5 @@ public abstract class BaseEntity {
     @UpdateTimestamp
     @Column(name = "updatedTime")
     private LocalDateTime updatedTime;
+    
 }

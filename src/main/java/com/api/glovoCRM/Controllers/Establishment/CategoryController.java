@@ -1,22 +1,32 @@
 package com.api.glovoCRM.Controllers.Establishment;
 
 import com.api.glovoCRM.DTOs.EstablishmentDTOs.CategoryDTO;
+import com.api.glovoCRM.Minio.AllowedContentTypes;
 import com.api.glovoCRM.Models.EstablishmentModels.Category;
 import com.api.glovoCRM.Rest.Requests.CategoryPatchRequest;
+import com.api.glovoCRM.Rest.Requests.CategoryUpdateRequest;
 import com.api.glovoCRM.Services.EstablishmentServices.CategoryService;
+import com.api.glovoCRM.constants.MimeType;
 import com.api.glovoCRM.mappers.CategoryMapper;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
+@Validated
 @RestController
 @RequestMapping("/api/v1/categories")
-@RequiredArgsConstructor
 public class CategoryController {
+
+    @Autowired
+    public CategoryController(CategoryService categoryService, CategoryMapper categoryMapper) {
+        this.categoryService = categoryService;
+        this.categoryMapper = categoryMapper;
+    }
 
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
@@ -24,7 +34,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(
             @RequestParam String name,
-            @RequestParam MultipartFile image
+            @RequestParam @Valid @AllowedContentTypes({MimeType.JPEG, MimeType.PNG, MimeType.JPG, MimeType.SVG}) MultipartFile image
     ) {
         Category category = categoryService.createCategory(name, image);
         CategoryDTO dto = categoryMapper.toDTO(category);
@@ -33,33 +43,32 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategory(@PathVariable Long id) {
-        Category category = categoryService.getCategoryById(id);
+        Category category = categoryService.findById(id);
         return ResponseEntity.ok(categoryMapper.toDTO(category));
     }
 
-    @GetMapping
+   @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
-        List<Category> categories = categoryService.getAllCategories();
+        List<Category> categories = categoryService.findAll();
         List<CategoryDTO> dtos = categories.stream()
-                .map(categoryMapper::toDTO)
-                .toList();
+                    .map(categoryMapper::toDTO)
+                   .toList();
         return ResponseEntity.ok(dtos);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> updateCategory(
             @PathVariable Long id,
-            @RequestParam String name,
-            @RequestParam(required = false) MultipartFile image
+            @Valid @ModelAttribute CategoryUpdateRequest request
     ) {
-        Category category = categoryService.updateCategory(id, name, image);
+        Category category = categoryService.updateCategory(id, request);
         return ResponseEntity.ok(categoryMapper.toDTO(category));
     }
-    // alinru
+
     @PatchMapping("/{id}")
     public ResponseEntity<CategoryDTO> patchCategory(
             @PathVariable Long id,
-            @ModelAttribute CategoryPatchRequest request
+            @Valid @ModelAttribute CategoryPatchRequest request
     ) {
         Category category = categoryService.patchCategory(id, request);
         return ResponseEntity.ok(categoryMapper.toDTO(category));

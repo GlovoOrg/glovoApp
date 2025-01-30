@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -31,10 +32,6 @@ public class Establishment extends BaseEntity {
     @PositiveOrZero(message = "Стоимость доставки не может быть отрицательной")
     @Column(name = "price_of_delivery", nullable = false)
     private double priceOfDelivery;
-
-    @Size(max = 800, message = "Максимальная длина URL изображения — 800 символов")
-    @Column(name = "image_url")
-    private String image;
 
     @Min(value = 1, message = "Рейтинг не может быть меньше 1")
     @Max(value = 5, message = "Рейтинг не может быть больше 5")
@@ -62,11 +59,11 @@ public class Establishment extends BaseEntity {
 
     @OneToMany(mappedBy = "establishment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("name asc")
-    private List<Product> product;
+    private List<Product> products = new ArrayList<>();
 
     @OneToMany(mappedBy = "establishment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @OrderBy("name asc")
-    private List<EstablishmentFilter> establishment_filter;
+    private List<EstablishmentFilter> establishment_filters = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "subcategory_id", nullable = false)
