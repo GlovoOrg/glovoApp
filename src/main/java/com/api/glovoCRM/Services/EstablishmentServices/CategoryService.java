@@ -2,7 +2,7 @@ package com.api.glovoCRM.Services.EstablishmentServices;
 
 import com.api.glovoCRM.DAOs.CategoryDAO;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
-import com.api.glovoCRM.Minio.MinioService;
+import com.api.glovoCRM.Utils.Minio.MinioService;
 import com.api.glovoCRM.Models.EstablishmentModels.Category;
 import com.api.glovoCRM.Rest.Requests.CategoryPatchRequest;
 import jakarta.transaction.Transactional;

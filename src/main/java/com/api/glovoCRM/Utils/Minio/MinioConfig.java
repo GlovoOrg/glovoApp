@@ -1,4 +1,4 @@
-package com.api.glovoCRM.Minio;
+package com.api.glovoCRM.Utils.Minio;
 
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;
