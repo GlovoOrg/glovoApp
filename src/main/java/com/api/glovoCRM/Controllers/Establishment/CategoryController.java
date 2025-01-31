@@ -7,6 +7,9 @@ import com.api.glovoCRM.Rest.Requests.CategoryRequests.CategoryPatchRequest;
 import com.api.glovoCRM.Rest.Requests.CategoryRequests.CategoryUpdateRequest;
 import com.api.glovoCRM.Services.EstablishmentServices.CategoryService;
 import com.api.glovoCRM.mappers.CategoryMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/api/v1/categories")
+@Tag(name = "Categories", description = "API для управления категориями")
 public class CategoryController {
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
@@ -27,7 +31,8 @@ public class CategoryController {
         this.categoryService = categoryService;
         this.categoryMapper = categoryMapper;
     }
-
+    @Operation(summary = "Создать категорию", description = "Добавляет новую категорию с изображением")
+    @ApiResponse(responseCode = "201", description = "Категория успешно создана")
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(
             @Valid @ModelAttribute CategoryCreateRequest request

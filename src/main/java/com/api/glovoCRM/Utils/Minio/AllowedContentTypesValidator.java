@@ -1,7 +1,5 @@
-package com.api.glovoCRM.Minio;
+package com.api.glovoCRM.Utils.Minio;
 
-import com.api.glovoCRM.Exceptions.MinioExceptions.FileValidationEx;
-import com.api.glovoCRM.Exceptions.MinioExceptions.InvalidFileTypeEx;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import com.api.glovoCRM.constants.MimeType;

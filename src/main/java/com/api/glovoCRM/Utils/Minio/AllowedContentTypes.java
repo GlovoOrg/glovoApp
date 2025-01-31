@@ -1,4 +1,4 @@
-package com.api.glovoCRM.Minio;
+package com.api.glovoCRM.Utils.Minio;
 
 import com.api.glovoCRM.constants.MimeType;
 import jakarta.validation.Constraint;

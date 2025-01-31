@@ -1,4 +1,4 @@
-package com.api.glovoCRM.Minio;
+package com.api.glovoCRM.Utils.Minio;
 
 import com.api.glovoCRM.Rest.Responses.FileUploadResponse;
 import jakarta.servlet.http.HttpServletResponse;

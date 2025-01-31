@@ -3,7 +3,7 @@ package com.api.glovoCRM.Services;
 import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
 import com.api.glovoCRM.DAOs.ImageDAO;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
-import com.api.glovoCRM.Minio.MinioService;
+import com.api.glovoCRM.Utils.Minio.MinioService;
 import com.api.glovoCRM.Models.EstablishmentModels.Image;
 import com.api.glovoCRM.Models.EstablishmentModels.ImageAssociation;
 import com.api.glovoCRM.constants.EntityType;

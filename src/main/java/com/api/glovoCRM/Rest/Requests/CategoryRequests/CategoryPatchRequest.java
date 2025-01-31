@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Rest.Requests.CategoryRequests;
 
-import com.api.glovoCRM.Minio.AllowedContentTypes;
+import com.api.glovoCRM.Utils.Minio.AllowedContentTypes;
 import com.api.glovoCRM.constants.MimeType;
 import jakarta.validation.constraints.Size;
 import lombok.Data;

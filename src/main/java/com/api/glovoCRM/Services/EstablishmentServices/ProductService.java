@@ -1,9 +1,8 @@
 package com.api.glovoCRM.Services.EstablishmentServices;
 
 import com.api.glovoCRM.DAOs.*;
-import com.api.glovoCRM.DTOs.EstablishmentDTOs.ProductDTO;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
-import com.api.glovoCRM.Minio.MinioService;
+import com.api.glovoCRM.Utils.Minio.MinioService;
 import com.api.glovoCRM.Models.EstablishmentModels.*;
 import com.api.glovoCRM.Rest.Requests.DiscountProductRequest;
 import com.api.glovoCRM.Rest.Requests.ProductCreateRequest;
