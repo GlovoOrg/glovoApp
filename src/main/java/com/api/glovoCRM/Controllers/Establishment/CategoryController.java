@@ -1,12 +1,11 @@
 package com.api.glovoCRM.Controllers.Establishment;
 
 import com.api.glovoCRM.DTOs.EstablishmentDTOs.CategoryDTO;
-import com.api.glovoCRM.Minio.AllowedContentTypes;
 import com.api.glovoCRM.Models.EstablishmentModels.Category;
-import com.api.glovoCRM.Rest.Requests.CategoryPatchRequest;
-import com.api.glovoCRM.Rest.Requests.CategoryUpdateRequest;
+import com.api.glovoCRM.Rest.Requests.CategoryRequests.CategoryCreateRequest;
+import com.api.glovoCRM.Rest.Requests.CategoryRequests.CategoryPatchRequest;
+import com.api.glovoCRM.Rest.Requests.CategoryRequests.CategoryUpdateRequest;
 import com.api.glovoCRM.Services.EstablishmentServices.CategoryService;
-import com.api.glovoCRM.constants.MimeType;
 import com.api.glovoCRM.mappers.CategoryMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +13,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/api/v1/categories")
 public class CategoryController {
+    private final CategoryService categoryService;
+    private final CategoryMapper categoryMapper;
 
     @Autowired
     public CategoryController(CategoryService categoryService, CategoryMapper categoryMapper) {
@@ -28,17 +28,12 @@ public class CategoryController {
         this.categoryMapper = categoryMapper;
     }
 
-    private final CategoryService categoryService;
-    private final CategoryMapper categoryMapper;
-
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(
-            @RequestParam String name,
-            @RequestParam @Valid @AllowedContentTypes({MimeType.JPEG, MimeType.PNG, MimeType.JPG, MimeType.SVG}) MultipartFile image
+            @Valid @ModelAttribute CategoryCreateRequest request
     ) {
-        Category category = categoryService.createCategory(name, image);
-        CategoryDTO dto = categoryMapper.toDTO(category);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+        Category category = categoryService.createEntity(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryMapper.toDTO(category));
     }
 
     @GetMapping("/{id}")
@@ -47,12 +42,12 @@ public class CategoryController {
         return ResponseEntity.ok(categoryMapper.toDTO(category));
     }
 
-   @GetMapping
+    @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         List<Category> categories = categoryService.findAll();
         List<CategoryDTO> dtos = categories.stream()
-                    .map(categoryMapper::toDTO)
-                   .toList();
+                .map(categoryMapper::toDTO)
+                .toList();
         return ResponseEntity.ok(dtos);
     }
 
@@ -61,7 +56,7 @@ public class CategoryController {
             @PathVariable Long id,
             @Valid @ModelAttribute CategoryUpdateRequest request
     ) {
-        Category category = categoryService.updateCategory(id, request);
+        Category category = categoryService.updateEntity(id, request);
         return ResponseEntity.ok(categoryMapper.toDTO(category));
     }
 
@@ -70,13 +65,13 @@ public class CategoryController {
             @PathVariable Long id,
             @Valid @ModelAttribute CategoryPatchRequest request
     ) {
-        Category category = categoryService.patchCategory(id, request);
+        Category category = categoryService.patchEntity(id, request);
         return ResponseEntity.ok(categoryMapper.toDTO(category));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
+        categoryService.deleteEntity(id);
         return ResponseEntity.noContent().build();
     }
 }
