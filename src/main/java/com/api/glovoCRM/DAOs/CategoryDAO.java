@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface CategoryDAO extends JpaRepository<Category, Long> {
     boolean existsByName(String name);
-
+    Optional<Category> findByName(String name);
     Optional<Category> getCategoryById(Long categoryId);
 }

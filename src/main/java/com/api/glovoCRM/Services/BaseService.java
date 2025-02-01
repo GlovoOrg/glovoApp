@@ -9,11 +9,12 @@ import com.api.glovoCRM.Models.EstablishmentModels.ImageAssociation;
 import com.api.glovoCRM.constants.EntityType;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
-
+@Component
 @Slf4j
 public abstract class BaseService<T, CreateRequest, UpdateRequest, PatchRequest> {
     protected final ImageDAO imageDAO;
@@ -32,7 +33,7 @@ public abstract class BaseService<T, CreateRequest, UpdateRequest, PatchRequest>
     public abstract void deleteEntity(Long entityId);
     public abstract T updateEntity(Long entityId, UpdateRequest request);
     public abstract T patchEntity(Long entityId, PatchRequest request);
-
+    public abstract T findByName(String name);
     @Transactional
     protected Image createImageRecord(MultipartFile file, String bucketName, EntityType entityType, Long ownerId) {
         try {
@@ -123,6 +124,10 @@ public abstract class BaseService<T, CreateRequest, UpdateRequest, PatchRequest>
         if (imageUrl == null || imageUrl.isEmpty()) {
             throw new IllegalArgumentException("URL изображения не может быть пустым");
         }
-        return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        String[] parts = imageUrl.split("/");
+        if (parts.length < 4) {
+            throw new IllegalArgumentException("Некорректный URL изображения");
+        }
+        return parts[parts.length - 1];
     }
 }

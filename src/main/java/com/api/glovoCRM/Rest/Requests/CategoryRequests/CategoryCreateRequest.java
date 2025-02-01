@@ -1,14 +1,15 @@
 package com.api.glovoCRM.Rest.Requests.CategoryRequests;
 
+import com.api.glovoCRM.Rest.Requests.BaseRequest;
 import com.api.glovoCRM.Utils.Minio.AllowedContentTypes;
 import com.api.glovoCRM.constants.MimeType;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.web.multipart.MultipartFile;
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class CategoryCreateRequest {
-    @Size(min = 3, max = 355)
-    private String name;
-    @AllowedContentTypes({MimeType.JPEG, MimeType.PNG, MimeType.SVG, MimeType.JPG})
-    private MultipartFile image;
+public class CategoryCreateRequest extends BaseRequest {
+
 }

@@ -31,31 +31,35 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
         this.categoryDAO = categoryDAO;
     }
 
-    @Transactional(isolation = Isolation.READ_COMMITTED)
-    @Override
+
+    @Transactional()
     public Category createEntity(CategoryCreateRequest request) {
+        String generatedObjectName = null;
         try {
             if (categoryDAO.existsByName(request.getName())) {
                 throw new AlreadyExistsEx("Такая категория уже существует");
             }
+
             Category category = new Category();
             category.setName(request.getName());
             Category savedCategory = categoryDAO.save(category);
-            log.debug("Категория успешно создана. ID: {}", savedCategory.getId());
+
             if (request.getImage() != null) {
+                generatedObjectName = generateObjectName(EntityType.Category, request.getImage());
                 createImageRecord(request.getImage(), "categories", EntityType.Category, savedCategory.getId());
             }
             return savedCategory;
         } catch (AlreadyExistsEx e) {
-            log.warn("Ошибка при создании категории: {}", e.getMessage());
             throw e;
         } catch (Exception e) {
-            log.error("Неожиданная ошибка при создании категории: {}", e.getMessage(), e);
-            throw new RuntimeException("Не удалось создать категорию", e);
+            if (generatedObjectName != null) {
+                minioService.deleteFile("categories", generatedObjectName); // Удаление по сгенерированному имени
+            }
+            throw new RuntimeException("Не удалось создать категорию(500)", e);
         }
     }
 
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional()
     @Override
     public void deleteEntity(Long categoryId) {
         try {
@@ -102,7 +106,7 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
         return categoryDAO.findAll();
     }
 
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional()
     @Override
     public Category patchEntity(Long id, CategoryPatchRequest request) {
         Category category = categoryDAO.findById(id)
@@ -114,5 +118,13 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
             updateImageRecord(id, EntityType.Category, request.getImage());
         }
         return categoryDAO.save(category);
+    }
+
+    @Override
+    public Category findByName(String name) {
+        log.info("Получение категории по имени не существует по имени: {}", name );
+        return categoryDAO.findByName(name).orElseThrow(
+                () -> new SuchResourceNotFoundEx("Такой категории по имени не существует")
+        );
     }
 }
