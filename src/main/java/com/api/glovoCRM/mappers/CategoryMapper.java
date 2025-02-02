@@ -1,7 +1,6 @@
 package com.api.glovoCRM.mappers;
 
-import com.api.glovoCRM.DTOs.EstablishmentDTOs.CategoryDTO;
-import com.api.glovoCRM.DTOs.EstablishmentDTOs.Utils.ImageUtil;
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTOs.CategoryDTO;
 import com.api.glovoCRM.Models.EstablishmentModels.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

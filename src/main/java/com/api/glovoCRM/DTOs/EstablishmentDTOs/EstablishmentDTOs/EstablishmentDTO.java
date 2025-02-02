@@ -1,17 +1,18 @@
-package com.api.glovoCRM.DTOs.EstablishmentDTOs;
+package com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTOs;
 
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.BaseDTO;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalTime;
 import java.util.List;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EstablishmentDTO {
-    private Long id;
+public class EstablishmentDTO extends BaseDTO {
     private String name;
     private double priceOfDelivery;
     private int timeOfDelivery;

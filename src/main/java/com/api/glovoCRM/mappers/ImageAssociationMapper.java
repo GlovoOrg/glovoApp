@@ -1,6 +1,6 @@
 package com.api.glovoCRM.mappers;
 
-import com.api.glovoCRM.DTOs.EstablishmentDTOs.ImageAssociationDTO;
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTOs.ImageAssociationDTO;
 import com.api.glovoCRM.Models.EstablishmentModels.ImageAssociation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Controllers.Establishment;
 
-import com.api.glovoCRM.DTOs.EstablishmentDTOs.ProductDTO;
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTOs.ProductDTO;
 import com.api.glovoCRM.Models.EstablishmentModels.Product;
 import com.api.glovoCRM.Rest.Requests.ProductCreateRequest;
 import com.api.glovoCRM.Rest.Requests.ProductPatchRequest;

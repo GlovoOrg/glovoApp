@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Controllers.Establishment;
 
-import com.api.glovoCRM.DTOs.EstablishmentDTOs.CategoryDTO;
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTOs.CategoryDTO;
 import com.api.glovoCRM.Models.EstablishmentModels.Category;
 import com.api.glovoCRM.Rest.Requests.CategoryRequests.CategoryCreateRequest;
 import com.api.glovoCRM.Rest.Requests.CategoryRequests.CategoryPatchRequest;

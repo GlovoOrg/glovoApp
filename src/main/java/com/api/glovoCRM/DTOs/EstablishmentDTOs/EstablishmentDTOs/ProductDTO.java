@@ -1,18 +1,17 @@
-package com.api.glovoCRM.DTOs.EstablishmentDTOs;
+package com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTOs;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.BaseDTO;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 
-@Data
-@Builder
+@Getter
+@Setter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO {
-    private Long id;
+public class ProductDTO extends BaseDTO {
     private String name;
     private String description;
     private BigDecimal originalPrice;

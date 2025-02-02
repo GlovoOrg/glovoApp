@@ -1,10 +1,15 @@
-package com.api.glovoCRM.DTOs.EstablishmentDTOs;
+package com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTOs;
 
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SubCategoryDTO {
     private Long id;
     private String name;

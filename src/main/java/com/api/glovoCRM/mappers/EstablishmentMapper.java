@@ -1,7 +1,7 @@
 package com.api.glovoCRM.mappers;
 
-import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTO;
-import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentShortDTO;
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTOs.EstablishmentDTO;
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTOs.EstablishmentShortDTO;
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

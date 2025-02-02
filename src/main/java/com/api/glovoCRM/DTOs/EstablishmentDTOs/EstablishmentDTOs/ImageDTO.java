@@ -1,17 +1,16 @@
-package com.api.glovoCRM.DTOs.EstablishmentDTOs;
+package com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTOs;
 
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.BaseDTO;
 import com.api.glovoCRM.constants.EntityType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-@Data
-@Builder
+@Getter
+@Setter
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageDTO {
-    private Long id;
+public class ImageDTO extends BaseDTO {
     private String url;
     private String filename;
     private Long size;

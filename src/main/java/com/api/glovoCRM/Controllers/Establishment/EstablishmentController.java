@@ -1,7 +1,7 @@
 package com.api.glovoCRM.Controllers.Establishment;
 
-import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTO;
-import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentShortDTO;
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTOs.EstablishmentDTO;
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTOs.EstablishmentShortDTO;
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
 import com.api.glovoCRM.Services.EstablishmentServices.EstablishmentService;
 import com.api.glovoCRM.mappers.EstablishmentMapper;

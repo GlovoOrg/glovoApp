@@ -1,17 +1,15 @@
-package com.api.glovoCRM.DTOs.EstablishmentDTOs;
+package com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTOs;
 
-import com.api.glovoCRM.Models.EstablishmentModels.ImageAssociation;
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.BaseDTO;
 import lombok.*;
-
-import java.time.LocalDateTime;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EstablishmentShortDTO {
-    private Long id;
+public class EstablishmentShortDTO extends BaseDTO {
     private String name;
     private int rating;
     private int quantityOfRatings;
