@@ -13,4 +13,5 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public abstract class BaseDTO {
     private Long id;
+    private String name;
 }

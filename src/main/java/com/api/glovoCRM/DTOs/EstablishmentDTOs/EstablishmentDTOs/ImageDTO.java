@@ -7,10 +7,11 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@SuperBuilder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageDTO extends BaseDTO {
+public class ImageDTO {
+    private Long id;
     private String url;
     private String filename;
     private Long size;

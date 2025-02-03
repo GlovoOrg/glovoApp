@@ -7,10 +7,11 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@SuperBuilder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageAssociationDTO extends BaseDTO {
+public class ImageAssociationDTO {
+    private Long id;
     private ImageDTO image;
     private EntityType entityType;
     private Long ownerId;

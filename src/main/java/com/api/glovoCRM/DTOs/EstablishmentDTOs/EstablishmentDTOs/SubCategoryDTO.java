@@ -11,8 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubCategoryDTO {
-    private Long id;
-    private String name;
     private CategoryDTO category;
     private String imageUrl;
     private List<EstablishmentDTO> establishments;

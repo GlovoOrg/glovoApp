@@ -10,7 +10,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EstablishmentShortDTO extends BaseDTO {
-    private String name;
     private int rating;
     private int quantityOfRatings;
     private double priceOfDelivery;

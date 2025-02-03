@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDTO extends BaseDTO {
-    private String name;
     private String description;
     private BigDecimal originalPrice;
     private BigDecimal finalPrice;

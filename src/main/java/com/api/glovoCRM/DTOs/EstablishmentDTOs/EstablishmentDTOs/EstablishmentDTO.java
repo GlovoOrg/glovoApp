@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EstablishmentDTO extends BaseDTO {
-    private String name;
     private double priceOfDelivery;
     private int timeOfDelivery;
     private int rating;

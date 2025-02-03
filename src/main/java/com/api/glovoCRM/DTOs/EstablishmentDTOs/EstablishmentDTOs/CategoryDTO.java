@@ -12,8 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoryDTO extends BaseDTO {
-    private Long id;
-    private String name;
     private String imageUrl;
     private List<SubCategoryDTO> subCategories;
 }
