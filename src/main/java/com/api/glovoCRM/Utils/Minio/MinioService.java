@@ -1,41 +1,51 @@
 package com.api.glovoCRM.Utils.Minio;
 
-import com.api.glovoCRM.DAOs.ImageDAO;
-import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
-import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
-import com.api.glovoCRM.Exceptions.MinioExceptions.FileDeleteEx;
-import com.api.glovoCRM.Exceptions.MinioExceptions.FileDownloadEx;
-import com.api.glovoCRM.Exceptions.MinioExceptions.FileUploadEx;
-import com.api.glovoCRM.Exceptions.MinioExceptions.FileValidationEx;
-import com.api.glovoCRM.Models.EstablishmentModels.Image;
+
+import com.api.glovoCRM.Exceptions.MinioExceptions.*;
+import com.api.glovoCRM.constants.MimeType;
 import io.minio.*;
 import io.minio.errors.ErrorResponseException;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.context.annotation.Bean;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MinioService {
-    private final ImageDAO imageDAO;
+    private final MinioCashService minioCashService;
+    private final Executor asyncExecutor;
+    private static final Set<String> ALLOWED_MIME_TYPES = Set.of(
+            "image/jpeg", "image/png", "image/webp", "image/svg+xml"
+    );
+    private static final int MAX_RETRY_ATTEMPTS = 4;
+    private static final String CACHE_PREFIX = "minio:";
     private final MinioClient minioClient;
+    private Tika tika;
 
+    @Value("${minio.max-file-size-in-mb}")
+    private int maxFileSizeInMB;
     @Value("${minio.endpoint}")
     private String minioEndpoint;
-
     @Value("${minio.buckets.categories}")
     private String categoriesBucket;
 
@@ -51,54 +61,187 @@ public class MinioService {
     @PostConstruct
     public void init() {
         log.info("Initializing MinIO buckets...");
-        createBucketIfNotExists(categoriesBucket);
-        createBucketIfNotExists(establishmentsBucket);
-        createBucketIfNotExists(productsBucket);
-        createBucketIfNotExists(subcategoriesBucket);
+        initializeBucketsAsync();
         log.info("MinIO buckets initialized");
+        if(maxFileSizeInMB != 10){
+            log.error("Кто поменял допустимый размер файла из properties? Признавайтесь");
+            throw  new IllegalStateException("Кто-то поменял допустимый размер файла");
+        }
+    }
+    private void initializeBucketsAsync() {
+        List<String> buckets = Arrays.asList(
+                categoriesBucket,
+                establishmentsBucket,
+                productsBucket,
+                subcategoriesBucket
+        );
+
+        CompletableFuture<?>[] futures = buckets.stream()
+                .map(this::initializeBucket)
+                .toArray(CompletableFuture[]::new);
+
+        CompletableFuture.allOf(futures)
+                .exceptionally(ex -> {
+                    log.error("Bucket initialization failed: {}", ex.getMessage());
+                    return null;
+                })
+                .thenRun(() -> log.info("All buckets initialized successfully"));
     }
 
-    private void createBucketIfNotExists(String bucketName) {
-        try {
-            boolean exists = minioClient.bucketExists(BucketExistsArgs.builder()
-                    .bucket(bucketName)
-                    .build());
-
-            if (!exists) {
-                minioClient.makeBucket(MakeBucketArgs.builder()
-                        .bucket(bucketName)
-                        .build());
-                log.info("Bucket {} created", bucketName);
-            } else {
-                log.debug("Bucket {} already exists", bucketName);
+    private CompletableFuture<Void> initializeBucket(String bucket) {
+        return CompletableFuture.runAsync(() -> {
+            try {
+                if (!bucketExists(bucket)) {
+                    createBucket(bucket);
+                    setBucketPublicPolicy(bucket); // Делаем бакет публичным
+                    setCorsPolicy(bucket); // Добавляем CORS
+                }
+            } catch (Exception e) {
+                log.error("Failed to initialize bucket {}: {}", bucket, e.getMessage());
+                throw new RuntimeException("Bucket initialization failed", e);
             }
+        }, asyncExecutor);
+    }
+    private void setCorsPolicy(String bucket) {
+        try {
+            String corsPolicy = """
+        {
+          "CORSRules": [
+            {
+              "AllowedHeaders": ["*"],
+              "AllowedMethods": ["GET", "POST", "PUT", "DELETE"],
+              "AllowedOrigins": ["*"],
+              "ExposeHeaders": ["ETag"]
+            }
+          ]
+        }""";
+
+            minioClient.setBucketPolicy(
+                    SetBucketPolicyArgs.builder()
+                            .bucket(bucket)
+                            .config(corsPolicy)
+                            .build()
+            );
+
+            log.info("CORS policy set for bucket: {}", bucket);
         } catch (Exception e) {
-            log.error("Error creating bucket {}: {}", bucketName, e.getMessage());
-            throw new RuntimeException("Failed to create bucket: " + bucketName, e);
+            log.error("Failed to set CORS for {}: {}", bucket, e.getMessage());
         }
     }
 
-    public String uploadFile(MultipartFile file, String bucketName, String objectName) {
+    private void setBucketPublicPolicy(String bucket) {
+        try {
+            String policyJson = """
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": "*",
+                    "Action": [
+                        "s3:GetObject"
+                    ],
+                    "Resource": [
+                        "arn:aws:s3:::%s/*"
+                    ]
+                }
+            ]
+        }""".formatted(bucket);
+
+            minioClient.setBucketPolicy(
+                    SetBucketPolicyArgs.builder()
+                            .bucket(bucket)
+                            .config(policyJson)
+                            .build()
+            );
+
+            log.info("Бакет теперь публичный: {}", bucket);
+        } catch (Exception e) {
+            log.error("Ошибка при установке публичного доступа для {}: {}", bucket, e.getMessage());
+        }
+    }
+
+    private void createBucket(String bucket) throws Exception {
+        minioClient.makeBucket(MakeBucketArgs.builder()
+                .bucket(bucket)
+                .build());
+        log.info("Bucket has been created: {}", bucket);
+    }
+
+    private boolean bucketExists(String bucket) throws BucketCreationEx{
+        try {
+            return minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucket).build());
+        } catch (Exception e) {
+            throw new BucketOperationEx("Bucket check failed");
+        }
+    }
+    @Retryable(maxAttempts = MAX_RETRY_ATTEMPTS,
+            backoff = @Backoff(delay = 1000, multiplier = 2),
+            retryFor = {MinioConnectionEx.class, IOException.class},
+    noRetryFor = {IllegalArgumentException.class, InvalidFileTypeEx.class})
+    @CacheEvict(cacheNames = CACHE_PREFIX + "objects", key = "#bucketName + ':' + #objectName")
+    @Transactional
+    public String uploadFile(    @AllowedContentTypes(
+            value = {MimeType.JPEG, MimeType.PNG, MimeType.JPG, MimeType.SVG},
+            message = "Допустимые форматы: JPEG, PNG, JPG, SVG"
+    ) MultipartFile file, @NotNull String bucketName,@NotNull @NotBlank String objectName) {
+
+        validateBucket(bucketName);
+
+        if (validateObjectInBucket(bucketName, objectName)) {
+            log.info("Файл уже существует: {}", objectName);
+            return buildObjectUrl(bucketName, objectName);
+        }
+        validateFile(file);
         try {
             byte[] fileData = file.getBytes();
+            String contentType = detectContentType(file);
 
-            String detectedType = new Tika().detect(fileData);
-
-            try (InputStream inputStream = new ByteArrayInputStream(fileData)) {
-                minioClient.putObject(
-                        PutObjectArgs.builder()
-                                .bucket(bucketName)
-                                .object(objectName)
-                                .stream(inputStream, fileData.length, -1)
-                                .contentType(detectedType)
-                                .build()
-                );
-            }
-
-            return String.format("%s/%s/%s", minioEndpoint, bucketName, objectName);
+            uploadToMinio(bucketName, objectName, fileData, contentType);
+            log.info("Файл успешно загружен: {}", objectName);
+            return buildObjectUrl(bucketName, objectName);
         } catch (Exception e) {
             log.error("Ошибка загрузки файла: {}", e.getMessage(), e);
             throw new FileUploadEx("Не удалось загрузить файл: " + e.getMessage());
+        }
+    }
+
+    private void uploadToMinio(@NotNull String bucketName, @NotNull @NotBlank String objectName, byte[] fileData, String contentType) {
+        try (InputStream is = new ByteArrayInputStream(fileData)) {
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(objectName)
+                            .stream(is, fileData.length, -1)
+                            .contentType(contentType)
+                            .build());
+        } catch (Exception e) {
+            throw new FileUploadEx("ПРи загрузке ошибка: " + objectName);
+        }
+    }
+    public String buildObjectUrl(String bucketName, String objectName) {
+        return String.format("%s/%s/%s", minioEndpoint, bucketName, objectName);
+    }
+
+    private void validateFile(MultipartFile file) {
+            if (file == null || file.isEmpty()) {
+                throw new FileValidationEx("File cannot be empty");
+            }
+
+            if (file.getSize() > maxFileSizeInMB * 1024L * 1024L) {
+                throw new FileSizeEx("File size exceeds maximum allowed");
+            }
+
+            String mimeType = detectContentType(file);
+            if (!ALLOWED_MIME_TYPES.contains(mimeType)) {
+                throw new InvalidFileTypeEx("Unsupported file type: " + mimeType);
+        }
+    }
+    private String detectContentType(MultipartFile file) {
+        try (InputStream is = file.getInputStream()) {
+            return tika.detect(is);
+        } catch (IOException e) {
+            throw new FileValidationEx("Content type detection failed");
         }
     }
 
@@ -115,11 +258,29 @@ public class MinioService {
         }
     }
 
-    public void deleteFile(String bucketName, String objectName) {
+    public boolean validateObjectInBucket(String bucketName, String objectName) {
         try {
-            if (!doesObjectExist(bucketName, objectName)) {
-                throw new SuchResourceNotFoundEx("Файл не найден");
+            validateBucket(bucketName);
+            log.info("Проверка существования объекта в бакете: bucket={}, object={}", bucketName, objectName);
+            return doesObjectExist(bucketName, objectName);
+        } catch (Exception e) {
+            log.error("Ошибка при проверке существования объекта: {}", e.getMessage());
+            return false;
+        }
+    }
+    private void validateBucket(String bucket) {
+        try {
+            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucket).build())) {
+                throw new InvalidBucketEx("Бакет не найден: " + bucket);
             }
+        } catch (Exception e) {
+            throw new BucketOperationEx("Ошибка в бакете при валидации: " + bucket);
+        }
+    }
+    @CacheEvict(cacheNames = CACHE_PREFIX + "objects", key = "#bucketName + ':' + #objectName")
+    public void deleteFile(String bucketName, String objectName) {
+        validateObjectInBucket(bucketName, objectName);
+        try {
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
                             .bucket(bucketName)
@@ -132,7 +293,28 @@ public class MinioService {
             throw new FileDeleteEx("Ошибка при удалении файла: " + e.getMessage());
         }
     }
-    public String generateUniqueName(MultipartFile file) {
+    public boolean doesObjectExist(String bucketName, String objectName) {
+        log.info("Загрузка данных из MinIO для bucket: {}, object: {}", bucketName, objectName);
+        try {
+            minioClient.statObject(
+                    io.minio.StatObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(objectName)
+                            .build()
+            );
+            return true;
+        } catch (ErrorResponseException e) {
+            if ("NoSuchKey".equals(e.errorResponse().code())) {
+                return false;
+            }
+            log.error("Ошибка при проверке существования файла: {}", e.getMessage());
+            throw new RuntimeException("Ошибка проверки существования файла: " + e.getMessage());
+        } catch (Exception e) {
+            log.error("Неожиданная ошибка при проверке существования файла: {}", e.getMessage());
+            throw new RuntimeException("Непредвиденная ошибка проверки существования файла", e);
+        }
+    }
+    public String generateUniqueName(MultipartFile file) { ////minioController чисто
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null) {
             throw new FileValidationEx("Файл не имеет имени");
@@ -140,85 +322,33 @@ public class MinioService {
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         return UUID.randomUUID() + extension;
     }
-    public Image saveImage(Image image){
-            if (imageDAO.existsByBucketAndOriginalFilename(image.getBucket(), image.getOriginalFilename())){
-                throw new AlreadyExistsEx("Такое изображение по имени уже существует в bucket: " + image.getBucket());
-            }
-            return imageDAO.save(image);
-    }
-//    public void deleteImage(Image image) {
-//        try {
-//            if (imageDAO.existsByBucketAndOriginalFilename(image.getBucket(), image.getOriginalFilename())) {
-//                String objectName = image.getFilename();
-//                log.debug("Удаление файла из MinIO: {}", objectName);
-//
-//                deleteFile(image.getBucket(), objectName);
-//                imageDAO.delete(image);
-//
-//                log.info("Изображение удалено: {}", objectName);
-//            } else {
-//                throw new RuntimeException("Такое изображение уже не существует в bucket: " + image.getBucket());
-//            }
-//        } catch (Exception e) {
-//            log.error("Ошибка при удалении изображения: {}", e.getMessage(), e);
-//            throw new RuntimeException("Не удалось удалить изображение", e);
-//        }
-//    } Данный метод оставим на будущее, без него вроде как норм работает, использовал для эксперимента.
-    public String getContentType(String bucketName, String objectName) {
-        try {
-            StatObjectResponse stat = minioClient.statObject(
-                    StatObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(objectName)
-                            .build()
-            );
-            return stat.contentType();
-        } catch (Exception e) {
-            throw new FileDownloadEx("Ошибка получения информации о файле: " + e.getMessage());
-        }
-    }
-    public boolean doesObjectExist(String bucketName, String objectName) {
-        try {
-            minioClient.statObject(
-                    StatObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(objectName)
-                            .build()
-            );
-            return true;
-        } catch (ErrorResponseException e) {
-            if (e.errorResponse().code().equals("NoSuchKey")) {
-                return false;
-            }
-            throw new FileDownloadEx("Ошибка проверки существования файла: " + e.getMessage());
-        } catch (Exception e) {
-            throw new FileDownloadEx("Ошибка проверки существования файла: " + e.getMessage());
-        }
-    }
     public boolean doesFileExistByContent(String bucketName, String objectName, MultipartFile newFile) {
-        try {
-            InputStream existingFileStream = minioClient.getObject(
-                    GetObjectArgs.builder().bucket(bucketName).object(objectName).build()
+        try (InputStream existing = getFile(bucketName, objectName);
+             InputStream newStream = newFile.getInputStream()) {
+
+            return Arrays.equals(
+                    minioCashService.calculateHash(existing),
+                    minioCashService.calculateHash(newStream)
             );
-
-            byte[] existingHash = getSHA256(existingFileStream);
-            byte[] newFileHash = getSHA256(newFile.getInputStream());
-
-            return Arrays.equals(existingHash, newFileHash);
         } catch (Exception e) {
-            log.error("Ошибка при проверке содержимого файла {}: {}", objectName, e.getMessage());
+            log.error("При проверке произошла ошибка", e);
             return false;
         }
     }
+    @Bean
+    public Tika tika() {
+        this.tika = new Tika();
+        return this.tika;
+    }
 
-    private byte[] getSHA256(InputStream inputStream) throws NoSuchAlgorithmException, IOException, NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] buffer = new byte[8192];
-        int bytesRead;
-
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            digest.update(buffer, 0, bytesRead);
-        }
-        return digest.digest();
+    @Bean
+    public Executor asyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(4);
+        executor.setMaxPoolSize(8);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("MinioInit-");
+        executor.initialize();
+        return executor;
     }
 }

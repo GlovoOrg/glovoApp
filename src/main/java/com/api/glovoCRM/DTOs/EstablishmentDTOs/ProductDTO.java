@@ -1,23 +1,23 @@
 package com.api.glovoCRM.DTOs.EstablishmentDTOs;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO {
-    private Long id;
-    private String name;
+public class ProductDTO extends BaseDTO{
     private String description;
     private BigDecimal originalPrice;
     private BigDecimal finalPrice;
     private boolean active;
-    private Double discountPercentage;
+    private int discountPercentage;
     private String discountMessage;
+    private Long discountProductId;
+    private Long establishmentId;
+    private Long establishmentFilterId;
 }

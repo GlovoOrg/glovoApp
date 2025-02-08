@@ -1,5 +1,6 @@
 package com.api.glovoCRM.Models.EstablishmentModels;
 
+import com.api.glovoCRM.Embeddable.EstablishmentFilterDetails;
 import com.api.glovoCRM.Models.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,12 +28,15 @@ public class EstablishmentFilter extends BaseEntity {
     @Column(name = "name", length = 355, nullable = false)
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "establishment_id")
     @NotNull(message = "Заведение обязательно")
     private Establishment establishment;
 
-    @ManyToMany(mappedBy = "establishmentFilters")
+    @OneToMany(mappedBy = "establishmentFilter")
     @OrderBy("name asc")
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
+
+//    @Embedded
+//    EstablishmentFilterDetails establishmentFilterDetails;
 }

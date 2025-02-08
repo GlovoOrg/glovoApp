@@ -42,15 +42,37 @@ public class Product extends BaseEntity {
     @OneToOne(mappedBy = "product", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private DiscountProduct discountProduct;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "establishment_id")
     private Establishment establishment;
 
-    @ManyToMany
-    @JoinTable(
-            name = "product_establishment_filter",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "establishment_filter_id")
-    )
-    private List<EstablishmentFilter> establishmentFilters = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "establishmentFilter_id")
+    private EstablishmentFilter establishmentFilter;
+
+    @Transient
+    private Long establishmentId;
+    @Transient
+    private Long discountProductId;
+    @Transient
+    private Long establishmentFilterId;
+
+    @PrePersist
+    private void prePersist(){
+        if(this.establishment == null && this.establishmentId != null){
+            Establishment establishment = new Establishment();
+            establishment.setId(this.establishmentId);
+            this.establishment = establishment;
+        }
+        if(this.discountProduct == null && this.discountProductId != null){
+            DiscountProduct discountProduct = new DiscountProduct();
+            discountProduct.setId(this.discountProductId);
+            this.discountProduct = discountProduct;
+        }
+        if(this.establishmentFilter == null && this.establishmentFilterId != null){
+            EstablishmentFilter establishmentFilter = new EstablishmentFilter();
+            establishmentFilter.setId(this.establishmentFilterId);
+            this.establishmentFilter = establishmentFilter;
+        }
+    }
 }

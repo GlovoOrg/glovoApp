@@ -18,7 +18,7 @@ public abstract class SubCategoryMapper implements BaseMapper<SubCategory, SubCa
      @Autowired
      private CategoryDAO categoryDAO;
 
-
+     @Override
      @Mapping(target = "categoryId", source = "category.id")
      @Mapping(target = "categoryName", source = "category", qualifiedByName = "getCategoryName")
      @Mapping(target = "establishments", source = "establishments")
@@ -34,6 +34,7 @@ public abstract class SubCategoryMapper implements BaseMapper<SubCategory, SubCa
                   .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"))
                   .getName();
      }
+
      @Override
      public List<SubCategoryDTO> toDTOList(List<SubCategory> subCategories) {
           return subCategories.stream()

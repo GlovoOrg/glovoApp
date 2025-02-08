@@ -12,7 +12,10 @@ import com.api.glovoCRM.Rest.Requests.CategoryRequests.CategoryPatchRequest;
 import com.api.glovoCRM.Rest.Requests.CategoryRequests.CategoryUpdateRequest;
 import com.api.glovoCRM.Services.BaseService;
 import com.api.glovoCRM.constants.EntityType;
-import org.springframework.transaction.annotation.Isolation;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@CacheConfig(cacheNames = BaseService.CACHE_PREFIX + "categories")
 public class CategoryService extends BaseService<Category, CategoryCreateRequest, CategoryUpdateRequest, CategoryPatchRequest> {
     private final CategoryDAO categoryDAO;
 
@@ -32,10 +36,10 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
     }
 
 
-    @Transactional()
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+//    @CacheEvict(allEntries = true)
     public Category createEntity(CategoryCreateRequest request) {
-        String generatedObjectName = null;
-        try {
+
             if (categoryDAO.existsByName(request.getName())) {
                 throw new AlreadyExistsEx("Такая категория уже существует");
             }
@@ -43,70 +47,59 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
             Category category = new Category();
             category.setName(request.getName());
             Category savedCategory = categoryDAO.save(category);
-
+        try {
             if (request.getImage() != null) {
-                generatedObjectName = generateObjectName(EntityType.Category, request.getImage());
-                createImageRecord(request.getImage(), "categories", EntityType.Category, savedCategory.getId());
+                super.createImageRecord(request.getImage(), "categories", EntityType.Category, savedCategory.getId());
             }
             return savedCategory;
-        } catch (AlreadyExistsEx e) {
-            throw e;
         } catch (Exception e) {
-            if (generatedObjectName != null) {
-                minioService.deleteFile("categories", generatedObjectName); // Удаление по сгенерированному имени
-            }
-            throw new RuntimeException("Не удалось создать категорию(500)", e);
+            categoryDAO.delete(savedCategory);
+            throw new RuntimeException("Не удалось создать категорию", e);
         }
     }
 
-    @Transactional()
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+//    @CacheEvict(allEntries = true)
     @Override
     public void deleteEntity(Long categoryId) {
-        try {
-            deleteImageRecord(categoryId, EntityType.Category);
-            categoryDAO.deleteById(categoryId);
-            log.debug("Категория успешно удалена. ID: {}", categoryId);
-        } catch (SuchResourceNotFoundEx e) {
-            log.warn("Ошибка при удалении категории: {}", e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            log.error("Неожиданная ошибка при удалении категории: {}", e.getMessage(), e);
-            throw new RuntimeException("Не удалось удалить категорию", e);
-        }
+        Category category = categoryDAO.findById(categoryId)
+                .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"));
+        super.deleteImageRecord(categoryId, EntityType.Category);
+        categoryDAO.delete(category);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+//    @CacheEvict(allEntries = true)
     @Override
     public Category updateEntity(Long categoryId, CategoryUpdateRequest request) {
-        try {
-            Category category = categoryDAO.findById(categoryId)
-                    .orElseThrow(() -> new SuchResourceNotFoundEx("Такой категории нет"));
-            category.setName(request.getName());
-            if (request.getImage() != null) {
-                updateImageRecord(categoryId, EntityType.Category, request.getImage());
-            }
-            return categoryDAO.save(category);
-        } catch (SuchResourceNotFoundEx e) {
-            log.warn("Ошибка при обновлении категории: {}", e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            log.error("Неожиданная ошибка при обновлении категории: {}", e.getMessage(), e);
-            throw new RuntimeException("Не удалось обновить категорию", e);
+        Category category = categoryDAO.findById(categoryId)
+                .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"));
+
+        category.setName(request.getName());
+
+        if (request.getImage() != null) {
+            super.updateImageRecord(categoryId, EntityType.Category, request.getImage());
         }
+
+        return categoryDAO.save(category);
     }
 
     @Override
+//    @Cacheable(key = "#id")
     public Category findById(Long id) {
         return categoryDAO.findById(id)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"));
     }
 
     @Override
+//    @Cacheable
+    @Transactional(readOnly = true)
     public List<Category> findAll() {
-        return categoryDAO.findAll();
+        return categoryDAO.findAllCategories();
     }
 
-    @Transactional()
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+//    @CacheEvict(allEntries = true)
     @Override
     public Category patchEntity(Long id, CategoryPatchRequest request) {
         Category category = categoryDAO.findById(id)
@@ -115,12 +108,13 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
             category.setName(request.getName());
         }
         if (request.getImage() != null) {
-            updateImageRecord(id, EntityType.Category, request.getImage());
+            super.updateImageRecord(id, EntityType.Category, request.getImage());
         }
         return categoryDAO.save(category);
     }
 
     @Override
+//    @Cacheable(key = "#name")
     public Category findByName(String name) {
         log.info("Получение категории по имени не существует по имени: {}", name );
         return categoryDAO.findByName(name).orElseThrow(

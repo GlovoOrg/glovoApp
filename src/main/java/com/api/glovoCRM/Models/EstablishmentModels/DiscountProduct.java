@@ -12,10 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DiscountProduct extends BaseEntity {
-
-    @NotNull(message = "Скидка не может быть null, если скидки нет, то оставьте 0")
-    @NotBlank(message = "Cкидка не может быть пустой")
-    @PositiveOrZero(message = "Скидка не может быть отрицательной")
     @DecimalMin(value = "0", message = "Скидка не может быть меньше 0")
     @DecimalMax(value = "100", message = "Скидка не может быть больше 100")
     @Column(name = "discount", nullable = false)
@@ -29,4 +25,16 @@ public class DiscountProduct extends BaseEntity {
     @JoinColumn(name = "product_id", nullable = false)
     @NotNull(message = "Продукт обязателен")
     private Product product;
+
+    @Transient
+    private Long productId;
+
+    @PrePersist
+    private void prePersist() {
+        if(this.product == null && this.productId != null) {
+            Product p = new Product();
+            p.setId(this.productId);
+            this.product = p;
+        }
+    }
 }

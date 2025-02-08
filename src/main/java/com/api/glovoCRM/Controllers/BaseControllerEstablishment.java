@@ -2,12 +2,14 @@ package com.api.glovoCRM.Controllers;
 
 
 import com.api.glovoCRM.Rest.Requests.BaseRequest;
+import com.api.glovoCRM.Rest.Requests.BaseRequestNotNull;
 import com.api.glovoCRM.Services.BaseService;
 import com.api.glovoCRM.mappers.BaseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,7 @@ import java.util.List;
 
 @Validated
 @Tag(name = "Базовый контроллер", description = "Базовый контроллер для управления сущностями")
-public abstract class BaseControllerEstablishment<DTO, ENTITY, CREATE_REQUEST extends BaseRequest, UPDATE_REQUEST extends BaseRequest, PATCH_REQUEST> {
+public abstract class BaseControllerEstablishment<DTO, ENTITY, CREATE_REQUEST extends BaseRequestNotNull, UPDATE_REQUEST extends BaseRequestNotNull, PATCH_REQUEST extends BaseRequest> {
 
     private final BaseService<ENTITY, CREATE_REQUEST, UPDATE_REQUEST, PATCH_REQUEST> baseService;
     private final BaseMapper<ENTITY, DTO> baseMapper;
@@ -44,7 +46,13 @@ public abstract class BaseControllerEstablishment<DTO, ENTITY, CREATE_REQUEST ex
         ENTITY entity = baseService.findById(id);
         return ResponseEntity.ok(baseMapper.toDTO(entity));
     }
-
+    @Operation(summary = "Получить сущность по имени")
+    @ApiResponse(responseCode = "200", description = "Успешный поиск")
+    @GetMapping("/name")
+    public ResponseEntity<DTO> getEntityByName(@RequestParam @NotBlank String name){
+        ENTITY entity = baseService.findByName(name);
+        return ResponseEntity.ok(baseMapper.toDTO(entity));
+    }
     @Operation(summary = "Получить все сущности", description = "Возвращает список всех сущностей")
     @ApiResponse(responseCode = "200", description = "Список сущностей успешно получен")
     @GetMapping

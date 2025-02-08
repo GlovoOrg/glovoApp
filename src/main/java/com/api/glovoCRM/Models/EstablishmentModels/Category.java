@@ -28,7 +28,7 @@ public class Category extends BaseEntity {
     @Column(name = "name",nullable = false, length = 355)
     private String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @OrderBy("name asc")
     private List<SubCategory> subCategories = new ArrayList<>();
 }

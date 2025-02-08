@@ -6,5 +6,10 @@ import java.util.List;
 @Component
 public interface BaseMapper<ENTITY, DTO> {
     DTO toDTO(ENTITY entity);
-    List<DTO> toDTOList(List<ENTITY> entities);
+    default List<DTO> toDTOList(List<ENTITY> entities){
+        if(entities == null || entities.isEmpty()) return null;
+        return entities.stream()
+                .map(this::toDTO)
+                .toList();
+    }
 }
