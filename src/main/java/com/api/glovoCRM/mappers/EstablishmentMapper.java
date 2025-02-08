@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {ProductMapper.class, EstablishmentFilterMapper.class})
+@Mapper(componentModel = "spring", uses = {ProductMapper.class, EstablishmentFilterMapper.class, EstablishmentAddressMapper.class})
 public interface EstablishmentMapper extends BaseMapper<Establishment, EstablishmentDTO> {
 
     @Override
@@ -23,6 +23,7 @@ public interface EstablishmentMapper extends BaseMapper<Establishment, Establish
     @Mapping(target = "products", source = "products")
     @Mapping(target = "establishmentFilters", source = "establishment_filters")
     @Mapping(target = "imageUrl", expression = "java(com.api.glovoCRM.DTOs.EstablishmentDTOs.Utils.ImageUtil.getImageUrl(establishment.getId(), com.api.glovoCRM.constants.EntityType.Establishment))")
+    @Mapping(target = "establishmentAddressDTO", source = "establishmentAddress")
     EstablishmentDTO toDTO(Establishment establishment);
 
     @Mapping(target = "name", source = "name")

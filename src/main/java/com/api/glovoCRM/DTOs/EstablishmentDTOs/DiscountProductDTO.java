@@ -13,5 +13,4 @@ public class DiscountProductDTO {
     private Long id;
     private int discount;
     private boolean active;
-    private Long productId;
 }

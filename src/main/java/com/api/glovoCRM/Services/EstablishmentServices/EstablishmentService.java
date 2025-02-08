@@ -44,14 +44,14 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
     }
 
     @Override
-    @Cacheable(key = "#id")
+//    @Cacheable(key = "#id")
     public Establishment findById(Long id) {
         log.info("Находим заведение с id: {}", id);
         return establishmentDAO.findById(id).orElseThrow(
                 () -> new SuchResourceNotFoundEx(String.format("Заведение с id %s не найдено", id))
         );
     }
-    @Cacheable
+//    @Cacheable
     @Override
     public List<Establishment> findAll() {
         log.info("Получаем все заведения");
@@ -59,7 +59,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
     }
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    @CacheEvict(allEntries = true)
+//    @CacheEvict(allEntries = true)
     public Establishment createEntity(EstablishmentCreateRequest request) {
         try {
             if (!subCategoryDAO.existsById(request.getSubCategoryId())) {
@@ -94,7 +94,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    @CacheEvict(allEntries = true)
+//    @CacheEvict(allEntries = true)
     public void deleteEntity(Long entityId) {
         try {
             Establishment establishment = establishmentDAO.findById(entityId)
@@ -102,13 +102,12 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
 
             SubCategory subCategory = establishment.getSubcategory();
             if (subCategory != null) {
-                // Удаляем заведение из списка подкатегории
                 subCategory.getEstablishments().remove(establishment);
-                subCategoryDAO.save(subCategory); // Сохраняем изменения в подкатегории
+                subCategoryDAO.save(subCategory);
             }
 
             deleteImageRecord(entityId, EntityType.Establishment);
-            establishmentDAO.delete(establishment); // Вызов @PreRemove
+            establishmentDAO.delete(establishment);
             log.info("Подкатегория успешно удалена. ID: {}", entityId);
         } catch (SuchResourceNotFoundEx e) {
             log.warn("Ошибка при удалении подкатегории: {}", e.getMessage());
@@ -121,7 +120,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    @CacheEvict(allEntries = true)
+//    @CacheEvict(allEntries = true)
     public Establishment updateEntity(Long entityId, EstablishmentUpdateRequest request) {
         try {
             Establishment existingEstablishment = establishmentDAO.findById(entityId)
@@ -166,7 +165,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    @CacheEvict(allEntries = true)
+//    @CacheEvict(allEntries = true)
     public Establishment patchEntity(Long entityId, EstablishmentPatchRequest request) {
         try {
             Establishment existingEstablishment = establishmentDAO.findById(entityId)
@@ -208,7 +207,6 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
             }
             address.setEstablishment(existingEstablishment);
 
-            // Обновляем внедренную сущность
             EstablishmentDetails details = existingEstablishment.getDetails();
             if (details == null) {
                 details = new EstablishmentDetails();
@@ -218,7 +216,6 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
                 details.setSubCategoryId(request.getSubCategoryId());
             }
 
-            // Сохраняем изменения
             return establishmentDAO.save(existingEstablishment);
         } catch (SuchResourceNotFoundEx ex) {
             log.warn("Ошибка при частичном обновлении заведения: {}", ex.getMessage());
@@ -230,7 +227,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
     }
 
     @Override
-    @Cacheable(key = "#name")
+//    @Cacheable(key = "#name")
     public Establishment findByName(String name) {
         return establishmentDAO.findByName(name).orElseThrow(
                 () -> new SuchResourceNotFoundEx("Такого заведения нет по имени в системе")

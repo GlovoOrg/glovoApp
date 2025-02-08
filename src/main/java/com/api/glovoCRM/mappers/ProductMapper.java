@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {DiscountProductMapper.class, EstablishmentFilterMapper.class})
-public interface ProductMapper extends BaseMapper<ProductDTO, Product> {
-
+public interface ProductMapper extends BaseMapper<Product, ProductDTO> {
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "imageUrl", expression = "java(com.api.glovoCRM.DTOs.EstablishmentDTOs.Utils.ImageUtil.getImageUrl(product.getId(), com.api.glovoCRM.constants.EntityType.Product))")
@@ -19,14 +19,12 @@ public interface ProductMapper extends BaseMapper<ProductDTO, Product> {
     @Mapping(target = "finalPrice", expression = "java(calculateFinalPrice(product))")
     @Mapping(target = "discountPercentage", expression = "java(getDiscountPercentage(product))")
     @Mapping(target = "discountMessage", expression = "java(getDiscountMessage(product))")
-    @Mapping(target = "discountProductId", source = "discountProductId")
-    @Mapping(target = "establishmentId", source = "establishmentId")
-    @Mapping(target = "establishmentFilterId", source = "establishmentFilterId")
+    @Mapping(target = "discountProductDTO", source = "discountProduct")
     ProductDTO toDTO(Product product);
 
     default BigDecimal calculateFinalPrice(Product product) {
         if (product.getDiscountProduct() != null && product.getDiscountProduct().isActive()) {
-            BigDecimal discount = BigDecimal.valueOf(product.getDiscountProduct().getDiscount());
+            BigDecimal discount = BigDecimal.valueOf(product.getDiscountProduct().getDiscount() / 100.0);
             return product.getPrice().multiply(BigDecimal.ONE.subtract(discount));
         }
         return product.getPrice();
@@ -34,20 +32,20 @@ public interface ProductMapper extends BaseMapper<ProductDTO, Product> {
 
     default int getDiscountPercentage(Product product) {
         if (product.getDiscountProduct() != null && product.getDiscountProduct().isActive()) {
-            return product.getDiscountProduct().getDiscount() * 100;
+            return product.getDiscountProduct().getDiscount();
         }
         return 0;
     }
 
     default String getDiscountMessage(Product product) {
         if (product.getDiscountProduct() != null && product.getDiscountProduct().isActive()) {
-            return String.format("Скидка %d%%", product.getDiscountProduct().getDiscount() * 100);
+            return String.format("Скидка %d%%", product.getDiscountProduct().getDiscount());
         }
         return null;
     }
 
     @Override
-    default List<Product> toDTOList(List<ProductDTO> productDTOS) {
+    default List<ProductDTO> toDTOList(List<Product> productDTOS) {
         return productDTOS.stream()
                 .map(this::toDTO)
                 .toList();

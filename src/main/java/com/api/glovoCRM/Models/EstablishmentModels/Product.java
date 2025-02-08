@@ -10,9 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -49,30 +46,4 @@ public class Product extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "establishmentFilter_id")
     private EstablishmentFilter establishmentFilter;
-
-    @Transient
-    private Long establishmentId;
-    @Transient
-    private Long discountProductId;
-    @Transient
-    private Long establishmentFilterId;
-
-    @PrePersist
-    private void prePersist(){
-        if(this.establishment == null && this.establishmentId != null){
-            Establishment establishment = new Establishment();
-            establishment.setId(this.establishmentId);
-            this.establishment = establishment;
-        }
-        if(this.discountProduct == null && this.discountProductId != null){
-            DiscountProduct discountProduct = new DiscountProduct();
-            discountProduct.setId(this.discountProductId);
-            this.discountProduct = discountProduct;
-        }
-        if(this.establishmentFilter == null && this.establishmentFilterId != null){
-            EstablishmentFilter establishmentFilter = new EstablishmentFilter();
-            establishmentFilter.setId(this.establishmentFilterId);
-            this.establishmentFilter = establishmentFilter;
-        }
-    }
 }

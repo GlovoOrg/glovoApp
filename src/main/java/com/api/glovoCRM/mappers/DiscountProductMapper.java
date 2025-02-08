@@ -10,6 +10,5 @@ public interface DiscountProductMapper{
     @Mapping(target = "id", source = "id")
     @Mapping(target = "discount", source = "discount")
     @Mapping(target = "active", source = "active")
-    @Mapping(target = "productId", source = "productId")
     DiscountProductDTO toDTO(DiscountProduct discountProduct);
 }

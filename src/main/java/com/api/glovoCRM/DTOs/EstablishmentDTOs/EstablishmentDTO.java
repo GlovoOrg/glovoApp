@@ -21,4 +21,5 @@ public class EstablishmentDTO extends BaseDTO{
     private boolean isOpen;
     private List<ProductDTO> products;
     private List<EstablishmentFilterDTO> establishmentFilters;
+    private EstablishmentAddressDTO establishmentAddressDTO;
 }

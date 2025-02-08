@@ -17,7 +17,5 @@ public class ProductDTO extends BaseDTO{
     private boolean active;
     private int discountPercentage;
     private String discountMessage;
-    private Long discountProductId;
-    private Long establishmentId;
-    private Long establishmentFilterId;
+    private DiscountProductDTO discountProductDTO;
 }

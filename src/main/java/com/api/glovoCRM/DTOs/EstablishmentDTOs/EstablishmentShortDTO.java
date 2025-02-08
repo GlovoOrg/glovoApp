@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EstablishmentShortDTO extends BaseDTO{
-    private Long subCategoryId;
-    private Long establishmentAddressId;
     private String name;
     private double rating;
     private int quantityOfRatings;

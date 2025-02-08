@@ -98,16 +98,9 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
             updateImageRecord(id, EntityType.SubCategory, request.getImage());
         }
         if (request.getCategoryId() != null && !request.getCategoryId().equals(subCategory.getCategory().getId())) {
-            Category oldCategory = subCategory.getCategory();
             Category newCategory = categoryDAO.findById(request.getCategoryId())
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"));
-            if (oldCategory != null) {
-                 // Удаляем из старой категории
-                categoryDAO.save(oldCategory); // Сохраняем изменения в старой категории
-            }
-            newCategory.getSubCategories().add(subCategory); // Добавляем в новую категорию
             subCategory.setCategory(newCategory);
-            categoryDAO.save(newCategory); // Сохраняем изменения в новой категории
         }
         return subCategoryDAO.save(subCategory);
     }
@@ -123,14 +116,10 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
             subCategory.setName(request.getName());
         }
 
-        if (request.getImage() != null) {
-            updateImageRecord(id, EntityType.SubCategory, request.getImage());
-        }
-        Category category = subCategory.getCategory();
-        if (category != null) {
-            category.getSubCategories().remove(subCategory);
-            category.getSubCategories().add(subCategory);
-            categoryDAO.save(category);
+        if (request.getCategoryId() != null && !request.getCategoryId().equals(subCategory.getCategory().getId())) {
+            Category newCategory = categoryDAO.findById(request.getCategoryId())
+                    .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"));
+            subCategory.setCategory(newCategory);
         }
         return subCategoryDAO.save(subCategory);
     }
@@ -149,14 +138,8 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
         try {
             SubCategory subCategory = subCategoryDAO.findById(id)
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Подкатегория не найдена"));
-            Category category = subCategory.getCategory();
-            if (category != null) {
-                category.getSubCategories().remove(subCategory);
-                categoryDAO.save(category);
-            }
             deleteImageRecord(id, EntityType.SubCategory);
-            subCategoryDAO.delete(subCategory); // Вызов @PreRemove
-
+            subCategoryDAO.delete(subCategory);
             log.debug("Подкатегория успешно удалена. ID: {}", id);
         } catch (SuchResourceNotFoundEx e) {
             log.warn("Ошибка при удалении подкатегории: {}", e.getMessage());
