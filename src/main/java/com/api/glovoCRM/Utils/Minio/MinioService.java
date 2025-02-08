@@ -1,5 +1,6 @@
 package com.api.glovoCRM.Utils.Minio;
 
+import ch.qos.logback.classic.Logger;
 import com.api.glovoCRM.DAOs.ImageDAO;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
@@ -51,14 +52,22 @@ public class MinioService {
     @PostConstruct
     public void init() {
         log.info("Initializing MinIO buckets...");
-        createBucketIfNotExists(categoriesBucket);
-        createBucketIfNotExists(establishmentsBucket);
-        createBucketIfNotExists(productsBucket);
-        createBucketIfNotExists(subcategoriesBucket);
+        if (categoriesBucket != null) {
+            createBucketIfNotExists(categoriesBucket);
+        }
+        if (establishmentsBucket != null) {
+            createBucketIfNotExists(establishmentsBucket);
+        }
+        if (productsBucket != null) {
+            createBucketIfNotExists(productsBucket);
+        }
+        if (subcategoriesBucket != null) {
+            createBucketIfNotExists(subcategoriesBucket);
+        }
         log.info("MinIO buckets initialized");
     }
 
-    private void createBucketIfNotExists(String bucketName) {
+    public void createBucketIfNotExists(String bucketName) {
         try {
             boolean exists = minioClient.bucketExists(BucketExistsArgs.builder()
                     .bucket(bucketName)
@@ -74,7 +83,7 @@ public class MinioService {
             }
         } catch (Exception e) {
             log.error("Error creating bucket {}: {}", bucketName, e.getMessage());
-            throw new RuntimeException("Failed to create bucket: " + bucketName, e);
+            throw new RuntimeException("Failed to create bucket: " + bucketName, e); //todo создать свою Exception
         }
     }
 

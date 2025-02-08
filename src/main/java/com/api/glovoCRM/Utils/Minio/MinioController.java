@@ -21,6 +21,8 @@ import com.api.glovoCRM.constants.MimeType;
 public class MinioController {
     private final MinioService minioService;
 
+
+
     @PostMapping("/upload/{bucket}")
     public ResponseEntity<FileUploadResponse> uploadFile(
             @PathVariable String bucket,

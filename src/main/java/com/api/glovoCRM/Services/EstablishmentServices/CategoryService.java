@@ -77,6 +77,7 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
 
     @Transactional
     @Override
+
     public Category updateEntity(Long categoryId, CategoryUpdateRequest request) {
         try {
             Category category = categoryDAO.findById(categoryId)
@@ -127,4 +128,9 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
                 () -> new SuchResourceNotFoundEx("Такой категории по имени не существует")
         );
     }
+
+
+
+
+
 }
