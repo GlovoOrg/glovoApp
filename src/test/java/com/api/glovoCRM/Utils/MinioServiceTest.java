@@ -40,6 +40,7 @@ public class MinioServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
+
     @Test
     public void createBucketIfNotExistsTest() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         String bucketName = "test_bucket";

@@ -44,6 +44,7 @@ public class CategoryServiceTest {
 
     }
 
+
     @Test
     void testConstructor() {
         // Проверяем, что зависимости успешно внедрены
