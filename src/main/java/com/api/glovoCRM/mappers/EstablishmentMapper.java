@@ -2,10 +2,15 @@ package com.api.glovoCRM.mappers;
 
 import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTO;
 import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentShortDTO;
+import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
+import com.api.glovoCRM.Models.EstablishmentModels.Category;
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {ProductMapper.class, EstablishmentFilterMapper.class, EstablishmentAddressMapper.class})
@@ -15,7 +20,7 @@ public interface EstablishmentMapper extends BaseMapper<Establishment, Establish
     @Mapping(target = "name", source = "name")
     @Mapping(target = "priceOfDelivery", source = "priceOfDelivery")
     @Mapping(target = "timeOfDelivery", source = "timeOfDelivery")
-    @Mapping(target = "isOpen", expression = "java(establishment.getIsOpen())")
+    @Mapping(target = "isOpen", expression = "java(isOpen(establishment))")
     @Mapping(target = "rating", expression = "java(establishment.getRating())")
     @Mapping(target = "quantityOfRatings", source = "quantityOfRatings")
     @Mapping(target = "openTime", source = "openTime")
@@ -49,6 +54,13 @@ public interface EstablishmentMapper extends BaseMapper<Establishment, Establish
         return establishments.stream()
                 .map(this::toDTO)
                 .toList();
+    }
+
+    default boolean isOpen(Establishment establishment) {
+        LocalTime now = LocalTime.now();
+        LocalTime openTime = establishment.getOpenTime();  // Extract time from LocalDateTime
+        LocalTime closeTime = establishment.getCloseTime();  // Extract time from LocalDateTime
+        return now.isAfter(openTime) && now.isBefore(closeTime);
     }
 }
 

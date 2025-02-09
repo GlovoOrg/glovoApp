@@ -27,7 +27,9 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-
+/*
+todo Данный сервис работает как для установки и удаления изображений для сервисов, как для
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -60,9 +62,9 @@ public class MinioService {
 
     @PostConstruct
     public void init() {
-        log.info("Initializing MinIO buckets...");
+        log.info("Инициализация бакетов...");
         initializeBucketsAsync();
-        log.info("MinIO buckets initialized");
+        log.info("Бакеты прошли инициализацию");
         if(maxFileSizeInMB != 10){
             log.error("Кто поменял допустимый размер файла из properties? Признавайтесь");
             throw  new IllegalStateException("Кто-то поменял допустимый размер файла");
@@ -82,17 +84,17 @@ public class MinioService {
 
         CompletableFuture.allOf(futures)
                 .exceptionally(ex -> {
-                    log.error("Bucket initialization failed: {}", ex.getMessage());
+                    log.error("Бакет инициализация не прошла успешно: {}", ex.getMessage());
                     return null;
                 })
-                .thenRun(() -> log.info("All buckets initialized successfully"));
+                .thenRun(() -> log.info("инициализайия прошла успешно"));
     }
 
     private CompletableFuture<Void> initializeBucket(String bucket) {
         return CompletableFuture.runAsync(() -> {
             try {
-                if (!bucketExists(bucket)) {
-                    createBucket(bucket);
+                if (!bucketExists(bucket)) { // если бакет не существует двойное не = true
+                    createBucket(bucket); //  метод создания бакета
                     setBucketPublicPolicy(bucket); // Делаем бакет публичным
                     setCorsPolicy(bucket); // Добавляем CORS
                 }
@@ -104,25 +106,22 @@ public class MinioService {
     }
     private void setCorsPolicy(String bucket) {
         try {
-            String corsPolicy = """
-        {
-          "CORSRules": [
-            {
-              "AllowedHeaders": ["*"],
-              "AllowedMethods": ["GET", "POST", "PUT", "DELETE"],
-              "AllowedOrigins": ["*"],
-              "ExposeHeaders": ["ETag"]
-            }
-          ]
-        }""";
-
             minioClient.setBucketPolicy(
                     SetBucketPolicyArgs.builder()
                             .bucket(bucket)
-                            .config(corsPolicy)
-                            .build()
+                            .config("""
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": "*",
+                    "Action": ["s3:GetObject"],
+                    "Resource": ["arn:aws:s3:::%s/*"]
+                }
+            ]
+        }""".formatted(bucket)).build()
             );
-
             log.info("CORS policy set for bucket: {}", bucket);
         } catch (Exception e) {
             log.error("Failed to set CORS for {}: {}", bucket, e.getMessage());
@@ -131,23 +130,28 @@ public class MinioService {
 
     private void setBucketPublicPolicy(String bucket) {
         try {
-            String policyJson = """
-        {
-            "Version": "2012-10-17",
-            "Statement": [
-                {
-                    "Effect": "Allow",
-                    "Principal": "*",
-                    "Action": [
-                        "s3:GetObject"
-                    ],
-                    "Resource": [
-                        "arn:aws:s3:::%s/*"
-                    ]
-                }
-            ]
-        }""".formatted(bucket);
+            if (bucket == null || bucket.isEmpty()) {
+                throw new IllegalArgumentException("Bucket name cannot be null or empty");
+            }
 
+            // Формируем JSON-политику
+            String policyJson = """
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": ["s3:GetObject"],
+                            "Resource": ["arn:aws:s3:::%s/*"]
+                        }
+                    ]
+                }""".formatted(bucket);
+
+            // Логируем JSON для отладки
+            log.debug("Setting bucket policy for {}: {}", bucket, policyJson);
+
+            // Устанавливаем политику
             minioClient.setBucketPolicy(
                     SetBucketPolicyArgs.builder()
                             .bucket(bucket)
@@ -155,9 +159,10 @@ public class MinioService {
                             .build()
             );
 
-            log.info("Бакет теперь публичный: {}", bucket);
+            log.info("Bucket policy set to public for: {}", bucket);
         } catch (Exception e) {
-            log.error("Ошибка при установке публичного доступа для {}: {}", bucket, e.getMessage());
+            log.error("Failed to set public policy for {}: {}", bucket, e.getMessage());
+            throw new RuntimeException("Failed to set bucket policy", e);
         }
     }
 
@@ -166,6 +171,8 @@ public class MinioService {
                 .bucket(bucket)
                 .build());
         log.info("Bucket has been created: {}", bucket);
+
+        setBucketPublicPolicy(bucket);
     }
 
     private boolean bucketExists(String bucket) throws BucketCreationEx{
@@ -335,6 +342,8 @@ public class MinioService {
             return false;
         }
     }
+
+    // По хорошему надо было какой-нибудь minioConfig создать и туда пихать эти бины.
     @Bean
     public Tika tika() {
         this.tika = new Tika();
