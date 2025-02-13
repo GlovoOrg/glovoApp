@@ -10,10 +10,12 @@ import com.api.glovoCRM.Models.EstablishmentModels.*;
 import com.api.glovoCRM.Rest.Requests.ProductRequests.ProductWithDiscountCreateRequest;
 import com.api.glovoCRM.Rest.Requests.ProductRequests.ProductWithDiscountPatchRequest;
 import com.api.glovoCRM.Rest.Requests.ProductRequests.ProductWithDiscountUpdateRequest;
+import com.api.glovoCRM.Specifications.EstablimentSpecifications.ProductSpecification;
 import com.api.glovoCRM.Utils.Minio.MinioService;
 import com.api.glovoCRM.constants.EntityType;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +29,15 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
 
     private final ProductDAO productDAO;
     private final EstablishmentDAO establishmentDAO;
+    private final ProductSpecification productSpecification;
 
     @Autowired
     public ProductService(ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService,
-                          ProductDAO productDAO, EstablishmentDAO establishmentDAO) {
+                          ProductDAO productDAO, EstablishmentDAO establishmentDAO, ProductSpecification productSpecification) {
         super(imageDAO, imageAssociationsDAO, minioService);
         this.productDAO = productDAO;
         this.establishmentDAO = establishmentDAO;
+        this.productSpecification = productSpecification;
     }
 
 
@@ -153,9 +157,8 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
     }
 
     @Override
-    public Product findByName(String name) {
-        return productDAO.findByName(name).orElseThrow(
-                () -> new SuchResourceNotFoundEx("Такого продукта нет по имени")
-        );
+    public List<Product> findSimilarByNameFilter(String name) {
+        Specification<Product> spec = productSpecification.getBySimilarNameFilter(name);
+        return productDAO.findAll(spec);
     }
 }

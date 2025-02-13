@@ -6,12 +6,15 @@ import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
 import com.api.glovoCRM.Models.EstablishmentModels.EstablishmentFilter;
+import com.api.glovoCRM.Models.EstablishmentModels.SubCategory;
 import com.api.glovoCRM.Rest.Requests.EstablishmentFilterRequests.EstablishmentFilterCreateRequest;
 import com.api.glovoCRM.Rest.Requests.EstablishmentFilterRequests.EstablishmentFilterPatchRequest;
 import com.api.glovoCRM.Rest.Requests.EstablishmentFilterRequests.EstablishmentFilterUpdateRequest;
+import com.api.glovoCRM.Specifications.EstablimentSpecifications.EstablishmentFilterSpecification;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,11 +24,13 @@ import java.util.List;
 public class EstablishmentFilterService{
     private final EstablishmentDAO establishmentDAO;
     private final EstablishmentFilterDAO establishmentFilterDAO;
+    private final EstablishmentFilterSpecification establishmentFilterSpecification;
 
     @Autowired
-    public EstablishmentFilterService(EstablishmentDAO establishmentDAO, EstablishmentFilterDAO establishmentFilterDAO) {
+    public EstablishmentFilterService(EstablishmentDAO establishmentDAO, EstablishmentFilterDAO establishmentFilterDAO, EstablishmentFilterSpecification establishmentFilterSpecification) {
         this.establishmentDAO = establishmentDAO;
         this.establishmentFilterDAO = establishmentFilterDAO;
+        this.establishmentFilterSpecification = establishmentFilterSpecification;
     }
 
     @Transactional
@@ -109,5 +114,9 @@ public class EstablishmentFilterService{
         return establishmentFilterDAO.findById(id).orElseThrow(
                 ()-> new SuchResourceNotFoundEx("Такого фильтра не существует")
         );
+    }
+    public List<EstablishmentFilter> findSimilarByNameFilter(String name) {
+        Specification<EstablishmentFilter> spec = establishmentFilterSpecification.getBySimilarNameFilter(name);
+        return establishmentFilterDAO.findAll(spec);
     }
 }

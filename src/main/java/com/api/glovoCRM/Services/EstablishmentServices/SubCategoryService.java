@@ -12,8 +12,10 @@ import com.api.glovoCRM.Rest.Requests.SubCategoryRequests.SubCategoryCreateReque
 import com.api.glovoCRM.Rest.Requests.SubCategoryRequests.SubCategoryPatchRequest;
 import com.api.glovoCRM.Rest.Requests.SubCategoryRequests.SubCategoryUpdateRequest;
 import com.api.glovoCRM.Services.BaseService;
+import com.api.glovoCRM.Specifications.EstablimentSpecifications.SubcategorySpecification;
 import com.api.glovoCRM.Utils.Minio.MinioService;
 import com.api.glovoCRM.constants.EntityType;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -31,12 +33,14 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
 
     private final SubCategoryDAO subCategoryDAO;
     private final CategoryDAO categoryDAO;
+    private final SubcategorySpecification subcategorySpecification;
 
     @Autowired
-    public SubCategoryService(SubCategoryDAO subCategoryDAO, CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService) {
+    public SubCategoryService(SubCategoryDAO subCategoryDAO, CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, SubcategorySpecification subcategorySpecification) {
         super(imageDAO, imageAssociationsDAO, minioService);
         this.subCategoryDAO = subCategoryDAO;
         this.categoryDAO = categoryDAO;
+        this.subcategorySpecification = subcategorySpecification;
     }
 
     @Override
@@ -126,9 +130,9 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
 
     @Override
     //@Cacheable(key = "#name")
-    public SubCategory findByName(String name) {
-        log.info("Получение подкатегории для: {}", name);
-        return subCategoryDAO.findByName(name).orElseThrow( () -> new SuchResourceNotFoundEx("Такой подкатегории нет"));
+    public List<SubCategory> findSimilarByNameFilter(String name) {
+        Specification<SubCategory> spec = subcategorySpecification.getBySimilarNameFilter(name);
+        return subCategoryDAO.findAll(spec);
     }
 
     @Override
