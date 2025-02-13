@@ -5,6 +5,8 @@ import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
 import com.api.glovoCRM.DAOs.ImageDAO;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
+import com.api.glovoCRM.Specifications.BaseSpecification;
+import com.api.glovoCRM.Specifications.EstablimentSpecifications.CategorySpecification;
 import com.api.glovoCRM.Utils.Minio.MinioService;
 import com.api.glovoCRM.Models.EstablishmentModels.Category;
 import com.api.glovoCRM.Rest.Requests.CategoryRequests.CategoryCreateRequest;
@@ -15,6 +17,7 @@ import com.api.glovoCRM.constants.EntityType;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -28,11 +31,13 @@ import java.util.List;
 @CacheConfig(cacheNames = BaseService.CACHE_PREFIX + "categories")
 public class CategoryService extends BaseService<Category, CategoryCreateRequest, CategoryUpdateRequest, CategoryPatchRequest> {
     private final CategoryDAO categoryDAO;
+    private final CategorySpecification categorySpecification;
 
     @Autowired
-    public CategoryService(CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService) {
+    public CategoryService(CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, CategorySpecification categorySpecification) {
         super(imageDAO, imageAssociationsDAO, minioService);
         this.categoryDAO = categoryDAO;
+        this.categorySpecification = categorySpecification;
     }
 
 
@@ -115,10 +120,8 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
 
     @Override
 //    @Cacheable(key = "#name")
-    public Category findByName(String name) {
-        log.info("Получение категории по имени не существует по имени: {}", name );
-        return categoryDAO.findByName(name).orElseThrow(
-                () -> new SuchResourceNotFoundEx("Такой категории по имени не существует")
-        );
+    public List<Category> findSimilarByNameFilter(String name) {
+        Specification<Category> spec = categorySpecification.getBySimilarNameFilter(name);
+        return categoryDAO.findAll(spec);
     }
 }
