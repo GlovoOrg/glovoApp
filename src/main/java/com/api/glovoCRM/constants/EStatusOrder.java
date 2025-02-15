@@ -1,0 +1,10 @@
+package com.api.glovoCRM.constants;
+
+public enum EStatusOrder {
+    ORDER_STATUS_CREATED,
+    ORDER_STATUS_IN_PROGRESS,
+    ORDER_STATUS_READY_TO_DELIVER,
+    ORDER_STATUS_DELIVERING,
+    ORDER_STATUS_DELIVERED,
+}
+
