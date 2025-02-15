@@ -14,14 +14,14 @@ import com.api.glovoCRM.Rest.Requests.EstablishmentsRequests.EstablishmentCreate
 import com.api.glovoCRM.Rest.Requests.EstablishmentsRequests.EstablishmentPatchRequest;
 import com.api.glovoCRM.Rest.Requests.EstablishmentsRequests.EstablishmentUpdateRequest;
 import com.api.glovoCRM.Services.BaseService;
+import com.api.glovoCRM.Specifications.EstablimentSpecifications.EstablismentSpecification;
 import com.api.glovoCRM.Utils.Minio.MinioService;
 import com.api.glovoCRM.constants.EntityType;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,12 +35,14 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
 
     private final EstablishmentDAO establishmentDAO;
     private final SubCategoryDAO subCategoryDAO;
+    private final EstablismentSpecification establismentSpecification;
 
     @Autowired
-    public EstablishmentService(ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, EstablishmentDAO establishmentDAO, SubCategoryDAO subCategoryDAO) {
+    public EstablishmentService(ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, EstablishmentDAO establishmentDAO, SubCategoryDAO subCategoryDAO, EstablismentSpecification establismentSpecification) {
         super(imageDAO, imageAssociationsDAO, minioService);
         this.establishmentDAO = establishmentDAO;
         this.subCategoryDAO = subCategoryDAO;
+        this.establismentSpecification = establismentSpecification;
     }
 
     @Override
@@ -228,10 +230,9 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
 
     @Override
 //    @Cacheable(key = "#name")
-    public Establishment findByName(String name) {
-        return establishmentDAO.findByName(name).orElseThrow(
-                () -> new SuchResourceNotFoundEx("Такого заведения нет по имени в системе")
-        );
+    public List<Establishment> findSimilarByNameFilter(String name) {
+        Specification<Establishment> spec = establismentSpecification.getBySimilarNameFilter(name);
+        return establishmentDAO.findAll(spec);
     }
     private Establishment createEstablishment(EstablishmentCreateRequest request) {
         SubCategory subCategory = subCategoryDAO.findById(request.getSubCategoryId())
@@ -264,5 +265,21 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
 
         establishment.setEstablishmentAddress(address);
         return establishment;
+    }
+
+    public List<Establishment> getEstablishmentsByRatingAscFilter() {
+        return establishmentDAO.findAll(establismentSpecification.getEstablishmentByRatingAscFilter());
+    }
+
+    public List<Establishment> getEstablishmentsByRatingDescFilter() {
+        return establishmentDAO.findAll(establismentSpecification.getEstablishmentByRatingDescFilter());
+    }
+
+    public List<Establishment> getEstablishmentsByDeliveryPriceAscFilter() {
+        return establishmentDAO.findAll(establismentSpecification.getEstablishmentByDeliveryPriceAscFilter());
+    }
+
+    public List<Establishment> getEstablishmentsByDeliveryPriceDescFilter() {
+        return establishmentDAO.findAll(establismentSpecification.getEstablishmentByDeliveryPriceDescFilter());
     }
 }

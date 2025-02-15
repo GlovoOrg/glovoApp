@@ -49,9 +49,9 @@ public abstract class BaseControllerEstablishment<DTO, ENTITY, CREATE_REQUEST ex
     @Operation(summary = "Получить сущность по имени")
     @ApiResponse(responseCode = "200", description = "Успешный поиск")
     @GetMapping("/name")
-    public ResponseEntity<DTO> getEntityByName(@RequestParam @NotBlank String name){
-        ENTITY entity = baseService.findByName(name);
-        return ResponseEntity.ok(baseMapper.toDTO(entity));
+    public ResponseEntity<List<DTO>> getEntityBySimilarName(@RequestParam @NotBlank String name){
+        List<ENTITY> entity = baseService.findSimilarByNameFilter(name);
+        return ResponseEntity.ok(baseMapper.toDTOList(entity));
     }
     @Operation(summary = "Получить все сущности", description = "Возвращает список всех сущностей")
     @ApiResponse(responseCode = "200", description = "Список сущностей успешно получен")

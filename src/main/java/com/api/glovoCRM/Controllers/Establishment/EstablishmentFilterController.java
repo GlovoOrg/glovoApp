@@ -8,6 +8,7 @@ import com.api.glovoCRM.Rest.Requests.EstablishmentFilterRequests.*;
 import com.api.glovoCRM.Services.EstablishmentServices.EstablishmentFilterService;
 import com.api.glovoCRM.mappers.EstablishmentFilterMapper;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class EstablishmentFilterController {
     }
 
     @PostMapping
-    public ResponseEntity<EstablishmentFilterDTO> createEstablishmentFilter(@Valid @RequestBody EstablishmentFilterCreateRequest request) {
+    public ResponseEntity<EstablishmentFilterDTO> createEstablishmentFilter(@Valid @ModelAttribute EstablishmentFilterCreateRequest request) {
         try {
             EstablishmentFilter createdFilter = establishmentFilterService.createEntity(request);
             log.info("Фильтр успешно создан: {}", createdFilter.getId());
@@ -120,5 +121,11 @@ public class EstablishmentFilterController {
             log.error("Неожиданная ошибка при удалении фильтра с ID {}: {}", id, e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/name")
+    public ResponseEntity<List<EstablishmentFilterDTO>> getEntityBySimilarName(@RequestParam @NotBlank String name) {
+        List<EstablishmentFilter> entity = establishmentFilterService.findSimilarByNameFilter(name);
+        return ResponseEntity.ok(establishmentFilterMapper.toDTOList(entity));
     }
 }

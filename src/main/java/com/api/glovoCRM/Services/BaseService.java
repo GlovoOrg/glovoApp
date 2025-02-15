@@ -39,7 +39,7 @@ public abstract class BaseService<T, С extends BaseRequestNotNull, U extends Ba
     public abstract void deleteEntity(Long entityId);
     public abstract T updateEntity(Long entityId, U request);
     public abstract T patchEntity(Long entityId, P request);
-    public abstract T findByName(String name);
+    public abstract List<T> findSimilarByNameFilter(String name);
 
     protected Image createImageRecord(MultipartFile file, String bucketName, EntityType entityType, Long ownerId) {
         if (file == null || file.isEmpty()) {
