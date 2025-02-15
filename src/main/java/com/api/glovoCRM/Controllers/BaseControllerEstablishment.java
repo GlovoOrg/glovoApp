@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@Slf4j
+
 @Validated
 @Tag(name = "Базовый контроллер", description = "Базовый контроллер для управления сущностями")
 public abstract class BaseControllerEstablishment<DTO, ENTITY, CREATE_REQUEST extends BaseRequestNotNull, UPDATE_REQUEST extends BaseRequestNotNull, PATCH_REQUEST extends BaseRequest> {
@@ -50,9 +49,9 @@ public abstract class BaseControllerEstablishment<DTO, ENTITY, CREATE_REQUEST ex
     @Operation(summary = "Получить сущность по имени")
     @ApiResponse(responseCode = "200", description = "Успешный поиск")
     @GetMapping("/name")
-    public ResponseEntity<DTO> getEntityByName(@RequestParam @NotBlank String name){
-        ENTITY entity = baseService.findByName(name);
-        return ResponseEntity.ok(baseMapper.toDTO(entity));
+    public ResponseEntity<List<DTO>> getEntityBySimilarName(@RequestParam @NotBlank String name){
+        List<ENTITY> entity = baseService.findSimilarByNameFilter(name);
+        return ResponseEntity.ok(baseMapper.toDTOList(entity));
     }
     @Operation(summary = "Получить все сущности", description = "Возвращает список всех сущностей")
     @ApiResponse(responseCode = "200", description = "Список сущностей успешно получен")
