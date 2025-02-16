@@ -3,6 +3,7 @@ package com.api.glovoCRM.Services.EstablishmentServices;
 import com.api.glovoCRM.DAOs.CategoryDAO;
 import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
 import com.api.glovoCRM.DAOs.ImageDAO;
+import com.api.glovoCRM.DAOs.QueryDSL.EstablishmentQueryDSL.SubcategoryDAOQueryDSL;
 import com.api.glovoCRM.DAOs.SubCategoryDAO;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
@@ -21,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,13 +33,15 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
     private final SubCategoryDAO subCategoryDAO;
     private final CategoryDAO categoryDAO;
     private final SubcategorySpecification subcategorySpecification;
+    private final SubcategoryDAOQueryDSL subcategoryDAOQueryDSL;
 
     @Autowired
-    public SubCategoryService(SubCategoryDAO subCategoryDAO, CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, SubcategorySpecification subcategorySpecification) {
+    public SubCategoryService(SubCategoryDAO subCategoryDAO, CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, SubcategorySpecification subcategorySpecification, SubcategoryDAOQueryDSL subcategoryDAOQueryDSL) {
         super(imageDAO, imageAssociationsDAO, minioService);
         this.subCategoryDAO = subCategoryDAO;
         this.categoryDAO = categoryDAO;
         this.subcategorySpecification = subcategorySpecification;
+        this.subcategoryDAOQueryDSL = subcategoryDAOQueryDSL;
     }
 
     @Override
@@ -152,5 +153,9 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
             log.error("Неожиданная ошибка при удалении подкатегории: {}", e.getMessage(), e);
             throw new RuntimeException("Не удалось удалить подкатегорию", e);
         }
+    }
+
+    public List<SubCategory> getSubcategoriesByNameDSL(String name) {
+        return subcategoryDAOQueryDSL.findBySimilarNameQueryDSL(name);
     }
 }

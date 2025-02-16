@@ -1,5 +1,7 @@
 package com.api.glovoCRM.Controllers.Establishment;
 
+import com.api.glovoCRM.DAOs.QueryDSL.EstablishmentQueryDSL.EstablishmentDAOQueryDSL;
+import com.api.glovoCRM.DAOs.QueryDSL.EstablishmentQueryDSL.ProductDAOQueryDSL;
 import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTO;
 import com.api.glovoCRM.DTOs.EstablishmentDTOs.ProductDTO;
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
@@ -23,12 +25,16 @@ public class SearchController {
     private final SearchService searchService;
     private final EstablishmentMapper establishmentMapper;
     private final ProductMapper productMapper;
+    private final EstablishmentDAOQueryDSL establishmentDAOQueryDSL;
+    private final ProductDAOQueryDSL productDAOQueryDSL;
 
     @Autowired
-    public SearchController(SearchService searchService, EstablishmentMapper establishmentMapper, ProductMapper productMapper) {
+    public SearchController(SearchService searchService, EstablishmentMapper establishmentMapper, ProductMapper productMapper, EstablishmentDAOQueryDSL establishmentDAOQueryDSL, ProductDAOQueryDSL productDAOQueryDSL) {
         this.searchService = searchService;
         this.establishmentMapper = establishmentMapper;
         this.productMapper = productMapper;
+        this.establishmentDAOQueryDSL = establishmentDAOQueryDSL;
+        this.productDAOQueryDSL = productDAOQueryDSL;
     }
 
     @GetMapping("/name")
@@ -42,6 +48,16 @@ public class SearchController {
         List<List<?>> result = new ArrayList<>();
         result.add(establishmentDTOS);
         result.add(productDTOS);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("get-name-dsl")
+    public ResponseEntity<List<List<?>>> searchByNameDsl(@RequestParam String name) {
+        List<Establishment> establishments = establishmentDAOQueryDSL.findBySimilarNameQueryDSL(name);
+        List<Product> products = productDAOQueryDSL.findBySimilarNameQueryDSL(name);
+        List<List<?>> result = new ArrayList<>();
+        result.add(establishmentMapper.toDTOList(establishments));
+        result.add(productMapper.toDTOList(products));
         return ResponseEntity.ok(result);
     }
 }

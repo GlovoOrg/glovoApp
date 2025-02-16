@@ -3,10 +3,12 @@ package com.api.glovoCRM.Services.EstablishmentServices;
 import com.api.glovoCRM.DAOs.EstablishmentDAO;
 import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
 import com.api.glovoCRM.DAOs.ImageDAO;
+import com.api.glovoCRM.DAOs.QueryDSL.EstablishmentQueryDSL.EstablishmentDAOQueryDSL;
 import com.api.glovoCRM.DAOs.SubCategoryDAO;
 import com.api.glovoCRM.Embeddable.EstablishmentDetails;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
+import com.api.glovoCRM.Models.EstablishmentModels.Category;
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
 import com.api.glovoCRM.Models.EstablishmentModels.EstablishmentAddress;
 import com.api.glovoCRM.Models.EstablishmentModels.SubCategory;
@@ -36,13 +38,15 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
     private final EstablishmentDAO establishmentDAO;
     private final SubCategoryDAO subCategoryDAO;
     private final EstablismentSpecification establismentSpecification;
+    private final EstablishmentDAOQueryDSL establishmentDAOQueryDSL;
 
     @Autowired
-    public EstablishmentService(ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, EstablishmentDAO establishmentDAO, SubCategoryDAO subCategoryDAO, EstablismentSpecification establismentSpecification) {
+    public EstablishmentService(ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, EstablishmentDAO establishmentDAO, SubCategoryDAO subCategoryDAO, EstablismentSpecification establismentSpecification, EstablishmentDAOQueryDSL establishmentDAOQueryDSL) {
         super(imageDAO, imageAssociationsDAO, minioService);
         this.establishmentDAO = establishmentDAO;
         this.subCategoryDAO = subCategoryDAO;
         this.establismentSpecification = establismentSpecification;
+        this.establishmentDAOQueryDSL = establishmentDAOQueryDSL;
     }
 
     @Override
@@ -282,4 +286,10 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
     public List<Establishment> getEstablishmentsByDeliveryPriceDescFilter() {
         return establishmentDAO.findAll(establismentSpecification.getEstablishmentByDeliveryPriceDescFilter());
     }
+
+
+    public List<Establishment> getEstablishmentByNameDSL(String name) {
+        return establishmentDAOQueryDSL.findBySimilarNameQueryDSL(name);
+    }
+
 }
