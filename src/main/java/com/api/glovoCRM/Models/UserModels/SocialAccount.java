@@ -23,10 +23,9 @@ public class SocialAccount extends BaseEntity {
     @Column(name = "provider_id", nullable = false)
     private String providerId;
 
-    @Column(name = "access_token")
-    private String accessToken;
-
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+
 }

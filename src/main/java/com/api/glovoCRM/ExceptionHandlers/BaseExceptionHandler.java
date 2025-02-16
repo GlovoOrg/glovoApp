@@ -42,7 +42,7 @@ public abstract class BaseExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<DetailedError> handleConstraintViolationException(
             ConstraintViolationException ex, HttpServletRequest request) {
-        return buildErrorResponse(ex, request, HttpStatus.BAD_REQUEST, "INVALID_INPUT", "Некорректный MIME-тип файла");
+        return buildErrorResponse(ex, request, HttpStatus.BAD_REQUEST, "INVALID_INPUT", "Неккоректно заполнены поля");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
