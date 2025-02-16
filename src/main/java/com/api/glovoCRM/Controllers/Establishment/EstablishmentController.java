@@ -1,48 +1,56 @@
 package com.api.glovoCRM.Controllers.Establishment;
 
+import com.api.glovoCRM.Controllers.BaseControllerEstablishment;
 import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTO;
-import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentShortDTO;
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
+import com.api.glovoCRM.Rest.Requests.EstablishmentsRequests.EstablishmentCreateRequest;
+import com.api.glovoCRM.Rest.Requests.EstablishmentsRequests.EstablishmentPatchRequest;
+import com.api.glovoCRM.Rest.Requests.EstablishmentsRequests.EstablishmentUpdateRequest;
 import com.api.glovoCRM.Services.EstablishmentServices.EstablishmentService;
 import com.api.glovoCRM.mappers.EstablishmentMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 @RequestMapping("api/v1/establishments")
-public class EstablishmentController {
+public class EstablishmentController extends BaseControllerEstablishment<EstablishmentDTO, Establishment, EstablishmentCreateRequest, EstablishmentUpdateRequest, EstablishmentPatchRequest> {
 
     private final EstablishmentService establishmentService;
     private final EstablishmentMapper establishmentMapper;
 
-    @Autowired
-    public EstablishmentController(EstablishmentService establishmentService, EstablishmentMapper establishmentMapper){
-        this.establishmentService = establishmentService;
+    public EstablishmentController(EstablishmentService establishmentService, EstablishmentMapper mapper, EstablishmentService establishmentService1, EstablishmentMapper establishmentMapper) {
+        super(establishmentService, mapper);
+        this.establishmentService = establishmentService1;
         this.establishmentMapper = establishmentMapper;
     }
-    @GetMapping
-    public ResponseEntity<List<EstablishmentShortDTO>> getAllEstablishments() {
-        log.info("Получен запрос для всех заведений");
-        List<Establishment> establishments = establishmentService.findAll();
-        List<EstablishmentShortDTO> dtos = establishments.stream()
-                .map(establishmentMapper::toShortDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
+
+    @GetMapping("/total-rating-asc")
+    public ResponseEntity<List<EstablishmentDTO>> getEstablishmentByTotalRatingAscFilter() {
+        List<Establishment> establishments = establishmentService.getEstablishmentsByRatingAscFilter();
+        return ResponseEntity.ok(establishmentMapper.toDTOList(establishments));
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<EstablishmentDTO> getEstablishmentById(@PathVariable Long id) {
-        log.info("Получен запрос для заведения с id: {}", id);
-        Establishment establishment = establishmentService.findById(id);
-        EstablishmentDTO dto = establishmentMapper.toDTO(establishment);
-        return ResponseEntity.ok(dto);
+
+    @GetMapping("/total-rating-desc")
+    public ResponseEntity<List<EstablishmentDTO>> getEstablishmentByTotalRatingDescFilter() {
+        List<Establishment> establishments = establishmentService.getEstablishmentsByRatingDescFilter();
+        return ResponseEntity.ok(establishmentMapper.toDTOList(establishments));
+    }
+
+    @GetMapping("/delivery-price-asc")
+    public ResponseEntity<List<EstablishmentDTO>> getEstablishmentByDeliveryPriceAscFilter() {
+        List<Establishment> establishments = establishmentService.getEstablishmentsByDeliveryPriceAscFilter();
+        return ResponseEntity.ok(establishmentMapper.toDTOList(establishments));
+    }
+
+    @GetMapping("/delivery-price-desc")
+    public ResponseEntity<List<EstablishmentDTO>> getEstablishmentByDeliveryPriceDescFilter() {
+        List<Establishment> establishments = establishmentService.getEstablishmentsByDeliveryPriceDescFilter();
+        return ResponseEntity.ok(establishmentMapper.toDTOList(establishments));
     }
 }

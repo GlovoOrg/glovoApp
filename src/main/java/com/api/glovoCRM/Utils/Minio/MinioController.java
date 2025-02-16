@@ -20,7 +20,7 @@ import com.api.glovoCRM.constants.MimeType;
 @RequiredArgsConstructor
 public class MinioController {
     private final MinioService minioService;
-
+    private final MinioCashService minioCashService;
     @PostMapping("/upload/{bucket}")
     public ResponseEntity<FileUploadResponse> uploadFile(
             @PathVariable String bucket,
@@ -41,7 +41,7 @@ public class MinioController {
             HttpServletResponse response
     ) {
         try (InputStream is = minioService.getFile(bucket, objectName)) {
-            String contentType = minioService.getContentType(bucket, objectName);
+            String contentType = minioCashService.getContentType(bucket, objectName);
             response.setContentType(contentType);
             org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
         } catch (Exception e) {

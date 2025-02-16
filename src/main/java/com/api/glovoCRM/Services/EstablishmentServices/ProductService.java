@@ -1,170 +1,164 @@
 package com.api.glovoCRM.Services.EstablishmentServices;
 
-import com.api.glovoCRM.DAOs.*;
+import com.api.glovoCRM.DAOs.EstablishmentDAO;
+import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
+import com.api.glovoCRM.DAOs.ImageDAO;
+import com.api.glovoCRM.DAOs.ProductDAO;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
-import com.api.glovoCRM.Utils.Minio.MinioService;
+import com.api.glovoCRM.Services.BaseService;
 import com.api.glovoCRM.Models.EstablishmentModels.*;
-import com.api.glovoCRM.Rest.Requests.DiscountProductRequest;
-import com.api.glovoCRM.Rest.Requests.ProductCreateRequest;
-import com.api.glovoCRM.Rest.Requests.ProductPatchRequest;
-import com.api.glovoCRM.Rest.Requests.ProductUpdateRequest;
-import jakarta.transaction.Transactional;
+import com.api.glovoCRM.Rest.Requests.ProductRequests.ProductWithDiscountCreateRequest;
+import com.api.glovoCRM.Rest.Requests.ProductRequests.ProductWithDiscountPatchRequest;
+import com.api.glovoCRM.Rest.Requests.ProductRequests.ProductWithDiscountUpdateRequest;
+import com.api.glovoCRM.Specifications.EstablimentSpecifications.ProductSpecification;
+import com.api.glovoCRM.Utils.Minio.MinioService;
+import com.api.glovoCRM.constants.EntityType;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
+
+@Slf4j
+@Service
+public class ProductService extends BaseService<Product, ProductWithDiscountCreateRequest, ProductWithDiscountUpdateRequest, ProductWithDiscountPatchRequest> {
+
+    private final ProductDAO productDAO;
+    private final EstablishmentDAO establishmentDAO;
+    private final ProductSpecification productSpecification;
+
+    @Autowired
+    public ProductService(ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService,
+                          ProductDAO productDAO, EstablishmentDAO establishmentDAO, ProductSpecification productSpecification) {
+        super(imageDAO, imageAssociationsDAO, minioService);
+        this.productDAO = productDAO;
+        this.establishmentDAO = establishmentDAO;
+        this.productSpecification = productSpecification;
+    }
 
 
-    @Service
-    public class ProductService {
+    @Override
+    public Product findById(Long id) {
+        log.info("Находим продукт с id: {}", id);
+        return productDAO.findById(id).orElseThrow(
+                () -> new SuchResourceNotFoundEx("Такого продукта нет")
+        );
+    }
 
-        private final ProductDAO productDAO;
-        private final EstablishmentDAO establishmentDAO;
-        private final EstablishmentFilterDAO establishmentFilterDAO;
-        private final MinioService minioService;
+    @Override
+    public List<Product> findAll() {
+        log.info("Получаем все продукты");
+        return productDAO.findAll();
+    }
 
-        @Autowired
-        public ProductService(
-                ProductDAO productDAO,
-                EstablishmentDAO establishmentDAO,
-                EstablishmentFilterDAO establishmentFilterDAO,
-                MinioService minioService
-        ) {
-            this.productDAO = productDAO;
-            this.establishmentDAO = establishmentDAO;
-            this.establishmentFilterDAO = establishmentFilterDAO;
-            this.minioService = minioService;
-        }
-
-        @Transactional
-        public Product createProductWithRelations(ProductCreateRequest request) {
-            String objectId = "product-" + UUID.randomUUID() + "-" + LocalDateTime.now() + ".img";
-            String image = minioService.uploadFile(request.getImage(), "products", objectId);
-
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public Product createEntity(ProductWithDiscountCreateRequest request) {
+        try {
             Establishment establishment = establishmentDAO.findById(request.getEstablishmentId())
-                    .orElseThrow(() -> new SuchResourceNotFoundEx("Establishment not found"));
-            EstablishmentFilter filter = establishmentFilterDAO.findById(request.getEstablishmentFilterId())
-                    .orElseThrow(() -> new SuchResourceNotFoundEx("Establishment filter not found"));
+                    .orElseThrow(() -> new SuchResourceNotFoundEx("Заведение не найдено"));
+            Product product = getProduct(request, establishment);
 
-            Product product = new Product();
-            product.setName(request.getName());
-            product.setDescription(request.getDescription());
-            product.setPrice(request.getPrice());
-            product.setEstablishment(establishment);
-            product.setEstablishmentFilters(List.of(filter));
+            Product savedProduct = productDAO.save(product);
 
-            if (request.getDiscountProduct() != null) {
-                DiscountProduct discountProduct = new DiscountProduct();
-                discountProduct.setActive(request.getDiscountProduct().getActive());
-                discountProduct.setProduct(product);
-                product.setDiscountProduct(discountProduct);
+            if (request.getImage() != null) {
+                createImageRecord(request.getImage(), "products", EntityType.Product, savedProduct.getId());
             }
-            return productDAO.save(product);
+
+            return savedProduct;
+        } catch (SuchResourceNotFoundEx ex) {
+            log.warn("Ошибка при создании продукта: {}", ex.getMessage());
+            throw ex;
+        } catch (Exception e) {
+            log.error("Неожиданная ошибка при создании продукта: {}", e.getMessage(), e);
+            throw new RuntimeException("Не удалось создать продукт", e);
         }
+    }
 
+    @NotNull
+    private static Product getProduct(ProductWithDiscountCreateRequest request, Establishment establishment) {
+        Product product = new Product();
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setPrice(request.getPrice());
+        product.setActive(request.getActive() != null && request.getActive());
+        product.setEstablishment(establishment);
 
-        @Transactional
-        public void deleteProductById(Long productId) {
-            Product product = productDAO.findById(productId)
-                    .orElseThrow(() -> new SuchResourceNotFoundEx("Product not found"));
-            minioService.deleteFile("products", extractObjectName(null));
+        DiscountProduct discountProduct = new DiscountProduct();
+        discountProduct.setDiscount(request.getDiscount());
+        discountProduct.setActive(true);
+        discountProduct.setProduct(product);
+
+        product.setDiscountProduct(discountProduct);
+        return product;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void deleteEntity(Long entityId) {
+        try {
+            Product product = productDAO.findById(entityId)
+                    .orElseThrow(() -> new SuchResourceNotFoundEx("Продукт не найден"));
+
+            deleteImageRecord(entityId, EntityType.Product);
+            
             productDAO.delete(product);
+            log.info("Продукт успешно удален. ID: {}", entityId);
+        } catch (SuchResourceNotFoundEx ex) {
+            log.warn("Ошибка при удалении продукта: {}", ex.getMessage());
+            throw ex;
+        } catch (Exception e) {
+            log.error("Неожиданная ошибка при удалении продукта: {}", e.getMessage(), e);
+            throw new RuntimeException("Не удалось удалить продукт", e);
         }
+    }
 
-        private String extractObjectName(String imageUrl) {
-            //доработать
-            return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-        }
-        @Transactional
-        public Product getProductById(Long productId) {
-            return productDAO.findById(productId)
-                    .orElseThrow(() -> new SuchResourceNotFoundEx("Product not found"));
-        }
-
-        public List<Product> getAllProducts() {
-            return productDAO.findAll();
-        }
-        /*
-            public List<ProductDTO> getAllProducts() {
-            return productDAO.findAll().stream()
-                    .map(productMapper::toDTO)
-                    .collect(Collectors.toList());
-        } маппинг только в controller
-         */
-        @Transactional
-        public Product updateProduct(Long productId, ProductUpdateRequest request) {
-            Product product = productDAO.findById(productId)
-                    .orElseThrow(() -> new SuchResourceNotFoundEx("Product not found"));
-
-            // Обновление полей
-            product.setName(request.getName());
-            product.setDescription(request.getDescription());
-            product.setPrice(request.getPrice());
-            product.setActive(request.isActive());
-
-            // Обновление изображения
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public Product updateEntity(Long entityId, ProductWithDiscountUpdateRequest request) {
+        try {
+            Product existingProduct = productDAO.findById(entityId)
+                    .orElseThrow(() -> new SuchResourceNotFoundEx(String.format("Продукт с id %s не найден", entityId)));
+            
+            existingProduct.setName(request.getName());
+            existingProduct.setDescription(request.getDescription());
+            existingProduct.setPrice((request.getPrice()));
+            existingProduct.setActive((request.getActive()));
+            
+            DiscountProduct discountProduct = existingProduct.getDiscountProduct();
+            if (discountProduct == null) {
+                discountProduct = new DiscountProduct();
+                discountProduct.setProduct(existingProduct);
+            }
+            discountProduct.setDiscount(request.getDiscount());
+            discountProduct.setActive(true);
+            
             if (request.getImage() != null) {
-                updateProductImage(product, request.getImage());
+                updateImageRecord(entityId, EntityType.Product, request.getImage());
             }
 
-            // Обновление скидки
-            updateDiscount(product, request.getDiscount());
-
-            return productDAO.save(product);
+            return productDAO.save(existingProduct);
+        } catch (SuchResourceNotFoundEx ex) {
+            log.warn("Ошибка при обновлении продукта: {}", ex.getMessage());
+            throw ex;
+        } catch (Exception e) {
+            log.error("Неожиданная ошибка при обновлении продукта: {}", e.getMessage(), e);
+            throw new RuntimeException("Не удалось обновить продукт", e);
         }
+    }
 
-        private void updateProductImage(Product product, MultipartFile newImage) {
-            minioService.deleteFile("products", extractObjectName(null));
+    @Override
+    public Product patchEntity(Long entityId, ProductWithDiscountPatchRequest request) {
+        return null;
+    }
 
-            String newObjectId = "product-" + UUID.randomUUID() + ".img";
-            String newImageUrl = minioService.uploadFile(newImage, "products", newObjectId);
-        }
-
-        private void updateDiscount(Product product, DiscountProductRequest discountRequest) {
-            if (discountRequest == null) return;
-
-            DiscountProduct discount = product.getDiscountProduct();
-            if (discount == null) {
-                discount = new DiscountProduct();
-                discount.setProduct(product);
-            }
-            discount.setDiscount(discountRequest.getDiscount());
-            discount.setActive(discountRequest.getActive());
-            product.setDiscountProduct(discount);
-        }
-
-        @Transactional
-        public Product patchProduct(Long productId, ProductPatchRequest request) {
-            Product product = productDAO.findById(productId)
-                    .orElseThrow(() -> new SuchResourceNotFoundEx("Product not found"));
-
-            // Обновление имени (если передано)
-            if (request.getName() != null) {
-                product.setName(request.getName());
-            }
-
-            if (request.getDescription() != null) {
-                product.setDescription(request.getDescription());
-            }
-
-            if (request.getPrice() != null) {
-                product.setPrice(request.getPrice());
-            }
-
-            if (request.getActive() != null) {
-                product.setActive(request.getActive());
-            }
-            if (request.getImage() != null) {
-                updateProductImage(product, request.getImage());
-            }
-
-            if (request.getDiscount() != null) {
-                updateDiscount(product, request.getDiscount());
-            }
-
-            return productDAO.save(product);
-        }
+    @Override
+    public List<Product> findSimilarByNameFilter(String name) {
+        Specification<Product> spec = productSpecification.getBySimilarNameFilter(name);
+        return productDAO.findAll(spec);
+    }
 }

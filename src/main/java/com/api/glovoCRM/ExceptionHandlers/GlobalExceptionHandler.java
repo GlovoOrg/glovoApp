@@ -2,6 +2,7 @@ package com.api.glovoCRM.ExceptionHandlers;
 
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
+import com.api.glovoCRM.Exceptions.MailSendingEx;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +26,10 @@ public class GlobalExceptionHandler extends BaseExceptionHandler {
     @ExceptionHandler(SuchResourceNotFoundEx.class)
     public ResponseEntity<?> handleSuchResourceNotFound(SuchResourceNotFoundEx ex, HttpServletRequest request) {
         return buildErrorResponse(ex, request, HttpStatus.NOT_FOUND, "NOT_FOUND", null);
+    }
+
+    @ExceptionHandler(MailSendingEx.class)
+    public ResponseEntity<?> handleMailSending(MailSendingEx ex, HttpServletRequest request) {
+        return buildErrorResponse(ex, request, HttpStatus.INTERNAL_SERVER_ERROR, "MAIL_SENDING", "во время работы почты произошла ошибка");
     }
 }

@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -22,12 +24,26 @@ public class PaymentDetail extends BaseEntity {
     @NotNull(message = "Заказ обязателен")
     private Order order;
 
+    @Column(name = "session_id", nullable = false)
+    private String sessionId;
+
+    @Column(name = "transaction_id", nullable = false)
+    private String transactionId;
+
+    @NotNull(message = "Статус оплаты обязателен")
+    @Column(name = "status", nullable = false)
+    private String status;
+
+    @Column(name = "total_amount", nullable = false)
+    private BigDecimal amount;
+
+    @Column(name = "currency", nullable = false)
+    private String currency;
 
     @NotBlank(message = "Провайдер обязателен")
     @Column(name = "provider",  nullable = false)
     private String provider;
 
-    @NotNull(message = "Статус оплаты обязателен")
     @Column(name = "is_paid", nullable = false)
     private boolean isPaid;
 }

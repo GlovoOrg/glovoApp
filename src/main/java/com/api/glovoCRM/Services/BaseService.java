@@ -3,19 +3,26 @@ package com.api.glovoCRM.Services;
 import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
 import com.api.glovoCRM.DAOs.ImageDAO;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
+import com.api.glovoCRM.Rest.Requests.BaseRequest;
+import com.api.glovoCRM.Rest.Requests.BaseRequestNotNull;
 import com.api.glovoCRM.Utils.Minio.MinioService;
 import com.api.glovoCRM.Models.EstablishmentModels.Image;
 import com.api.glovoCRM.Models.EstablishmentModels.ImageAssociation;
 import com.api.glovoCRM.constants.EntityType;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
-
+@Component
 @Slf4j
-public abstract class BaseService<T, CreateRequest, UpdateRequest, PatchRequest> {
+@Transactional
+public abstract class BaseService<T, С extends BaseRequestNotNull, U extends BaseRequestNotNull, P extends BaseRequest> {
+
+    public static final String CACHE_PREFIX = "entity_";
+
     protected final ImageDAO imageDAO;
     protected final ImageAssociationsDAO imageAssociationsDAO;
     protected final MinioService minioService;
@@ -28,27 +35,33 @@ public abstract class BaseService<T, CreateRequest, UpdateRequest, PatchRequest>
 
     public abstract T findById(Long id);
     public abstract List<T> findAll();
-    public abstract T createEntity(CreateRequest request);
+    public abstract T createEntity(С request);
     public abstract void deleteEntity(Long entityId);
-    public abstract T updateEntity(Long entityId, UpdateRequest request);
-    public abstract T patchEntity(Long entityId, PatchRequest request);
+    public abstract T updateEntity(Long entityId, U request);
+    public abstract T patchEntity(Long entityId, P request);
+    public abstract List<T> findSimilarByNameFilter(String name);
 
-    @Transactional
     protected Image createImageRecord(MultipartFile file, String bucketName, EntityType entityType, Long ownerId) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Файл не может быть пустым");
+        }
+        String imageUrl = null;
+        String objectName = generateObjectName(entityType, file);
         try {
-            if (file == null || file.isEmpty()) {
-                throw new IllegalArgumentException("Файл не может быть пустым");
-            }
-            String objectId = generateObjectName(entityType, file);
-            String imageUrl = minioService.uploadFile(file, bucketName, objectId);
-            Image image = new Image();
-            image.setUrl(imageUrl);
-            image.setFilename(objectId);
-            image.setSize(file.getSize());
-            image.setContentType(file.getContentType());
-            image.setBucket(bucketName);
-            image.setOriginalFilename(file.getOriginalFilename() != null ? file.getOriginalFilename() : "unnamed_file");
-            Image savedImage = minioService.saveImage(image);
+            imageUrl = minioService.uploadFile(file, bucketName, objectName);
+
+
+            Image image = Image.builder()
+                    .url(imageUrl)
+                    .filename(objectName)
+                    .size(file.getSize())
+                    .contentType(file.getContentType())
+                    .bucket(bucketName)
+                    .originalFilename(file.getOriginalFilename())
+                    .build();
+
+            Image savedImage = imageDAO.save(image);
+
             ImageAssociation association = new ImageAssociation();
             association.setImage(savedImage);
             association.setEntityType(entityType);
@@ -57,24 +70,33 @@ public abstract class BaseService<T, CreateRequest, UpdateRequest, PatchRequest>
             return savedImage;
         } catch (Exception e) {
             log.error("Ошибка создания Image: {}", e.getMessage(), e);
+            if (imageUrl != null) {
+                minioService.deleteFile(bucketName, objectName);
+            }
             throw new RuntimeException("Ошибка при создании записи", e);
         }
     }
 
-    @Transactional
+
     protected void deleteImageRecord(Long ownerId, EntityType entityType) {
         try {
             ImageAssociation imageAssociation = imageAssociationsDAO.findByOwnerIdAndEntityType(ownerId, entityType)
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Ассоциация изображения не найдена"));
+
             Image image = imageAssociation.getImage();
-            String objectName = extractObjectName(image.getUrl());
-            log.debug("Удаление файла из MinIO: {}", objectName);
-            if (imageAssociationsDAO.countByImage(image) > 1) {
-                throw new RuntimeException("Изображение используется в других сущностях");
-            }
-            minioService.deleteFile(image.getBucket(), objectName);
-            log.debug("Удаление записи из ImageAssociations...");
+
             imageAssociationsDAO.delete(imageAssociation);
+            log.debug("Удаление записи из ImageAssociations...");
+
+
+            String objectName = extractObjectName(image.getUrl());
+
+            if (!minioService.validateObjectInBucket(image.getBucket(), objectName)) {
+                log.warn("Объект {} уже удален из MinIO", objectName);
+            } else {
+                minioService.deleteFile(image.getBucket(), objectName);
+            }
+
         } catch (SuchResourceNotFoundEx e) {
             log.warn("Ошибка при удалении изображения: {}", e.getMessage());
             throw e;
@@ -84,7 +106,6 @@ public abstract class BaseService<T, CreateRequest, UpdateRequest, PatchRequest>
         }
     }
 
-    @Transactional
     protected void updateImageRecord(Long ownerId, EntityType entityType, MultipartFile newImage) {
         try {
             ImageAssociation imageAssociation = imageAssociationsDAO.findByOwnerIdAndEntityType(ownerId, entityType)
@@ -109,7 +130,14 @@ public abstract class BaseService<T, CreateRequest, UpdateRequest, PatchRequest>
             throw new RuntimeException("Не удалось обновить изображение", e);
         }
     }
-
+//    private String getBucketForEntityType(EntityType entityType) {
+//        return switch (entityType) {
+//            case Category -> "categories";
+//            case Product -> "products";
+//            case Establishment -> "establishments";
+//            default -> throw new IllegalArgumentException("Неизвестный тип");
+//        };
+//    }
     // оригинальное расширение.
     protected String generateObjectName(EntityType entityType, MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
@@ -123,6 +151,10 @@ public abstract class BaseService<T, CreateRequest, UpdateRequest, PatchRequest>
         if (imageUrl == null || imageUrl.isEmpty()) {
             throw new IllegalArgumentException("URL изображения не может быть пустым");
         }
-        return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        String[] parts = imageUrl.split("/");
+        if (parts.length < 4) {
+            throw new IllegalArgumentException("Некорректный URL изображения");
+        }
+        return parts[parts.length - 1];
     }
 }

@@ -11,18 +11,21 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+//redisHash
 @Entity
 @Table
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+//@RedisHash("RedisCart")
 public class Cart extends BaseEntity {
 
     @PositiveOrZero(message = "Итоговая сумма не может быть отрицательной")

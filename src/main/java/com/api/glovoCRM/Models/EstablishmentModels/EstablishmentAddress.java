@@ -36,4 +36,18 @@ public class EstablishmentAddress extends BaseEntity {
     @JoinColumn(name = "establishment_id")
     @NotNull(message = "Заведение обязательно")
     private Establishment establishment;
+
+    @Transient
+    private Long establishmentId;
+
+    @PrePersist
+    private void prePersist() {
+        if(establishment == null && this.establishmentId != null) {
+            Establishment establishment = new Establishment();
+            establishment.setId(this.establishmentId);
+            this.establishment = establishment;
+        }
+    }
+
+
 }

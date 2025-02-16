@@ -10,9 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -42,15 +39,11 @@ public class Product extends BaseEntity {
     @OneToOne(mappedBy = "product", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private DiscountProduct discountProduct;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "establishment_id")
     private Establishment establishment;
 
-    @ManyToMany
-    @JoinTable(
-            name = "product_establishment_filter",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "establishment_filter_id")
-    )
-    private List<EstablishmentFilter> establishmentFilters = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "establishmentFilter_id")
+    private EstablishmentFilter establishmentFilter;
 }

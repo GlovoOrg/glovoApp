@@ -6,13 +6,16 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.NaturalId;
 
 @Entity
 @Table(name = "images")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Image extends BaseEntity {
 
     @NotNull(message = "Изображение категории не может быть null")
@@ -48,4 +51,5 @@ public class Image extends BaseEntity {
 
     @OneToOne(mappedBy = "image", cascade = CascadeType.ALL, orphanRemoval = true)
     private ImageAssociation imageAssociation;
+
 }

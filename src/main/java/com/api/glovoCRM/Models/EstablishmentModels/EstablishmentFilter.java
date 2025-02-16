@@ -10,8 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "establishment_filters")
@@ -26,12 +26,12 @@ public class EstablishmentFilter extends BaseEntity {
     @Column(name = "name", length = 355, nullable = false)
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "establishment_id")
     @NotNull(message = "Заведение обязательно")
     private Establishment establishment;
 
-    @ManyToMany(mappedBy = "establishmentFilters")
+    @OneToMany(mappedBy = "establishmentFilter")
     @OrderBy("name asc")
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 }
