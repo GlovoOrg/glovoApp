@@ -42,7 +42,7 @@ public class LoginPhoneService {
         authenticationManager.authenticate(new PhoneAuthenticationToken(phoneNumber, password));
 
     }
-    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public LoginResponse verifyCode(String phoneNumber, String code){
         if (!verificationCodeService.validateAuthCode(phoneNumber, code)) {
             log.warn("Неверный код для номера: {}", phoneNumber);
