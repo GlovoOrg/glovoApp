@@ -20,12 +20,12 @@ public class RefreshToken extends BaseEntity {
 
     //todo в будущем надо спросить у степана
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
     private User user;
 
     @NotNull(message = "Токен не может быть null")
     @NotBlank(message = "Токен обязателен")
-    @Column(nullable = false, name = "token")
+    @Column(nullable = false, name = "token", columnDefinition = "text")
     private String token;
 
     @Future(message = "Дата истечения должна быть в будущем")

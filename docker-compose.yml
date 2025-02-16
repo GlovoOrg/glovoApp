@@ -10,6 +10,8 @@ services:
       POSTGRES_DB: glovoDB
     ports:
       - "5442:5432"
+    networks:
+      - glovoApp-backend
     volumes:
       - glovo-data:/var/lib/postgresql/data
     healthcheck:
@@ -17,12 +19,7 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
-    deploy:
-      resources:
-        limits:
-          memory: 256M
-        reservations:
-          memory: 128M
+    mem_reservation: 128M
 
   minio:
     image: minio/minio
@@ -31,8 +28,10 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
     ports:
-      - "9000:9000"  # API порт
-      - "9001:9001"  # Консоль управления
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - glovoApp-backend
     volumes:
       - minio_data:/data
     healthcheck:
@@ -40,13 +39,20 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
-    deploy:
-      resources:
-        limits:
-          memory: 256M
-        reservations:
-          memory: 128M
-
+    mem_reservation: 128M
+  redis:
+    image: bitnami/redis:latest
+    container_name: cache-redis
+    environment:
+      REDIS_PASSWORD: glovoTeam
+    ports:
+      - "6379:6379"
+    networks:
+      - glovoApp-backend
+    mem_reservation: 256M
 volumes:
   glovo-data: {}
   minio_data: {}
+networks:
+  glovoApp-backend:
+    driver: bridge
