@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @Validated
 @Tag(name = "Базовый контроллер", description = "Базовый контроллер для управления сущностями")
 public abstract class BaseControllerEstablishment<DTO, ENTITY, CREATE_REQUEST extends BaseRequestNotNull, UPDATE_REQUEST extends BaseRequestNotNull, PATCH_REQUEST extends BaseRequest> {
