@@ -4,6 +4,7 @@ import com.api.glovoCRM.DAOs.EstablishmentDAO;
 import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
 import com.api.glovoCRM.DAOs.ImageDAO;
 import com.api.glovoCRM.DAOs.ProductDAO;
+import com.api.glovoCRM.DAOs.QueryDSL.EstablishmentQueryDSL.ProductDAOQueryDSL;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Services.BaseService;
 import com.api.glovoCRM.Models.EstablishmentModels.*;
@@ -30,14 +31,16 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
     private final ProductDAO productDAO;
     private final EstablishmentDAO establishmentDAO;
     private final ProductSpecification productSpecification;
+    private final ProductDAOQueryDSL productDAOQueryDSL;
 
     @Autowired
     public ProductService(ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService,
-                          ProductDAO productDAO, EstablishmentDAO establishmentDAO, ProductSpecification productSpecification) {
+                          ProductDAO productDAO, EstablishmentDAO establishmentDAO, ProductSpecification productSpecification, ProductDAOQueryDSL productDAOQueryDSL) {
         super(imageDAO, imageAssociationsDAO, minioService);
         this.productDAO = productDAO;
         this.establishmentDAO = establishmentDAO;
         this.productSpecification = productSpecification;
+        this.productDAOQueryDSL = productDAOQueryDSL;
     }
 
 
@@ -160,5 +163,9 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
     public List<Product> findSimilarByNameFilter(String name) {
         Specification<Product> spec = productSpecification.getBySimilarNameFilter(name);
         return productDAO.findAll(spec);
+    }
+
+    public List<Product> getProductsByNameDSL(String name) {
+        return productDAOQueryDSL.findBySimilarNameQueryDSL(name);
     }
 }

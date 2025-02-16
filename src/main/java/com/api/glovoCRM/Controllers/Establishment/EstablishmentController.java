@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -51,6 +52,12 @@ public class EstablishmentController extends BaseControllerEstablishment<Establi
     @GetMapping("/delivery-price-desc")
     public ResponseEntity<List<EstablishmentDTO>> getEstablishmentByDeliveryPriceDescFilter() {
         List<Establishment> establishments = establishmentService.getEstablishmentsByDeliveryPriceDescFilter();
+        return ResponseEntity.ok(establishmentMapper.toDTOList(establishments));
+    }
+
+    @GetMapping("get-name-dsl")
+    public ResponseEntity<List<EstablishmentDTO>> getByNameDsl(@RequestParam String name) {
+        List<Establishment> establishments = establishmentService.getEstablishmentByNameDSL(name);
         return ResponseEntity.ok(establishmentMapper.toDTOList(establishments));
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.beans.PropertyEditorSupport;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/subcategories")
@@ -27,7 +28,18 @@ public class SubCategoryController extends BaseControllerEstablishment<
         SubCategoryUpdateRequest,
         SubCategoryPatchRequest> {
 
-    public SubCategoryController(SubCategoryService subCategoryService, SubCategoryMapper subCategoryMapper) {
+    private final SubCategoryService subCategoryService;
+    private final SubCategoryMapper subCategoryMapper;
+
+    public SubCategoryController( SubCategoryMapper subCategoryMapper, SubCategoryService subCategoryService) {
         super(subCategoryService, subCategoryMapper);
+        this.subCategoryService = subCategoryService;
+        this.subCategoryMapper = subCategoryMapper;
+    }
+
+    @GetMapping("get-name-dsl")
+    public ResponseEntity<List<SubCategoryDTO>> getByNameDsl(@RequestParam String name) {
+        List<SubCategory> subCategories = subCategoryService.getSubcategoriesByNameDSL(name);
+        return ResponseEntity.ok(subCategoryMapper.toDTOList(subCategories));
     }
 }

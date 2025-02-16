@@ -2,6 +2,7 @@ package com.api.glovoCRM.Services.EstablishmentServices;
 
 import com.api.glovoCRM.DAOs.EstablishmentDAO;
 import com.api.glovoCRM.DAOs.EstablishmentFilterDAO;
+import com.api.glovoCRM.DAOs.QueryDSL.EstablishmentQueryDSL.EstablishmentFilterDAOQueryDSL;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
@@ -25,12 +26,14 @@ public class EstablishmentFilterService{
     private final EstablishmentDAO establishmentDAO;
     private final EstablishmentFilterDAO establishmentFilterDAO;
     private final EstablishmentFilterSpecification establishmentFilterSpecification;
+    private final EstablishmentFilterDAOQueryDSL establishmentFilterDAOQueryDSL;
 
     @Autowired
-    public EstablishmentFilterService(EstablishmentDAO establishmentDAO, EstablishmentFilterDAO establishmentFilterDAO, EstablishmentFilterSpecification establishmentFilterSpecification) {
+    public EstablishmentFilterService(EstablishmentDAO establishmentDAO, EstablishmentFilterDAO establishmentFilterDAO, EstablishmentFilterSpecification establishmentFilterSpecification, EstablishmentFilterDAOQueryDSL establishmentFilterDAOQueryDSL) {
         this.establishmentDAO = establishmentDAO;
         this.establishmentFilterDAO = establishmentFilterDAO;
         this.establishmentFilterSpecification = establishmentFilterSpecification;
+        this.establishmentFilterDAOQueryDSL = establishmentFilterDAOQueryDSL;
     }
 
     @Transactional
@@ -118,5 +121,9 @@ public class EstablishmentFilterService{
     public List<EstablishmentFilter> findSimilarByNameFilter(String name) {
         Specification<EstablishmentFilter> spec = establishmentFilterSpecification.getBySimilarNameFilter(name);
         return establishmentFilterDAO.findAll(spec);
+    }
+
+    public List<EstablishmentFilter> getEstablishmentFilterByNameDSL(String name) {
+        return establishmentFilterDAOQueryDSL.findBySimilarNameQueryDSL(name);
     }
 }
