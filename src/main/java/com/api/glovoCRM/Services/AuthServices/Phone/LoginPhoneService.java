@@ -6,10 +6,10 @@ import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Rest.Requests.AuthRequests.LoginRequestPhone;
 import com.api.glovoCRM.Rest.Responses.Auth.LoginResponse;
-import com.api.glovoCRM.Rest.Responses.Auth.RegisterResponse;
 import com.api.glovoCRM.Security.AuthenticationTokens.PhoneAuthenticationToken;
-import com.api.glovoCRM.Services.AuthServices.Mail.VerificationCodeService;
+import com.api.glovoCRM.Services.AuthServices.VerificationCodeService;
 import com.api.glovoCRM.Services.AuthServices.TokenService;
+import com.api.glovoCRM.constants.EUserStatuses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,7 +42,7 @@ public class LoginPhoneService {
         authenticationManager.authenticate(new PhoneAuthenticationToken(phoneNumber, password));
 
     }
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional()
     public LoginResponse verifyCode(String phoneNumber, String code){
         if (!verificationCodeService.validateAuthCode(phoneNumber, code)) {
             log.warn("Неверный код для номера: {}", phoneNumber);
@@ -50,6 +50,8 @@ public class LoginPhoneService {
         }
         User user = userDAO.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Пользователь не найден"));
+        user.setStatus(EUserStatuses.ACTIVE);
+        userDAO.save(user);
         Map<String, String> tokens = tokenService.generateTokens(user);
         PhoneAuthenticationToken authenticatedToken = new PhoneAuthenticationToken(
                 user.getPhoneNumber(),

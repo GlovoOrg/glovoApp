@@ -2,6 +2,7 @@ package com.api.glovoCRM.Services.AuthServices.Oauth2;
 
 import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
 import com.api.glovoCRM.Models.UserModels.User;
+import com.api.glovoCRM.Rest.Responses.Auth.LoginResponse;
 import com.api.glovoCRM.Rest.Responses.Auth.oauth2Response;
 import com.api.glovoCRM.Services.AuthServices.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +16,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -46,15 +48,23 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         if ("Пользователь успешно создан".equals(oAuth2User.getAttribute("message"))) {
             oauth2Response = new oauth2Response("Пользователь успешно создан");
             response.setStatus(HttpServletResponse.SC_CREATED);
-        } else {
+        } else if("Пользователь успешно привязал социальный аккаунт к существующему аккаунту Glovo"
+                .equals(oAuth2User.getAttribute("message"))) {
             Map<String, String> tokens = tokenService.generateTokens(user);
             oauth2Response = new oauth2Response(
                     tokens.get("access_token").toString(),
-                    tokens.get("refresh_token").toString()
-            );
+                    tokens.get("refresh_token").toString(),
+                    "Поздравляю вы успешно привязали социальный аккаунт к вашему существующему аккаунту Glovo"
+                    );
             response.setStatus(HttpServletResponse.SC_OK);
+        }else {
+        Map<String, String> map = tokenService.generateTokens(user);
+        oauth2Response = new oauth2Response(
+                map.get("access_token").toString(),
+                map.get("refresh_token").toString()
+        );
+        response.setStatus(HttpServletResponse.SC_OK);
         }
-
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(new ObjectMapper().writeValueAsString(oauth2Response));

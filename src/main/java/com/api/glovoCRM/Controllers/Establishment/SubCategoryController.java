@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.beans.PropertyEditorSupport;
 
 @RestController
-@RequestMapping("/api/v1/subcategories")
+@RequestMapping("/api/v1/non-secured/subcategories")
 public class SubCategoryController extends BaseControllerEstablishment<
         SubCategoryDTO,
         SubCategory,

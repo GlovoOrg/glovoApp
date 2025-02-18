@@ -1,15 +1,11 @@
 package com.api.glovoCRM.Services.AuthServices.Oauth2;
 
-import com.api.glovoCRM.DAOs.RefreshTokenDAO;
-import com.api.glovoCRM.DAOs.UserDAOs.RoleDAO;
 import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
-import com.api.glovoCRM.Models.UserModels.Role;
 import com.api.glovoCRM.Models.UserModels.SocialAccount;
 import com.api.glovoCRM.Models.UserModels.User;
-import com.api.glovoCRM.Security.jwt.JwtCore;
 import com.api.glovoCRM.Services.AuthServices.TokenService;
+import com.api.glovoCRM.Services.AuthServices.AuthService;
 import com.api.glovoCRM.constants.AuthProviders;
-import com.api.glovoCRM.constants.ERoles;
 import com.api.glovoCRM.constants.EUserStatuses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +14,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -30,8 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import java.util.*;
-import java.util.stream.Collectors;
-/* todo це дока
+/* todo вроде как пока все ок
 * Для OAuth2 не нужно создавать отдельный провайдер, так как Spring Security предоставляет встроенную поддержку.
 Если вам нужно добавить кастомную логику, используйте CustomOAuth2UserService.
 * */
@@ -40,17 +34,13 @@ import java.util.stream.Collectors;
 @Service
 public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final UserDAO userDAO;
-    private final RoleDAO roleDAO;
-    private final JwtCore jwtCore;
-    private final RefreshTokenDAO refreshTokenDAO;
+    private final AuthService authService;
     private final TokenService tokenService;
 
     @Autowired
-    public CustomOauth2UserService(JwtCore jwtCore, UserDAO userDAO, RoleDAO roleDAO, RefreshTokenDAO refreshTokenDAO, TokenService tokenService) {
+    public CustomOauth2UserService(AuthService authService, UserDAO userDAO, TokenService tokenService) {
         this.userDAO = userDAO;
-        this.roleDAO = roleDAO;
-        this.jwtCore = jwtCore;
-        this.refreshTokenDAO = refreshTokenDAO;
+        this.authService = authService;
         this.tokenService = tokenService;
     }
     @Transactional
@@ -81,7 +71,7 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
         }
 
         if (user.getRoles() == null || user.getRoles().isEmpty()) {
-            assignDefaultRole(user);
+            authService.assignDefaultRole(user);
         }
         return loginUser(oAuth2User, user, provider);
     }
@@ -104,16 +94,6 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
                     "Неподдерживаемый провайдер: " + provider
             );
         }
-    }
-    private void assignDefaultRole(User user) {
-        Role role = roleDAO.findByName(ERoles.ROLE_CUSTOMER)
-                .orElseGet(() -> {
-                    Role newRole = new Role();
-                    newRole.setName(ERoles.ROLE_CUSTOMER);
-                    return roleDAO.saveAndFlush(newRole);
-                });
-        user.setRoles(new HashSet<>(Collections.singletonList(role)));
-        userDAO.save(user);
     }
     private String extractName(OAuth2User oAuth2User, String provider) {
         switch (provider.toLowerCase()) {
@@ -138,10 +118,9 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
         user.setEmail(email);
         user.setName(name);
         user.setPassword("");
-        user.setStatus(EUserStatuses.ACTIVE);
-        user.setSocialAccountVerified(true);
+        user.setStatus(EUserStatuses.PENDING_LOGIN_TO_THE_SYSTEM);
 
-        assignDefaultRole(user);
+        authService.assignDefaultRole(user);
 
         SocialAccount socialAccount = new SocialAccount();
         socialAccount.setProvider(AuthProviders.valueOf("AUTH_PROVIDERS_" + provider.toUpperCase()));
@@ -151,8 +130,6 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         Map<String, Object> mapResponse = new HashMap<>(oAuth2User.getAttributes());
         mapResponse.put("message", "Пользователь успешно создан");
-        mapResponse.put("name", name);
-        mapResponse.put("email", email);
 
         log.info("Пользователь с email={} успешно создан", email);
 
@@ -165,39 +142,57 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private OAuth2User loginUser(OAuth2User oAuth2User, User user, String provider) {
         log.info("Пользователь с email={} уже существует", user.getEmail());
-
         boolean hasSocialAccount = user.getSocialAccounts().stream()
                 .anyMatch(sa -> sa.getProvider().name().equals("AUTH_PROVIDERS_" + provider.toUpperCase()));
+        user.setStatus(EUserStatuses.ACTIVE);
+        userDAO.save(user);
+
+        Map<String, Object> mapOfAccessAndRefresh = generateTokens(oAuth2User, user);
+        if(!hasSocialAccount && user.getPassword() != null) {
+            linkSocialAccount(oAuth2User, user, provider);
+            HashMap<String, Object> response = new HashMap<>(oAuth2User.getAttributes());
+            response.putAll(Map.of(
+                    "message", "Пользователь успешно привязал социальный аккаунт к существующему аккаунту Glovo",
+                    "access_token", mapOfAccessAndRefresh.get("access_token"),
+                    "refresh_token", mapOfAccessAndRefresh.get("refresh_token")
+            ));
+            log.info("Добавлен социальный аккаунт провайдера {} для зарегистрированнаго пользователя: {} ", provider, user.getName());
+            return new DefaultOAuth2User(
+                    user.getAuthorities(),
+                    response,
+                    "email"
+            );
+        }
 
         if (!hasSocialAccount) {
-            SocialAccount socialAccount = new SocialAccount();
-            socialAccount.setProvider(AuthProviders.valueOf("AUTH_PROVIDERS_" + provider.toUpperCase()));
-            socialAccount.setProviderId(oAuth2User.getName());
-            user.addSocialAccount(socialAccount);
-            userDAO.save(user);
+            linkSocialAccount(oAuth2User, user, provider);
             log.info("Добавлен социальный аккаунт провайдера {}", provider);
         }
-        //тут по идее должно быть тру, так как потом будет мешать для входа через mail+password
-        Set<SimpleGrantedAuthority> authorities = user.getRoles().stream()
-                .map(roleEntity -> new SimpleGrantedAuthority(roleEntity.getName().name()))
-                .collect(Collectors.toSet());
 
-        Map<String, String> tokens = tokenService.generateTokens(user);
-        Map<String, Object> mapOfAccessAndRefresh = new HashMap<>(oAuth2User.getAttributes());
-        mapOfAccessAndRefresh.put("access_token", tokens.get("access_token"));
-        mapOfAccessAndRefresh.put("refresh_token", tokens.get("refresh_token"));
-        mapOfAccessAndRefresh.put("name", user.getName());
-        mapOfAccessAndRefresh.put("email", user.getEmail());
 
         log.info("Токены сгенерированы для существующего пользователя: {}", user.getEmail());
 
         return new DefaultOAuth2User(
-                authorities,
+                user.getAuthorities(),
                 mapOfAccessAndRefresh,
                 "email"
         );
     }
+    private void linkSocialAccount(OAuth2User oAuth2User,User user, String provider){
+        SocialAccount socialAccount = new SocialAccount();
+        socialAccount.setProvider(AuthProviders.valueOf("AUTH_PROVIDERS_" + provider.toUpperCase()));
+        socialAccount.setProviderId(oAuth2User.getName());
+        user.addSocialAccount(socialAccount);
+        userDAO.save(user);
+    }
 
+    private Map<String, Object> generateTokens(OAuth2User oAuth2User, User user) {
+        Map<String, String> tokens = tokenService.generateTokens(user);
+        Map<String, Object> mapOfAccessAndRefresh = new HashMap<>(oAuth2User.getAttributes());
+        mapOfAccessAndRefresh.put("access_token", tokens.get("access_token"));
+        mapOfAccessAndRefresh.put("refresh_token", tokens.get("refresh_token"));
+        return  mapOfAccessAndRefresh;
+    }
     private String fetchEmailFromGitHub(OAuth2UserRequest userRequest) {
         String accessToken = userRequest.getAccessToken().getTokenValue();
         if (accessToken == null) {

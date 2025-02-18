@@ -3,7 +3,7 @@ services:
   glovo-postgres:
     image: postgres:15-alpine
     restart: always
-    container_name: db-pg
+    container_name: db-postgres
     environment:
       POSTGRES_USER: glovoTeam
       POSTGRES_PASSWORD: glovoTeam
@@ -50,6 +50,27 @@ services:
     networks:
       - glovoApp-backend
     mem_reservation: 256M
+  liquibase:
+    image: liquibase/liquibase:latest
+    container_name: liquibase-cli
+    depends_on:
+      glovo-postgres:
+        condition: service_healthy
+    networks:
+      - glovoApp-backend
+    volumes:
+      - C:/Users/malibuchka/Desktop/glovoAppSecurity — копия/src/main/resources/db/changelog:/liquibase/changelog
+    environment:
+      LIQUIBASE_COMMAND_URL: "jdbc:postgresql://glovo-postgres:5432/glovoDB"
+      LIQUIBASE_COMMAND_USERNAME: "glovoTeam"
+      LIQUIBASE_COMMAND_PASSWORD: "glovoTeam"
+      LIQUIBASE_COMMAND_CHANGELOG_FILE: "changelog/init/full-database-changelog.xml"
+    entrypoint:
+      - liquibase
+      - generate-changelog
+      - --includeObjects=".*"
+      - --dataOutputDirectory="changelog/init"
+
 volumes:
   glovo-data: {}
   minio_data: {}

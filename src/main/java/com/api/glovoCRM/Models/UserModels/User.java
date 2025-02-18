@@ -57,7 +57,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private EUserStatuses status;
+    private EUserStatuses status = EUserStatuses.INACTIVE;
 
     @Column(name = "lastLoginDate")
     @PastOrPresent(message = "Дата последнего входа должна быть в прошлом или настоящем")
@@ -69,20 +69,14 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "isStaff")
     private boolean isStaff = false;
 
+    @Column(name = "chatId")
+    private String chatId;
+
     @Transient
     private String emailCode; //todo в redis
 
     @Transient
     private String phoneCode; //todo в redis
-
-    @Column(name = "is_email_verified")
-    private boolean isEmailVerified = false;
-
-    @Column(name = "is_phone_verified")
-    private boolean isPhoneNumberVerified = false;
-
-    @Column(name = "is_social_account_verified")
-    private boolean isSocialAccountVerified = false;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
@@ -143,9 +137,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return (isEmailVerified || isPhoneNumberVerified || isSocialAccountVerified) &&
-                status != EUserStatuses.PENDING_EMAIL_VERIFICATION &&
-                status != EUserStatuses.PENDING_PHONE_VERIFICATION;
+        return this.status == EUserStatuses.ACTIVE;
     }
     public void addSocialAccount(SocialAccount socialAccount) {
         log.info("Добавление социального аккаунта: provider={}", socialAccount.getProvider());
@@ -153,7 +145,7 @@ public class User extends BaseEntity implements UserDetails {
             this.socialAccounts = new ArrayList<>();
         }
         this.socialAccounts.add(socialAccount);
-        socialAccount.setUser(this); // Устанавливаем обратную связь
+        socialAccount.setUser(this);
     }
 
 }

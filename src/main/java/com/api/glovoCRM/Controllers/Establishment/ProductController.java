@@ -11,7 +11,7 @@ import com.api.glovoCRM.mappers.ProductMapper;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/api/v1/non-secured/products")
 public class ProductController extends BaseControllerEstablishment<ProductDTO, Product, ProductWithDiscountCreateRequest, ProductWithDiscountUpdateRequest, ProductWithDiscountPatchRequest> {
 
     public ProductController(ProductService productService, ProductMapper mapper) {

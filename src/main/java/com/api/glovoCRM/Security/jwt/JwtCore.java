@@ -43,11 +43,11 @@ public class JwtCore {
     }
     public String getTokenFromRequest(HttpServletRequest request) {
         final String header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")) {
+        if (header != null && header.startsWith("Lasvegas ")) {
             log.info("Токен успешно извлечен из заголовка запроса.");
-            return header.substring(7);
+            return header.substring(9);
         }
-        log.warn("Заголовок 'Authorization' отсутствует или не содержит Bearer токен.");
+        log.warn("Заголовок 'Authorization' отсутствует или не содержит Lasvegas токен.");
         return null;
     }
 

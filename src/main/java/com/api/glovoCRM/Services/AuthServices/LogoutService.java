@@ -8,6 +8,7 @@ import com.api.glovoCRM.Security.jwt.JwtCore;
 import com.api.glovoCRM.Utils.Cache.BlackListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,7 +27,7 @@ public class LogoutService {
         this.userDAO = userDAO;
         this.jwtCore = jwtCore;
     }
-    public boolean logout(String authorizationHeader) {
+    public void logout(String authorizationHeader) {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Невалидный заголовок Authorization");
         }
@@ -35,14 +36,18 @@ public class LogoutService {
         try {
             // Проверяем, существует ли токен в базе данных
             String name = jwtCore.getSubjectFromAccessToken(accessToken);
-            Long userId = userDAO.findByName(name).get().getId();
+            Long userId = userDAO.findByName(name)
+                    .orElseThrow(() -> new SuchResourceNotFoundEx("Пользователь не найден: " + name))
+                    .getId();
             RefreshToken refreshTokenEntity = refreshTokenDAO.findByUserId(userId)
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Рефреш Токен не найден  для пользователя" + userId));
 
             // Добавляем токен в черный список
             blackListService.addToBlacklist(refreshTokenEntity.getToken());
-
-            return true;
+            refreshTokenDAO.delete(refreshTokenEntity);
+            //Контекстик чистим
+            SecurityContextHolder.clearContext();
+            log.info("Пользователь {} успешно вышел", name);
         } catch (Exception e) {
             log.error("Ошибка при выходе пользователя: {}", e.getMessage());
             throw e;

@@ -11,7 +11,7 @@ import com.api.glovoCRM.mappers.CategoryMapper;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/categories")
+@RequestMapping("/api/v1/non-secured/categories")
 public class CategoryController extends BaseControllerEstablishment<CategoryDTO, Category, CategoryCreateRequest, CategoryUpdateRequest, CategoryPatchRequest> {
 
     public CategoryController(CategoryService categoryService, CategoryMapper categoryMapper) {

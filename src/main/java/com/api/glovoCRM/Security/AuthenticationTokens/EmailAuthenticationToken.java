@@ -35,8 +35,11 @@ public class EmailAuthenticationToken extends AbstractAuthenticationToken {
         return principal;
     }
 
-    // Статический метод для создания аутентифицированного токена
-    public static EmailAuthenticationToken authenticated(
+    public static EmailAuthenticationToken preAuthenticated(Object principal, Object credentials) {
+        return new EmailAuthenticationToken(principal, credentials);
+    }
+
+    public static EmailAuthenticationToken postAuthenticated(
             Object principal,
             Object credentials,
             Collection<? extends GrantedAuthority> authorities
