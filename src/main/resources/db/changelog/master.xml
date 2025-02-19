@@ -7,6 +7,5 @@
         >
 
     <!-- Ребята, это файлВВ, который загружает файл с таблицами-->
-    <include file="init/18-02-init-changelog.xml" relativeToChangelogFile="true" />
-    <include file="insert/insert-data-changelog.xml" relativeToChangelogFile="true" />
+    <include file="init/fullinit.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
