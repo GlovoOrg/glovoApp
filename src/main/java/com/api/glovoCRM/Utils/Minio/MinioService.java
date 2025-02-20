@@ -95,10 +95,10 @@ public class MinioService {
         return CompletableFuture.runAsync(() -> {
             try {
                 if (!bucketExists(bucket)) { // если бакет не существует двойное не = true
-                    createBucket(bucket); //  метод создания бакета
+                    createBucket(bucket); }//  метод создания бакета
                     setBucketPublicPolicy(bucket); // Делаем бакет публичным
                     setCorsPolicy(bucket); // Добавляем CORS
-                }
+
             } catch (Exception e) {
                 log.error("Failed to initialize bucket {}: {}", bucket, e.getMessage());
                 throw new RuntimeException("Bucket initialization failed", e);
