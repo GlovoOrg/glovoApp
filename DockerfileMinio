@@ -1,0 +1,8 @@
+FROM minio/minio
+
+# Устанавливаем findutils для использования команды find
+USER root
+RUN microdnf install -y findutils && microdnf clean all
+
+# Остальная часть Dockerfile
+ENTRYPOINT [ "minio" ]

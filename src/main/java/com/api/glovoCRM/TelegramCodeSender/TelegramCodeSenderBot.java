@@ -16,6 +16,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Component
 @Slf4j
 public class TelegramCodeSenderBot extends TelegramLongPollingBot {
+    //todo тут какая шляпа, 409 летит, думал из-за того что каждый запуск api создавал новый инстанс у бота, но почему то после закрытия также шляпа
     private static boolean isBotRunning = false;
     private final UserDAO userDAO;
     private static final String START_INSTRUCTIONS = """

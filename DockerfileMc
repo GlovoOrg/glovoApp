@@ -1,0 +1,10 @@
+# Этап 1: Устанавливаем curl в образе Alpine
+FROM alpine:latest AS curlinstaller
+RUN apk add --no-cache curl
+
+# Этап 2: Копируем curl в MinIO mc образ
+FROM minio/mc:latest
+COPY --from=curlinstaller /usr/bin/curl /bin/curl  # Важно скопировать в /bin, а не /usr/bin
+
+# Переопределяем entrypoint (если требуется)
+ENTRYPOINT ["/bin/sh"]

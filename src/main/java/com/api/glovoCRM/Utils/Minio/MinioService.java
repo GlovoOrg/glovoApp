@@ -34,6 +34,7 @@ todo Данный сервис работает как для установки
 @Service
 @RequiredArgsConstructor
 public class MinioService {
+    //todo тут надо убрать контроллер для прямой загрузки через post в minio
     private final MinioCashService minioCashService;
     private final Executor asyncExecutor;
     private static final Set<String> ALLOWED_MIME_TYPES = Set.of(
