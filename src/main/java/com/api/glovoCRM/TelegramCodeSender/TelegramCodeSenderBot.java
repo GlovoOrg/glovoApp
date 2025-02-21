@@ -17,6 +17,12 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Slf4j
 public class TelegramCodeSenderBot extends TelegramLongPollingBot {
 
+
+    @Value("${bot.enabled:false}")
+    private boolean botEnabled;
+
+
+
     private static boolean isBotRunning = false;
     private final UserDAO userDAO;
     private static final String START_INSTRUCTIONS = """
@@ -29,6 +35,11 @@ public class TelegramCodeSenderBot extends TelegramLongPollingBot {
     private String botToken;
     @PostConstruct
     public void init() {
+        if (!botEnabled) {
+            log.info("Telegram бот отключен через настройки.");
+            return;
+        }
+
         log.info("Инициализация Telegram бота...");
         synchronized (TelegramCodeSenderBot.class) {
             if (isBotRunning) {

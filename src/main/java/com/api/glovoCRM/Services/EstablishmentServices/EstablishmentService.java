@@ -30,7 +30,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-@CacheConfig(cacheNames = BaseService.CACHE_PREFIX + "establishments")
+@CacheConfig(cacheNames =  "establishments")
 public class EstablishmentService extends BaseService<Establishment, EstablishmentCreateRequest, EstablishmentUpdateRequest, EstablishmentPatchRequest> {
 
     private final EstablishmentDAO establishmentDAO;
@@ -46,14 +46,12 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
     }
 
     @Override
-//    @Cacheable(key = "#id")
     public Establishment findById(Long id) {
         log.info("Находим заведение с id: {}", id);
         return establishmentDAO.findById(id).orElseThrow(
                 () -> new SuchResourceNotFoundEx(String.format("Заведение с id %s не найдено", id))
         );
     }
-//    @Cacheable
     @Override
     public List<Establishment> findAll() {
         log.info("Получаем все заведения");
@@ -61,7 +59,6 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
     }
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-//    @CacheEvict(allEntries = true)
     public Establishment createEntity(EstablishmentCreateRequest request) {
         try {
             if (!subCategoryDAO.existsById(request.getSubCategoryId())) {
@@ -96,7 +93,6 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-//    @CacheEvict(allEntries = true)
     public void deleteEntity(Long entityId) {
         try {
             Establishment establishment = establishmentDAO.findById(entityId)
@@ -122,7 +118,6 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-//    @CacheEvict(allEntries = true)
     public Establishment updateEntity(Long entityId, EstablishmentUpdateRequest request) {
         try {
             Establishment existingEstablishment = establishmentDAO.findById(entityId)
@@ -167,7 +162,6 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-//    @CacheEvict(allEntries = true)
     public Establishment patchEntity(Long entityId, EstablishmentPatchRequest request) {
         try {
             Establishment existingEstablishment = establishmentDAO.findById(entityId)
@@ -229,7 +223,6 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
     }
 
     @Override
-//    @Cacheable(key = "#name")
     public List<Establishment> findSimilarByNameFilter(String name) {
         Specification<Establishment> spec = establismentSpecification.getBySimilarNameFilter(name);
         return establishmentDAO.findAll(spec);

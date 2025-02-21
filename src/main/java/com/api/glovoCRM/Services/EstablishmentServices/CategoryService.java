@@ -14,6 +14,7 @@ import com.api.glovoCRM.Rest.Requests.CategoryRequests.CategoryPatchRequest;
 import com.api.glovoCRM.Rest.Requests.CategoryRequests.CategoryUpdateRequest;
 import com.api.glovoCRM.Services.BaseService;
 import com.api.glovoCRM.constants.EntityType;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,21 +29,22 @@ import java.util.List;
 
 @Slf4j
 @Service
-@CacheConfig(cacheNames = BaseService.CACHE_PREFIX + "categories")
+@CacheConfig(cacheNames ="categories")
 public class CategoryService extends BaseService<Category, CategoryCreateRequest, CategoryUpdateRequest, CategoryPatchRequest> {
     private final CategoryDAO categoryDAO;
     private final CategorySpecification categorySpecification;
+    private final CacheManager cacheManager;
 
     @Autowired
-    public CategoryService(CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, CategorySpecification categorySpecification) {
+    public CategoryService(CacheManager cacheManager, CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, CategorySpecification categorySpecification) {
         super(imageDAO, imageAssociationsDAO, minioService);
         this.categoryDAO = categoryDAO;
         this.categorySpecification = categorySpecification;
+        this.cacheManager = cacheManager;
     }
 
-
+    @CacheEvict(allEntries = true, cacheNames = {"categories", "subcategories"})
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-//    @CacheEvict(allEntries = true)
     public Category createEntity(CategoryCreateRequest request) {
 
             if (categoryDAO.existsByName(request.getName())) {
@@ -64,17 +66,16 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-//    @CacheEvict(allEntries = true)
     @Override
+    @CacheEvict(allEntries = true, cacheNames = {"categories", "subcategories"})
     public void deleteEntity(Long categoryId) {
         Category category = categoryDAO.findById(categoryId)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"));
         super.deleteImageRecord(categoryId, EntityType.Category);
         categoryDAO.delete(category);
     }
-
+    @CacheEvict(allEntries = true, cacheNames = {"categories", "subcategories"})
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-//    @CacheEvict(allEntries = true)
     @Override
     public Category updateEntity(Long categoryId, CategoryUpdateRequest request) {
         Category category = categoryDAO.findById(categoryId)
@@ -85,26 +86,24 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
         if (request.getImage() != null) {
             super.updateImageRecord(categoryId, EntityType.Category, request.getImage());
         }
-
         return categoryDAO.save(category);
     }
-
+    @Cacheable(key = "#id")
     @Override
-//    @Cacheable(key = "#id")
     public Category findById(Long id) {
         return categoryDAO.findById(id)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"));
     }
 
     @Override
-//    @Cacheable
+    @Cacheable
     @Transactional(readOnly = true)
     public List<Category> findAll() {
         return categoryDAO.findAllCategories();
     }
 
+    @CacheEvict(allEntries = true, cacheNames = {"categories", "subcategories"})
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-//    @CacheEvict(allEntries = true)
     @Override
     public Category patchEntity(Long id, CategoryPatchRequest request) {
         Category category = categoryDAO.findById(id)
@@ -119,7 +118,6 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
     }
 
     @Override
-//    @Cacheable(key = "#name")
     public List<Category> findSimilarByNameFilter(String name) {
         Specification<Category> spec = categorySpecification.getBySimilarNameFilter(name);
         return categoryDAO.findAll(spec);

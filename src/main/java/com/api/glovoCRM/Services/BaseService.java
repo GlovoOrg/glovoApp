@@ -21,7 +21,6 @@ import java.util.UUID;
 @Transactional
 public abstract class BaseService<T, С extends BaseRequestNotNull, U extends BaseRequestNotNull, P extends BaseRequest> {
 
-    public static final String CACHE_PREFIX = "entity_";
 
     protected final ImageDAO imageDAO;
     protected final ImageAssociationsDAO imageAssociationsDAO;

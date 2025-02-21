@@ -15,6 +15,8 @@ import com.api.glovoCRM.Services.BaseService;
 import com.api.glovoCRM.Specifications.EstablimentSpecifications.SubcategorySpecification;
 import com.api.glovoCRM.Utils.Minio.MinioService;
 import com.api.glovoCRM.constants.EntityType;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,29 +30,32 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Slf4j
 @Service
-@CacheConfig(cacheNames = BaseService.CACHE_PREFIX + "subcategories")
+@CacheConfig(cacheNames ="subcategories")
 public class SubCategoryService extends BaseService<SubCategory, SubCategoryCreateRequest, SubCategoryUpdateRequest, SubCategoryPatchRequest> {
 
     private final SubCategoryDAO subCategoryDAO;
     private final CategoryDAO categoryDAO;
     private final SubcategorySpecification subcategorySpecification;
+    private final CacheManager cacheManager;
 
     @Autowired
-    public SubCategoryService(SubCategoryDAO subCategoryDAO, CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, SubcategorySpecification subcategorySpecification) {
+    public SubCategoryService(SubCategoryDAO subCategoryDAO, CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, SubcategorySpecification subcategorySpecification, @Qualifier ("cacheManager") CacheManager cacheManager) {
         super(imageDAO, imageAssociationsDAO, minioService);
         this.subCategoryDAO = subCategoryDAO;
         this.categoryDAO = categoryDAO;
         this.subcategorySpecification = subcategorySpecification;
+        this.cacheManager = cacheManager;
     }
 
+    @Cacheable(key = "#id")
     @Override
-    //@Cacheable(key = "#id")
     public SubCategory findById(Long id) {
         log.info("Находим подкатегорию с id: {}", id);
         return subCategoryDAO.findById(id)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Такой подкатегории нет"));
     }
-    //@Cacheable
+
+    @Cacheable
     @Override
     public List<SubCategory> findAll() {
         log.info("Получаем все подкатегории");
@@ -58,8 +63,8 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
     }
 
     @Override
+    @CacheEvict(allEntries = true, cacheNames = {"subcategories", "categories"})
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    //@CacheEvict(allEntries = true)
     public SubCategory createEntity(SubCategoryCreateRequest request) {
         try {
             if (!categoryDAO.existsById(request.getCategoryId())) {
@@ -79,7 +84,8 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
             if (request.getImage() != null) {
                 createImageRecord(request.getImage(), "subcategories", EntityType.SubCategory, savedSubCategory.getId());
             }
-
+            Category category = savedSubCategory.getCategory();
+            cacheManager.getCache("categories").evict(category.getId());
             return savedSubCategory;
         } catch (AlreadyExistsEx ex) {
             log.warn("Ошибка при создании подкатегории AlreadyExistsEx: {}", ex.getMessage());
@@ -91,7 +97,7 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
     }
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    //@CacheEvict(allEntries = true)
+    @CacheEvict(allEntries = true, cacheNames = {"subcategories", "categories"})
     public SubCategory updateEntity(Long id, SubCategoryUpdateRequest request) {
         SubCategory subCategory = subCategoryDAO.findById(id)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Подкатегория не найдена"));
@@ -106,12 +112,16 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"));
             subCategory.setCategory(newCategory);
         }
-        return subCategoryDAO.save(subCategory);
+        SubCategory savedSubCategory = subCategoryDAO.save(subCategory);
+        Category category = savedSubCategory.getCategory();
+        cacheManager.getCache("categories").evict(category.getId());
+
+        return savedSubCategory;
     }
 
     @Override
+    @CacheEvict(allEntries = true, cacheNames = {"subcategories", "categories"})
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    //@CacheEvict(allEntries = true)
     public SubCategory patchEntity(Long id, SubCategoryPatchRequest request) {
         SubCategory subCategory = subCategoryDAO.findById(id)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Подкатегория не найдена"));
@@ -125,11 +135,13 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"));
             subCategory.setCategory(newCategory);
         }
-        return subCategoryDAO.save(subCategory);
+        SubCategory savedSubCategory = subCategoryDAO.save(subCategory);
+        Category category = savedSubCategory.getCategory();
+        cacheManager.getCache("categories").evict(category.getId());
+        return savedSubCategory;
     }
 
     @Override
-    //@Cacheable(key = "#name")
     public List<SubCategory> findSimilarByNameFilter(String name) {
         Specification<SubCategory> spec = subcategorySpecification.getBySimilarNameFilter(name);
         return subCategoryDAO.findAll(spec);
@@ -137,7 +149,7 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    //@CacheEvict( allEntries = true)
+    @CacheEvict(allEntries = true, cacheNames = {"subcategories", "categories"})
     public void deleteEntity(Long id) {
         try {
             SubCategory subCategory = subCategoryDAO.findById(id)
