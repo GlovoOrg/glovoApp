@@ -21,7 +21,9 @@ services:
     mem_reservation: 128M
 
   minio:
-    image: minio/minio
+    build:
+      context: .
+      dockerfile: DockerfileMinio
     container_name: glovoapp-minio-1
     environment:
       MINIO_ROOT_USER: minioadmin
@@ -44,7 +46,9 @@ services:
     mem_reservation: 128M
 
   mc:
-    image: glovoapp-mc:latest
+    build:
+      context: .
+      dockerfile: DockerfileMc
     depends_on:
       - minio
     entrypoint: >

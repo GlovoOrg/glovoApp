@@ -1,8 +1,24 @@
+# Используем официальный образ MinIO
 FROM minio/minio
 
+# Копируем скрипты
+COPY scripts/export_minio.sh /scripts/export_minio.sh
+
+# Делаем скрипты исполняемыми
+RUN chmod +x /scripts/export_minio.sh
+
+# Открываем консоль MinIO на порту 9001
+CMD ["server", "/data/runtime", "--console-address", ":9001"]
+
+
+
+
+#FROM minio/minio
+
+
 # Устанавливаем findutils для использования команды find
-USER root
-RUN microdnf install -y findutils && microdnf clean all
+#USER root
+#RUN microdnf install -y findutils && microdnf clean all
 
 # Остальная часть Dockerfile
-ENTRYPOINT [ "minio" ]
+#ENTRYPOINT [ "minio" ]

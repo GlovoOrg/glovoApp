@@ -1,10 +1,26 @@
+# Используем официальный образ MinIO Client (mc)
+FROM minio/mc
+
+# Копируем скрипты
+COPY scripts/import_minio.sh /scripts/import_minio.sh
+
+# Делаем скрипты исполняемыми
+RUN chmod +x /scripts/import_minio.sh
+
+# Ожидание и запуск скрипта после старта контейнера
+ENTRYPOINT ["/bin/sh", "-c", "/scripts/import_minio.sh && tail -f /dev/null"]
+
+
+
+
+
 # Этап 1: Устанавливаем curl в образе Alpine
-FROM alpine:latest AS curlinstaller
-RUN apk add --no-cache curl
+#FROM alpine:latest AS curlinstaller
+#RUN apk add --no-cache curl
 
 # Этап 2: Копируем curl в MinIO mc образ
-FROM minio/mc:latest
-COPY --from=curlinstaller /usr/bin/curl /bin/curl  # Важно скопировать в /bin, а не /usr/bin
+#FROM minio/mc:latest
+#COPY --from=curlinstaller /usr/bin/curl /bin/curl  # Важно скопировать в /bin, а не /usr/bin
 
 # Переопределяем entrypoint (если требуется)
-ENTRYPOINT ["/bin/sh"]
+#ENTRYPOINT ["/bin/sh"]
