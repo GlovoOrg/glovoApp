@@ -49,7 +49,7 @@ public class Image extends BaseEntity {
     @Column(name = "original_filename", nullable = false)
     String originalFilename;
 
-    @OneToOne(mappedBy = "image", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "image")
     private ImageAssociation imageAssociation;
 
 }

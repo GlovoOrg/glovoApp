@@ -15,25 +15,11 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {EstablishmentMapper.class})
 public abstract class SubCategoryMapper implements BaseMapper<SubCategory, SubCategoryDTO>{
-     @Autowired
-     private CategoryDAO categoryDAO;
 
      @Override
-     @Mapping(target = "categoryId", source = "category.id")
-     @Mapping(target = "categoryName", source = "category", qualifiedByName = "getCategoryName")
-     @Mapping(target = "establishments", source = "establishments")
+     @Mapping(target = "establishments", source = "establishments", ignore = true)
      @Mapping(target = "imageUrl", expression = "java(com.api.glovoCRM.DTOs.EstablishmentDTOs.Utils.ImageUtil.getImageUrl(subCategory.getId(), com.api.glovoCRM.constants.EntityType.SubCategory))")
      public abstract SubCategoryDTO toDTO(SubCategory subCategory);
-
-     @Named("getCategoryName")
-     protected String getCategoryName(Category category) {
-          if (category == null) {
-               return null;
-          }
-          return categoryDAO.findById(category.getId())
-                  .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"))
-                  .getName();
-     }
 
      @Override
      public List<SubCategoryDTO> toDTOList(List<SubCategory> subCategories) {

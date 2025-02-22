@@ -22,8 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-//todo В будущем повесить более детальные аннотации типа @Length @NotBlank @Email(для email) и тд
-//todo также надо orphanremoval jsonbackreference(надо вспомнить, что эта за тема)
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -66,17 +65,14 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "login")
     private String login;
 
-    @Column(name = "isStaff")
-    private boolean isStaff = false;
-
     @Column(name = "chatId")
     private String chatId;
 
-    @Transient
-    private String emailCode; //todo в redis
-
-    @Transient
-    private String phoneCode; //todo в redis
+//    @Transient
+//    private String emailCode; //todo в redis
+//
+//    @Transient
+//    private String phoneCode; //todo в redis
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",

@@ -34,7 +34,6 @@ todo Данный сервис работает как для установки
 @Service
 @RequiredArgsConstructor
 public class MinioService {
-    //todo тут надо убрать контроллер для прямой загрузки через post в minio
     private final MinioCashService minioCashService;
     private final Executor asyncExecutor;
     private static final Set<String> ALLOWED_MIME_TYPES = Set.of(
@@ -95,10 +94,10 @@ public class MinioService {
         return CompletableFuture.runAsync(() -> {
             try {
                 if (!bucketExists(bucket)) { // если бакет не существует двойное не = true
-                    createBucket(bucket); }//  метод создания бакета
+                    createBucket(bucket); //  метод создания бакета
                     setBucketPublicPolicy(bucket); // Делаем бакет публичным
                     setCorsPolicy(bucket); // Добавляем CORS
-
+                }
             } catch (Exception e) {
                 log.error("Failed to initialize bucket {}: {}", bucket, e.getMessage());
                 throw new RuntimeException("Bucket initialization failed", e);
@@ -186,7 +185,7 @@ public class MinioService {
     @Retryable(maxAttempts = MAX_RETRY_ATTEMPTS,
             backoff = @Backoff(delay = 1000, multiplier = 2),
             retryFor = {MinioConnectionEx.class, IOException.class},
-    noRetryFor = {IllegalArgumentException.class, InvalidFileTypeEx.class})
+            noRetryFor = {IllegalArgumentException.class, InvalidFileTypeEx.class})
     @CacheEvict(cacheNames = CACHE_PREFIX + "objects", key = "#bucketName + ':' + #objectName")
     @Transactional
     public String uploadFile(    @AllowedContentTypes(
@@ -232,17 +231,17 @@ public class MinioService {
     }
 
     private void validateFile(MultipartFile file) {
-            if (file == null || file.isEmpty()) {
-                throw new FileValidationEx("File cannot be empty");
-            }
+        if (file == null || file.isEmpty()) {
+            throw new FileValidationEx("File cannot be empty");
+        }
 
-            if (file.getSize() > maxFileSizeInMB * 1024L * 1024L) {
-                throw new FileSizeEx("File size exceeds maximum allowed");
-            }
+        if (file.getSize() > maxFileSizeInMB * 1024L * 1024L) {
+            throw new FileSizeEx("File size exceeds maximum allowed");
+        }
 
-            String mimeType = detectContentType(file);
-            if (!ALLOWED_MIME_TYPES.contains(mimeType)) {
-                throw new InvalidFileTypeEx("Unsupported file type: " + mimeType);
+        String mimeType = detectContentType(file);
+        if (!ALLOWED_MIME_TYPES.contains(mimeType)) {
+            throw new InvalidFileTypeEx("Unsupported file type: " + mimeType);
         }
     }
     private String detectContentType(MultipartFile file) {

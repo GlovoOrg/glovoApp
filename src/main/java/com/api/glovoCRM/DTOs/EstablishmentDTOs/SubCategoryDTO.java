@@ -14,7 +14,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubCategoryDTO extends BaseDTO{
-    private Long categoryId;
-    private String categoryName;
     private List<EstablishmentDTO> establishments;
 }

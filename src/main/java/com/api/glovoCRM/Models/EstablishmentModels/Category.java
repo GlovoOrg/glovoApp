@@ -12,7 +12,9 @@ import lombok.Setter;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Entity
 @Getter
@@ -30,5 +32,5 @@ public class Category extends BaseEntity {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @OrderBy("name asc")
-    private List<SubCategory> subCategories = new ArrayList<>();
+    private List<SubCategory> subCategories =  new ArrayList<>();
 }

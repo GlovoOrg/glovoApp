@@ -1,10 +1,13 @@
 package com.api.glovoCRM.mappers;
 
 import com.api.glovoCRM.DTOs.EstablishmentDTOs.CategoryDTO;
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.SubCategoryDTO;
 import com.api.glovoCRM.Models.EstablishmentModels.Category;
+import com.api.glovoCRM.Models.EstablishmentModels.SubCategory;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
 
 
 @Mapper(componentModel = "spring", uses = {SubCategoryMapper.class})

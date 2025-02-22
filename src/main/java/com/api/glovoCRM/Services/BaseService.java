@@ -77,32 +77,13 @@ public abstract class BaseService<T, С extends BaseRequestNotNull, U extends Ba
     }
 
 
-    protected void deleteImageRecord(Long ownerId, EntityType entityType) {
-        try {
-            ImageAssociation imageAssociation = imageAssociationsDAO.findByOwnerIdAndEntityType(ownerId, entityType)
-                    .orElseThrow(() -> new SuchResourceNotFoundEx("Ассоциация изображения не найдена"));
-
-            Image image = imageAssociation.getImage();
-
+    @Transactional
+    public void deleteImageRecord(Long ownerId, EntityType entityType) {
+        imageAssociationsDAO.findByOwnerIdAndEntityType(ownerId, entityType).ifPresent(imageAssociation -> {
+            // Удаляем связь перед удалением самого изображения
             imageAssociationsDAO.delete(imageAssociation);
-            log.debug("Удаление записи из ImageAssociations...");
-
-
-            String objectName = extractObjectName(image.getUrl());
-
-            if (!minioService.validateObjectInBucket(image.getBucket(), objectName)) {
-                log.warn("Объект {} уже удален из MinIO", objectName);
-            } else {
-                minioService.deleteFile(image.getBucket(), objectName);
-            }
-
-        } catch (SuchResourceNotFoundEx e) {
-            log.warn("Ошибка при удалении изображения: {}", e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            log.error("Неожиданная ошибка при удалении изображения: {}", e.getMessage(), e);
-            throw new RuntimeException("Не удалось удалить изображение", e);
-        }
+            minioService.deleteFile(imageAssociation.getImage().getFilename(), imageAssociation.getImage().getBucket());
+        });
     }
 
     protected void updateImageRecord(Long ownerId, EntityType entityType, MultipartFile newImage) {
@@ -129,7 +110,7 @@ public abstract class BaseService<T, С extends BaseRequestNotNull, U extends Ba
             throw new RuntimeException("Не удалось обновить изображение", e);
         }
     }
-//    private String getBucketForEntityType(EntityType entityType) {
+    //    private String getBucketForEntityType(EntityType entityType) {
 //        return switch (entityType) {
 //            case Category -> "categories";
 //            case Product -> "products";

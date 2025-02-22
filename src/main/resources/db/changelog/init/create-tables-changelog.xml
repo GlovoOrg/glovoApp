@@ -451,69 +451,69 @@
         </createTable>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-35">
-        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="refresh_tokens" constraintName="fk1lih5y2npsf8u5o3vhdb9y0os" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="refresh_tokens" constraintName="fk1lih5y2npsf8u5o3vhdb9y0os" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-36">
-        <addForeignKeyConstraint baseColumnNames="order_detail_id" baseTableName="order_items" constraintName="fk1q80b422hoxsjgc259r091peg" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="orders" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="order_detail_id" baseTableName="order_items" constraintName="fk1q80b422hoxsjgc259r091peg" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="orders" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-37">
-        <addForeignKeyConstraint baseColumnNames="product_id" baseTableName="cart_items" constraintName="fk1re40cjegsfvw58xrkdp6bac6" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="products" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="product_id" baseTableName="cart_items" constraintName="fk1re40cjegsfvw58xrkdp6bac6" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="products" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-38">
-        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="orders" constraintName="fk32ql8ubntj5uh44ph9659tiih" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="orders" constraintName="fk32ql8ubntj5uh44ph9659tiih" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-39">
-        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="social_accounts" constraintName="fk6rmxxiton5yuvu7ph2hcq2xn7" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="social_accounts" constraintName="fk6rmxxiton5yuvu7ph2hcq2xn7" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-40">
-        <addForeignKeyConstraint baseColumnNames="order_detail_id" baseTableName="payment_details" constraintName="fk96rviu3pjlbx2g8g2dx6rpupx" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="orders" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="order_detail_id" baseTableName="payment_details" constraintName="fk96rviu3pjlbx2g8g2dx6rpupx" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="orders" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-41">
-        <addForeignKeyConstraint baseColumnNames="cart_id" baseTableName="cart_items" constraintName="fk99e0am9jpriwxcm6is7xfedy3" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="cart" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="cart_id" baseTableName="cart_items" constraintName="fk99e0am9jpriwxcm6is7xfedy3" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="cart" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-42">
-        <addForeignKeyConstraint baseColumnNames="establishment_id" baseTableName="products" constraintName="fk99gib6u0rm71m4vr6qdfj33is" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="establishments" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="establishment_id" baseTableName="products" constraintName="fk99gib6u0rm71m4vr6qdfj33is" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="establishments" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-43">
-        <addForeignKeyConstraint baseColumnNames="establishment_id" baseTableName="establishment_filters" constraintName="fkcrmgdqsn1ojebiuj6yhvloddq" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="establishments" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="establishment_id" baseTableName="establishment_filters" constraintName="fkcrmgdqsn1ojebiuj6yhvloddq" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="establishments" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-44">
-        <addForeignKeyConstraint baseColumnNames="image_id" baseTableName="image_associations" constraintName="fkdadh9qfc9xfsfdmxuucyp51cj" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="images" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="image_id" baseTableName="image_associations" constraintName="fkdadh9qfc9xfsfdmxuucyp51cj" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="images" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-45">
-        <addForeignKeyConstraint baseColumnNames="product_id" baseTableName="discounts" constraintName="fke3tqxsyxv7qcy8uvf2lns1hx8" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="products" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="product_id" baseTableName="discounts" constraintName="fke3tqxsyxv7qcy8uvf2lns1hx8" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="products" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-46">
-        <addForeignKeyConstraint baseColumnNames="order_detail_id" baseTableName="cart_items" constraintName="fke49uqm63kajrg9gt365roi2gm" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="orders" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="order_detail_id" baseTableName="cart_items" constraintName="fke49uqm63kajrg9gt365roi2gm" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="orders" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-47">
-        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="cart" constraintName="fkg5uhi8vpsuy0lgloxk2h4w5o6" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="cart" constraintName="fkg5uhi8vpsuy0lgloxk2h4w5o6" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-48">
-        <addForeignKeyConstraint baseColumnNames="subcategory_id" baseTableName="establishments" constraintName="fkgfsgl8rfxapyxy7d4ti2mxh9b" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="subcategories" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="subcategory_id" baseTableName="establishments" constraintName="fkgfsgl8rfxapyxy7d4ti2mxh9b" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="subcategories" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-49">
-        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user_roles" constraintName="fkh8ciramu9cc9q3qcqiv4ue8a6" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="roles" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user_roles" constraintName="fkh8ciramu9cc9q3qcqiv4ue8a6" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="roles" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-50">
-        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_roles" constraintName="fkhfh9dx7w3ubf1co1vdev94g3f" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_roles" constraintName="fkhfh9dx7w3ubf1co1vdev94g3f" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-51">
-        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="subcategories" constraintName="fkiborb6ptvy1t1n3v6klb56l5s" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="categories" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="subcategories" constraintName="fkiborb6ptvy1t1n3v6klb56l5s" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="categories" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-52">
-        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="order_details" constraintName="fkjyu2qbqt8gnvno9oe9j2s2ldk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="orders" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="order_details" constraintName="fkjyu2qbqt8gnvno9oe9j2s2ldk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="orders" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-53">
-        <addForeignKeyConstraint baseColumnNames="establishment_filter_id" baseTableName="products" constraintName="fkk1y014eougo40urpwufyys8fp" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="establishment_filters" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="establishment_filter_id" baseTableName="products" constraintName="fkk1y014eougo40urpwufyys8fp" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="establishment_filters" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-54">
-        <addForeignKeyConstraint baseColumnNames="establishment_id" baseTableName="establishment_adresses" constraintName="fkmg0q2k4rsk5x6sn4gvn20r96v" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="establishments" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="establishment_id" baseTableName="establishment_adresses" constraintName="fkmg0q2k4rsk5x6sn4gvn20r96v" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="establishments" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-55">
-        <addForeignKeyConstraint baseColumnNames="product_id" baseTableName="order_items" constraintName="fkocimc7dtr037rh4ls4l95nlfi" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="products" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="product_id" baseTableName="order_items" constraintName="fkocimc7dtr037rh4ls4l95nlfi" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="products" validate="true"/>
     </changeSet>
     <changeSet author="malibuchka (generated)" id="1740090284184-56">
-        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="addresses" constraintName="fksv7a6xjwuwlcwxbq98p0gqna" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="orders" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="addresses" constraintName="fksv7a6xjwuwlcwxbq98p0gqna" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="orders" validate="true"/>
     </changeSet>
 </databaseChangeLog>
