@@ -6,6 +6,8 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "discounts")
@@ -24,6 +26,7 @@ public class DiscountProduct extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "product_id", nullable = false)
     @NotNull(message = "Продукт обязателен")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Product product;
 
     @Transient

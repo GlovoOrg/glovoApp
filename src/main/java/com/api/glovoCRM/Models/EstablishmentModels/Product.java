@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 
@@ -37,13 +39,16 @@ public class Product extends BaseEntity {
     private boolean active = true;
 
     @OneToOne(mappedBy = "product", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private DiscountProduct discountProduct;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "establishment_id")
     private Establishment establishment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "establishmentFilter_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private EstablishmentFilter establishmentFilter;
 }

@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "image_associations")
@@ -20,6 +22,7 @@ public class ImageAssociation {
 
     @OneToOne
     @JoinColumn(name = "image_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Image image;
 
     @Enumerated(EnumType.STRING)

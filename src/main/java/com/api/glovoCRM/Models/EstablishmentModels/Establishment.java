@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -59,18 +61,22 @@ public class Establishment extends BaseEntity {
 
     @OneToMany(mappedBy = "establishment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("name asc")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Product> products = new ArrayList<>();
 
     @OneToMany(mappedBy = "establishment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("name asc")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<EstablishmentFilter> establishment_filters = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "subcategory_id", nullable = false)
     @NotNull(message = "Подкатегория обязательна")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private SubCategory subcategory;
 
     @OneToOne(mappedBy = "establishment", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private EstablishmentAddress establishmentAddress;
 
     @Embedded

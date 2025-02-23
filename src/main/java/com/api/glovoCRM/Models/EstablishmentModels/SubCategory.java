@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +29,14 @@ public class SubCategory extends BaseEntity {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "fk_category_subcategory"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull(message = "Категория обязательна")
     private Category category;
 
     @OneToMany(mappedBy = "subcategory", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @OrderBy("name asc")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Establishment> establishments = new ArrayList<>();
 
     @Transient

@@ -65,14 +65,19 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+//    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Override
-    @CacheEvict(allEntries = true, cacheNames = {"categories", "subcategories"})
+//    @CacheEvict(allEntries = true, cacheNames = {"categories", "subcategories"})
     public void deleteEntity(Long categoryId) {
         Category category = categoryDAO.findById(categoryId)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"));
-        super.deleteImageRecord(categoryId, EntityType.Category);
-        categoryDAO.delete(category);
+
+            try{
+                super.deleteImageRecord(categoryId, EntityType.Category);
+            } catch (Exception e) {
+                throw new RuntimeException("jjjj");
+            }
+        categoryDAO.deleteById(category.getId());
     }
     @CacheEvict(allEntries = true, cacheNames = {"categories", "subcategories"})
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)

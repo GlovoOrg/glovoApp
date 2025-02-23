@@ -6,6 +6,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <!-- Ребята, это файлВВ, который загружает файл с таблицами-->
-    <include file="init/create-tables-changelog.xml" relativeToChangelogFile="true" />
+<!--    <include file="init/create-tables-changelog.xml" relativeToChangelogFile="true" />-->
+    <include file="db/changelog/generated-changelog.xml"/>
     <include file="insert/insert-data-changelog.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

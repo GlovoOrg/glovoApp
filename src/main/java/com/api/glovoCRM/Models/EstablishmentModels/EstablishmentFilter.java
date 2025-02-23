@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +31,11 @@ public class EstablishmentFilter extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "establishment_id")
     @NotNull(message = "Заведение обязательно")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Establishment establishment;
 
     @OneToMany(mappedBy = "establishmentFilter")
     @OrderBy("name asc")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Product> products = new ArrayList<>();
 }

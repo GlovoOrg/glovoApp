@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "establishment_adresses")
@@ -35,6 +37,7 @@ public class EstablishmentAddress extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "establishment_id")
     @NotNull(message = "Заведение обязательно")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Establishment establishment;
 
     @Transient

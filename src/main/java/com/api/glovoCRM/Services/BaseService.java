@@ -90,19 +90,16 @@ public abstract class BaseService<T, С extends BaseRequestNotNull, U extends Ba
 
             String objectName = extractObjectName(image.getUrl());
 
-            if (!minioService.validateObjectInBucket(image.getBucket(), objectName)) {
-                log.warn("Объект {} уже удален из MinIO", objectName);
-            } else {
-                minioService.deleteFile(image.getBucket(), objectName);
-            }
+            minioService.deleteFile(image.getBucket(), objectName);
 
-        } catch (SuchResourceNotFoundEx e) {
-            log.warn("Ошибка при удалении изображения: {}", e.getMessage());
-            throw e;
+            System.out.println("_+++++++++++++++++++++++++++++++++++");
         } catch (Exception e) {
-            log.error("Неожиданная ошибка при удалении изображения: {}", e.getMessage(), e);
-            throw new RuntimeException("Не удалось удалить изображение", e);
-        }
+            log.error("Ошибка при удалении изображения: {}", e.getMessage());
+            throw e;}
+//        } catch (Exception e) {
+//            log.error("Неожиданная ошибка при удалении изображения: {}", e.getMessage(), e);
+//            throw new RuntimeException("Не удалось удалить изображение", e);
+//        }
     }
 
     protected void updateImageRecord(Long ownerId, EntityType entityType, MultipartFile newImage) {

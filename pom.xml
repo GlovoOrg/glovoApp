@@ -31,10 +31,6 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-core</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
@@ -94,6 +90,16 @@
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.liquibase.ext</groupId>
+			<artifactId>liquibase-hibernate6</artifactId>
+			<version>4.25.0</version> <!-- Актуальная версия -->
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>6.4.1.Final</version>
 		</dependency>
 
 		<!-- MapStruct (DTO Mapping) -->
@@ -156,10 +162,6 @@
 			<groupId>com.github.ben-manes.caffeine</groupId>
 			<artifactId>caffeine</artifactId>
 			<version>3.1.8</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 
 		<!-- Hibernate Validator -->
@@ -229,6 +231,30 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>4.25.0</version>
+				<configuration>
+					<!-- Указываем, что файл конфигурации не требуется -->
+					<propertyFileWillOverride>false</propertyFileWillOverride>
+					<propertyFile></propertyFile>
+					<url>jdbc:postgresql://localhost:5442/glovoDB</url>
+					<username>glovoTeam</username>
+					<password>glovoTeam</password>
+					<driver>org.postgresql.Driver</driver>
+					<referenceUrl>hibernate:spring:com.api.glovoCRM.Models?dialect=org.hibernate.dialect.PostgreSQLDialect</referenceUrl>
+					<changeLogFile>src/main/resources/db/changelog/generated-changelog.xml</changeLogFile>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.liquibase.ext</groupId>
+						<artifactId>liquibase-hibernate6</artifactId>
+						<version>4.25.0</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
 
 			<!-- Spring Boot Maven Plugin -->
 			<plugin>
