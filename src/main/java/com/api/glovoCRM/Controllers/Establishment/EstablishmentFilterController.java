@@ -131,9 +131,4 @@ public class EstablishmentFilterController {
         return ResponseEntity.ok(establishmentFilterMapper.toDTOList(entity));
     }
 
-    @GetMapping("get-name-dsl")
-    public ResponseEntity<List<EstablishmentFilterDTO>> getByNameDsl(@RequestParam String name) {
-        List<EstablishmentFilter> establishments = establishmentFilterService.getEstablishmentFilterByNameDSL(name);
-        return ResponseEntity.ok(establishmentFilterMapper.toDTOList(establishments));
-    }
 }

@@ -90,8 +90,9 @@ public class User extends BaseEntity implements UserDetails {
                 inverseJoinColumns = @JoinColumn(name = "role_id"))
     public Set<Role> roles = new HashSet<>();
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
-    private Cart cart;
+    @Transient
+    private String cartId;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("createdTime desc")

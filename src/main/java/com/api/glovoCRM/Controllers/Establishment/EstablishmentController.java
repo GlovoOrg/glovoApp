@@ -55,9 +55,5 @@ public class EstablishmentController extends BaseControllerEstablishment<Establi
         return ResponseEntity.ok(establishmentMapper.toDTOList(establishments));
     }
 
-    @GetMapping("get-name-dsl")
-    public ResponseEntity<List<EstablishmentDTO>> getByNameDsl(@RequestParam String name) {
-        List<Establishment> establishments = establishmentService.getEstablishmentByNameDSL(name);
-        return ResponseEntity.ok(establishmentMapper.toDTOList(establishments));
-    }
+
 }

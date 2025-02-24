@@ -3,7 +3,6 @@ package com.api.glovoCRM.Services.EstablishmentServices;
 import com.api.glovoCRM.DAOs.CategoryDAO;
 import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
 import com.api.glovoCRM.DAOs.ImageDAO;
-import com.api.glovoCRM.DAOs.QueryDSL.EstablishmentQueryDSL.CategoriesDAOQueryDSL;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Specifications.EstablimentSpecifications.CategorySpecification;
@@ -30,14 +29,12 @@ import java.util.List;
 public class CategoryService extends BaseService<Category, CategoryCreateRequest, CategoryUpdateRequest, CategoryPatchRequest> {
     private final CategoryDAO categoryDAO;
     private final CategorySpecification categorySpecification;
-    private final CategoriesDAOQueryDSL categoriesDAOCustom;
     @Autowired
     public CategoryService(CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO,
-                           MinioService minioService, CategorySpecification categorySpecification, CategoriesDAOQueryDSL categoriesDAOCustom) {
+                           MinioService minioService, CategorySpecification categorySpecification) {
         super(imageDAO, imageAssociationsDAO, minioService);
         this.categoryDAO = categoryDAO;
         this.categorySpecification = categorySpecification;
-        this.categoriesDAOCustom = categoriesDAOCustom;
     }
 
 
@@ -125,9 +122,6 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
         return categoryDAO.findAll(spec);
     }
 
-    public List<Category> getCategoriesByNameDSL(String name) {
-        return categoriesDAOCustom.findBySimilarNameQueryDSL(name);
-    }
 
 
 }
