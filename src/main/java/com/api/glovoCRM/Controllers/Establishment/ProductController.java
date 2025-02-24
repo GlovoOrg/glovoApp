@@ -28,9 +28,5 @@ public class ProductController extends BaseControllerEstablishment<ProductDTO, P
         this.productMapper = productMapper;
     }
 
-    @GetMapping("get-name-dsl")
-    public ResponseEntity<List<ProductDTO>> getByNameDsl(@RequestParam String name) {
-        List<Product> establishments = productService.getProductsByNameDSL(name);
-        return ResponseEntity.ok(productMapper.toDTOList(establishments));
-    }
+
 }

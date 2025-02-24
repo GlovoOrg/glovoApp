@@ -3,7 +3,6 @@ package com.api.glovoCRM.Services.EstablishmentServices;
 import com.api.glovoCRM.DAOs.CategoryDAO;
 import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
 import com.api.glovoCRM.DAOs.ImageDAO;
-import com.api.glovoCRM.DAOs.QueryDSL.EstablishmentQueryDSL.SubcategoryDAOQueryDSL;
 import com.api.glovoCRM.DAOs.SubCategoryDAO;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
@@ -33,15 +32,15 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
     private final SubCategoryDAO subCategoryDAO;
     private final CategoryDAO categoryDAO;
     private final SubcategorySpecification subcategorySpecification;
-    private final SubcategoryDAOQueryDSL subcategoryDAOQueryDSL;
 
     @Autowired
-    public SubCategoryService(SubCategoryDAO subCategoryDAO, CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, SubcategorySpecification subcategorySpecification, SubcategoryDAOQueryDSL subcategoryDAOQueryDSL) {
+    public SubCategoryService(SubCategoryDAO subCategoryDAO
+            ,CategoryDAO categoryDAO, ImageDAO imageDAO
+            , ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, SubcategorySpecification subcategorySpecification) {
         super(imageDAO, imageAssociationsDAO, minioService);
         this.subCategoryDAO = subCategoryDAO;
         this.categoryDAO = categoryDAO;
         this.subcategorySpecification = subcategorySpecification;
-        this.subcategoryDAOQueryDSL = subcategoryDAOQueryDSL;
     }
 
     @Override
@@ -155,7 +154,5 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
         }
     }
 
-    public List<SubCategory> getSubcategoriesByNameDSL(String name) {
-        return subcategoryDAOQueryDSL.findBySimilarNameQueryDSL(name);
-    }
+
 }

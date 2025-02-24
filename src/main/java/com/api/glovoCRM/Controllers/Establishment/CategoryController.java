@@ -27,9 +27,5 @@ public class CategoryController extends BaseControllerEstablishment<CategoryDTO,
         this.categoryMapper = categoryMapper;
     }
 
-    @GetMapping("get-name-dsl")
-    public ResponseEntity<List<CategoryDTO>> getByNameDsl(@RequestParam String name) {
-        List<Category> categories = categoryService.getCategoriesByNameDSL(name);
-        return ResponseEntity.ok(categoryMapper.toDTOList(categories));
-    }
+
 }

@@ -37,9 +37,5 @@ public class SubCategoryController extends BaseControllerEstablishment<
         this.subCategoryMapper = subCategoryMapper;
     }
 
-    @GetMapping("get-name-dsl")
-    public ResponseEntity<List<SubCategoryDTO>> getByNameDsl(@RequestParam String name) {
-        List<SubCategory> subCategories = subCategoryService.getSubcategoriesByNameDSL(name);
-        return ResponseEntity.ok(subCategoryMapper.toDTOList(subCategories));
-    }
+
 }
