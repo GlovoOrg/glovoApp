@@ -35,7 +35,7 @@ public class CartItem {
 
     private BigDecimal totalPriceCart;
 
-    @Indexed // Для связи с корзиной
+    @Indexed
     private String cartId;
 
     public void recalculateTotal() {

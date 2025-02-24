@@ -26,7 +26,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@RedisHash(value = "Cart", timeToLive = 86400) // 24 часа TTL
+@RedisHash(value = "Cart", timeToLive = 86400)
 public class Cart {
     @Id
     private String id;

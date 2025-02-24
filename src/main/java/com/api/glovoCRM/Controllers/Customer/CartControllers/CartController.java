@@ -1,5 +1,7 @@
 package com.api.glovoCRM.Controllers.Customer.CartControllers;
 import com.api.glovoCRM.Models.OrderDetailModels.Cart;
+import com.api.glovoCRM.Rest.Requests.CartRequest.CartItemAddRequest;
+import com.api.glovoCRM.Rest.Requests.CartRequest.CartItemDeleteRequest;
 import com.api.glovoCRM.Services.CartService.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,20 +23,21 @@ public class CartController {
         return ResponseEntity.ok(cart);
     }
 
-
     @PostMapping("/addItem")
-    public ResponseEntity<Cart> addToCart(@RequestParam Long userId,
-                                          @RequestParam Long productId,
-                                          @RequestParam int quantity) {
-        Cart updatedCart = cartService.addItemToCart(userId, productId, quantity);
+    public ResponseEntity<Cart> addToCart(@RequestBody CartItemAddRequest request) {
+        Cart updatedCart = cartService.addItemToCart(request.getUserId(), request.getProductId(), request.getQuantity());
         return ResponseEntity.ok(updatedCart);
     }
 
+    @PostMapping("/removeItem")
+    public ResponseEntity<Cart> removeItemFromCart(@RequestBody CartItemDeleteRequest request) {
+        Cart updatedCart = cartService.removeItemFromCart(request.getUserId(), request.getProductId());
+        return ResponseEntity.ok(updatedCart);
+    }
 
-    @DeleteMapping("/{cartId}/item/{itemId}")
-    public ResponseEntity<Void> removeItem(@PathVariable String cartId,
-                                           @PathVariable String itemId) {
-        cartService.removeCartItemFromCart(cartId, itemId);
+    @DeleteMapping("/clear/{userId}")
+    public ResponseEntity<Void> clearCart(@PathVariable Long userId) {
+        cartService.clearCartByUserId(userId);
         return ResponseEntity.ok().build();
     }
 

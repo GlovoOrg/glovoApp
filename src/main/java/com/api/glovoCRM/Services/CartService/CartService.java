@@ -30,23 +30,20 @@ public class CartService {
         this.productService = productService;
     }
 
-    // Оставляем метод для получения корзины без создания
     public Optional<Cart> getCartByUserId(Long userId) {
         return cartDAO.findCartByUserId(userId);
     }
 
-    // Добавляем метод для получения или создания корзины
     public Cart getOrCreateCartByUserId(Long userId) {
         return cartDAO.findCartByUserId(userId)
                 .orElseGet(() -> {
                     Cart newCart = createNewCart(userId);
-                    return cartDAO.save(newCart); // Сохраняем сразу в Redis
+                    return cartDAO.save(newCart);
                 });
     }
 
     @Transactional
     public Cart addItemToCart(Long userId, Long productId, int quantity) {
-        // Используем getOrCreateCartByUserId вместо проверки Optional
         Cart cart = getOrCreateCartByUserId(userId);
 
         Optional<CartItem> isCartItemInCart = cart.getItems().stream()
@@ -68,11 +65,47 @@ public class CartService {
         return cartDAO.save(cart);
     }
 
+    @Transactional
+    public Cart removeItemFromCart(Long userId, Long productId) {
+        Cart cart = getOrCreateCartByUserId(userId);
+
+        Optional<CartItem> itemToUpdate = cart.getItems().stream()
+                .filter(item -> item.getProductId().equals(productId))
+                .findFirst();
+
+        if (itemToUpdate.isPresent()) {
+            CartItem item = itemToUpdate.get();
+            if (item.getQuantity() > 1) {
+                // Уменьшаем количество на 1
+                item.setQuantity(item.getQuantity() - 1);
+                item.recalculateTotal();
+                cartItemDAO.save(item);
+            } else {
+                // Удаляем элемент, если quantity = 1
+                cart.getItems().remove(item);
+                cartItemDAO.deleteById(item.getId());
+            }
+            cart.recalculateTotal();
+            return cartDAO.save(cart);
+        } else {
+            throw new SuchResourceNotFoundEx("Продукт с id:  " + productId + " не найден в корзине");
+        }
+    }
+
+    @Transactional
+    public void clearCartByUserId(Long userId) {
+        Cart cart = getOrCreateCartByUserId(userId);
+        cartItemDAO.deleteAll(cart.getItems());
+        cart.getItems().clear();
+        cart.setTotalCharge(BigDecimal.ZERO);
+        cartDAO.save(cart);
+    }
+
     private Cart createNewCart(Long userId) {
         Cart cart = new Cart();
         cart.setId(UUID.randomUUID().toString());
         cart.setUserId(userId);
-        return cart; // Теперь сохранение происходит в getOrCreateCartByUserId
+        return cart;
     }
 
     private CartItem createCartItem(String cartId, Long productId, int quantity) {
@@ -84,7 +117,7 @@ public class CartService {
 
         Product product = productService.findById(productId);
         if (product == null) {
-            throw new SuchResourceNotFoundEx("Product with id " + productId + " not found");
+            throw new SuchResourceNotFoundEx("Продукт с id:  " + productId + " не найден");
         }
         item.setOneProductPriceCart(product.getPrice());
         item.recalculateTotal();
@@ -95,7 +128,7 @@ public class CartService {
     @Transactional
     public void removeCartItemFromCart(String cartId, String cartItemId) {
         Cart cart = cartDAO.findById(cartId)
-                .orElseThrow(() -> new SuchResourceNotFoundEx("Cart not found"));
+                .orElseThrow(() -> new SuchResourceNotFoundEx("Корзина не найдена"));
         cart.getItems().removeIf(item -> item.getId().equals(cartItemId));
         cart.recalculateTotal();
         cartDAO.save(cart);
@@ -105,8 +138,7 @@ public class CartService {
     @Transactional
     public void clearCart(String cartId) {
         Cart cart = cartDAO.findById(cartId)
-                .orElseThrow(() -> new SuchResourceNotFoundEx("Cart not found"));
-
+                .orElseThrow(() -> new SuchResourceNotFoundEx("Корзина не найдена"));
         cartItemDAO.deleteAll(cart.getItems());
         cart.getItems().clear();
         cart.setTotalCharge(BigDecimal.ZERO);
