@@ -1,6 +1,8 @@
-package com.api.glovoCRM.TelegramBot;
+package com.api.glovoCRM.Services.OpenAIService;
 
 
+import com.api.glovoCRM.Rest.Responses.OpenAIResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -8,6 +10,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 
+
+@Slf4j
 @Service
 public class OpenAIService {
 
@@ -16,6 +20,11 @@ public class OpenAIService {
 
     private static final String API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
+    /**
+     * Отправляет запрос в OpenAI API и получает ответ.
+     * @param userMessage сообщение пользователя
+     * @return ответ от OpenAI или сообщение об ошибке
+     */
     public String getGPTResponse(String userMessage) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -30,7 +39,9 @@ public class OpenAIService {
                 + "}";
 
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+        log.info("Отправка запроса в OpenAI API...");
         ResponseEntity<OpenAIResponse> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, OpenAIResponse.class);
+        log.info("Ответ получен от OpenAI API.");
 
         OpenAIResponse openAIResponse = response.getBody();
         //System.out.println("Ответ от API: " + response.getBody());
@@ -47,6 +58,22 @@ public class OpenAIService {
         }
         return "Ошибка: пустой или некорректный ответ от OpenAI.";
     }
+
+    public String getRestaurantAdvice() {
+        return "🍽 Попробуйте национальную кухню или уютное кафе рядом!";
+    }
+
+    public String getMarketAdvice() {
+        return "🏪 В ближайших супермаркетах вы найдете всё необходимое.";
+    }
+
+    public String getFastFoodAdvice() {
+        return "🍔 Захватите бургер или шаурму в одном из заведений поблизости!";
+    }
+
 }
+
+
+
 
 
