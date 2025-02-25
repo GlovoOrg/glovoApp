@@ -1,4 +1,4 @@
-package com.api.glovoCRM.TelegramBot;
+package com.api.glovoCRM.Services.OpenAIService;
 
 
 import lombok.RequiredArgsConstructor;

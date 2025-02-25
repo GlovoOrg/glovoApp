@@ -1,6 +1,7 @@
 package com.api.glovoCRM.TelegramBot;
 
 import com.api.glovoCRM.Services.OpenAIService.OpenAIService;
+import com.api.glovoCRM.Services.OpenAIService.PlacesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
