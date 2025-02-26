@@ -187,20 +187,13 @@
 			<artifactId>twilio</artifactId>
 			<version>8.31.1</version>
 		</dependency>
-		<!-- QueryDLS -->
+
 		<dependency>
-			<groupId>com.querydsl</groupId>
-			<artifactId>querydsl-apt</artifactId>
-			<version>${querydsl.version}</version>
-			<classifier>jakarta</classifier>
-			<scope>provided</scope>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>28.4.0</version>
 		</dependency>
-		<dependency>
-			<groupId>com.querydsl</groupId>
-			<artifactId>querydsl-jpa</artifactId>
-			<classifier>jakarta</classifier>
-			<version>${querydsl.version}</version>
-		</dependency>
+
 
 	</dependencies>
 

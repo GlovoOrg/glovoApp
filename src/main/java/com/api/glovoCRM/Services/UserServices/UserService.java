@@ -31,4 +31,9 @@ public class UserService {
         userDAO.saveAll(inactiveUsers);
         log.info("Завершено выполнение задачи markInactiveUsers.");
     }
+
+    public User findById(Long id) {
+        return userDAO.findById(id).orElse(null);
+    }
+
 }
