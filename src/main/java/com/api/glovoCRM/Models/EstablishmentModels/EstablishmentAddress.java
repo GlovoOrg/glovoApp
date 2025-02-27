@@ -37,7 +37,6 @@ public class EstablishmentAddress extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "establishment_id")
     @NotNull(message = "Заведение обязательно")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Establishment establishment;
 
     @Transient

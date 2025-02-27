@@ -34,7 +34,7 @@ public class AllowedContentTypesValidator implements ConstraintValidator<Allowed
                     .anyMatch(pattern -> matchesPattern(detectedType, pattern));
 
             if (!isValid) {
-                context.disableDefaultConstraintViolation(); // Отключаем стандартное сообщение
+                context.disableDefaultConstraintViolation();
                 context.buildConstraintViolationWithTemplate("Недопустимый тип файла: " + detectedType)
                         .addConstraintViolation();
                 return false;

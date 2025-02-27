@@ -3,53 +3,71 @@ package com.api.glovoCRM.Services;
 import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
 import com.api.glovoCRM.DAOs.ImageDAO;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
+import com.api.glovoCRM.Exceptions.MinioExceptions.*;
 import com.api.glovoCRM.Rest.Requests.BaseRequest;
 import com.api.glovoCRM.Rest.Requests.BaseRequestNotNull;
 import com.api.glovoCRM.Utils.Minio.MinioService;
 import com.api.glovoCRM.Models.EstablishmentModels.Image;
 import com.api.glovoCRM.Models.EstablishmentModels.ImageAssociation;
 import com.api.glovoCRM.constants.EntityType;
+import io.minio.errors.MinioException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
 @Component
 @Slf4j
 @Transactional
-public abstract class BaseService<T, С extends BaseRequestNotNull, U extends BaseRequestNotNull, P extends BaseRequest> {
-
+public abstract class BaseService<T, C extends BaseRequestNotNull, U extends BaseRequestNotNull, P extends BaseRequest> {
 
     protected final ImageDAO imageDAO;
     protected final ImageAssociationsDAO imageAssociationsDAO;
     protected final MinioService minioService;
+    protected final ImageCacheService imageCacheService;
 
-    protected BaseService(ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService) {
+    @Autowired
+    protected BaseService(ImageCacheService imageCacheService, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService) {
         this.imageDAO = imageDAO;
         this.imageAssociationsDAO = imageAssociationsDAO;
         this.minioService = minioService;
+        this.imageCacheService = imageCacheService;
     }
 
     public abstract T findById(Long id);
+
     public abstract List<T> findAll();
-    public abstract T createEntity(С request);
+
+    public abstract T createEntity(C request);
+
     public abstract void deleteEntity(Long entityId);
-    public abstract T updateEntity(Long entityId, U request);
-    public abstract T patchEntity(Long entityId, P request);
+
+    public abstract T updateEntity(Long entityId, U request) throws MinioException;
+
+    public abstract T patchEntity(Long entityId, P request) throws MinioException;
+
     public abstract List<T> findSimilarByNameFilter(String name);
 
-    protected Image createImageRecord(MultipartFile file, String bucketName, EntityType entityType, Long ownerId) {
+    protected void createImageRecord(MultipartFile file, String bucketName, EntityType entityType, Long ownerId) throws MinioException {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("Файл не может быть пустым");
         }
-        String imageUrl = null;
+        String imageUrl;
         String objectName = generateObjectName(entityType, file);
         try {
             imageUrl = minioService.uploadFile(file, bucketName, objectName);
-
-
+        } catch (FileUploadEx | MinioException | MinioOperationEx e) {
+            log.error("Ошибка создания Image: {}", e.getMessage(), e);
+            throw new FileUploadEx("Ошибка сохранения изображения");
+        }
+        if (imageUrl != null) {
             Image image = Image.builder()
                     .url(imageUrl)
                     .filename(objectName)
@@ -66,75 +84,77 @@ public abstract class BaseService<T, С extends BaseRequestNotNull, U extends Ba
             association.setEntityType(entityType);
             association.setOwnerId(ownerId);
             imageAssociationsDAO.save(association);
-            return savedImage;
-        } catch (Exception e) {
-            log.error("Ошибка создания Image: {}", e.getMessage(), e);
-            if (imageUrl != null) {
-                minioService.deleteFile(bucketName, objectName);
-            }
-            throw new RuntimeException("Ошибка при создании записи", e);
         }
     }
 
+    @CacheEvict (value = {"imageAssociations", "imageUrls"}, allEntries = true)
+    public void deleteImageRecord(Long ownerId, EntityType entityType) throws MinioException, FileDeleteEx, SuchResourceNotFoundEx {
 
-    protected void deleteImageRecord(Long ownerId, EntityType entityType) {
+        ImageAssociation imageAssociation = imageCacheService.getImageAssociation(ownerId, entityType);
+        Image image = imageAssociation.getImage();
+        String objectName = imageCacheService.extractObjectName(image.getUrl());
         try {
-            ImageAssociation imageAssociation = imageAssociationsDAO.findByOwnerIdAndEntityType(ownerId, entityType)
-                    .orElseThrow(() -> new SuchResourceNotFoundEx("Ассоциация изображения не найдена"));
-
-            Image image = imageAssociation.getImage();
-
-            imageAssociationsDAO.delete(imageAssociation);
-            log.debug("Удаление записи из ImageAssociations...");
-
-
-            String objectName = extractObjectName(image.getUrl());
-
             minioService.deleteFile(image.getBucket(), objectName);
-
-            System.out.println("_+++++++++++++++++++++++++++++++++++");
+            log.info("Удаление изображения завершено для ownerId={}", ownerId);
+        } catch (SuchResourceNotFoundEx | FileDeleteEx ex) {
+            log.error("Ошибка MinIO: {}", ex.getMessage());
+            throw new MinioException(ex.getMessage());
         } catch (Exception e) {
-            log.error("Ошибка при удалении изображения: {}", e.getMessage());
-            throw e;}
-//        } catch (Exception e) {
-//            log.error("Неожиданная ошибка при удалении изображения: {}", e.getMessage(), e);
-//            throw new RuntimeException("Не удалось удалить изображение", e);
-//        }
+            log.error("Ошибка при удалении изображения(500): {}", e.getMessage());
+            throw e;
+        }
+        imageAssociationsDAO.deleteById(imageAssociation.getId());
+        log.debug("Удаление записи из ImageAssociations...");
+
     }
 
     protected void updateImageRecord(Long ownerId, EntityType entityType, MultipartFile newImage) {
+        if (newImage == null || newImage.isEmpty()) {
+            throw new IllegalArgumentException("Новое изображение не может быть пустым");
+        }
+
+        String newObjectName;
+        String bucket;
+        String oldObjectName;
+        String newImageUrl;
+
         try {
-            ImageAssociation imageAssociation = imageAssociationsDAO.findByOwnerIdAndEntityType(ownerId, entityType)
-                    .orElseThrow(() -> new SuchResourceNotFoundEx("Ассоциация изображения не найдена"));
-            Image image = imageAssociation.getImage();
-            String oldObjectName = extractObjectName(image.getUrl());
-            log.debug("Удаление старого файла из MinIO: {}", oldObjectName);
-            minioService.deleteFile(image.getBucket(), oldObjectName);
-            String newObjectId = generateObjectName(entityType, newImage);
-            String newImageUrl = minioService.uploadFile(newImage, image.getBucket(), newObjectId);
-            log.debug("Загрузка нового файла в MinIO. URL: {}", newImageUrl);
-            image.setUrl(newImageUrl);
-            image.setFilename(newObjectId);
-            image.setSize(newImage.getSize());
-            image.setOriginalFilename(newImage.getOriginalFilename());
-            imageDAO.save(image);
-        } catch (SuchResourceNotFoundEx e) {
-            log.warn("Ошибка при обновлении изображения: {}", e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            log.error("Неожиданная ошибка при обновлении изображения: {}", e.getMessage(), e);
-            throw new RuntimeException("Не удалось обновить изображение", e);
+            ImageAssociation imageAssociation = imageCacheService.getImageAssociation(ownerId, entityType);
+            Image oldImage = imageAssociation.getImage();
+
+            bucket = oldImage.getBucket();
+            oldObjectName = imageCacheService.extractObjectName(oldImage.getUrl());
+
+            newObjectName = generateObjectName(entityType, newImage);
+
+            newImageUrl = minioService.uploadFile(newImage, bucket, newObjectName);
+            if (newImageUrl == null) {
+                throw new FileUploadEx("Не удалось загрузить новое изображение");
+            }
+
+            Image newImageEntity = Image.builder()
+                    .url(newImageUrl)
+                    .filename(newObjectName)
+                    .size(newImage.getSize())
+                    .contentType(newImage.getContentType())
+                    .bucket(bucket)
+                    .originalFilename(newImage.getOriginalFilename())
+                    .build();
+
+            Image savedImage = imageDAO.save(newImageEntity);
+            imageAssociation.setImage(savedImage);
+            imageAssociationsDAO.save(imageAssociation);
+
+            minioService.deleteFile(bucket, oldObjectName);
+            log.info("Старое изображение успешно удалено: {}", oldObjectName);
+
+        } catch (FileUploadEx | MinioException e) {
+            log.error("Ошибка обновления изображения: {}", e.getMessage(), e);
+            throw new FileUploadEx("Ошибка обновления изображения: " + e.getMessage());
         }
     }
-//    private String getBucketForEntityType(EntityType entityType) {
-//        return switch (entityType) {
-//            case Category -> "categories";
-//            case Product -> "products";
-//            case Establishment -> "establishments";
-//            default -> throw new IllegalArgumentException("Неизвестный тип");
-//        };
-//    }
-    // оригинальное расширение.
+
+
     protected String generateObjectName(EntityType entityType, MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
         String extension = originalFilename != null
@@ -143,14 +163,20 @@ public abstract class BaseService<T, С extends BaseRequestNotNull, U extends Ba
         return entityType.name().toLowerCase() + "-" + UUID.randomUUID() + extension;
     }
 
-    protected String extractObjectName(String imageUrl) {
-        if (imageUrl == null || imageUrl.isEmpty()) {
-            throw new IllegalArgumentException("URL изображения не может быть пустым");
+    protected void updateEntityImage(Long entityId, MultipartFile image, EntityType entityType) {
+        if (image != null) {
+            try {
+                updateImageRecord(entityId, entityType, image);
+            } catch (FileUploadEx ex) {
+                log.error("MinIO ошибка во время обновления фоточки для сущности: {}", entityId, ex);
+                throw new RuntimeException("Ошибка обновления фотки в MinIO: " + ex.getMessage(), ex);
+            }
         }
-        String[] parts = imageUrl.split("/");
-        if (parts.length < 4) {
-            throw new IllegalArgumentException("Некорректный URL изображения");
-        }
-        return parts[parts.length - 1];
+    }
+    protected T getEntityById(Long entityId, JpaRepository<T, Long> repository) {
+        return repository.findById(entityId)
+                .orElseThrow(() -> new SuchResourceNotFoundEx(
+                        String.format("Cущность с ID %d не найден(а)", entityId)
+                ));
     }
 }

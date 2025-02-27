@@ -34,7 +34,6 @@ public class LogoutService {
 
         String accessToken= authorizationHeader.substring(7);
         try {
-            // Проверяем, существует ли токен в базе данных
             String name = jwtCore.getSubjectFromAccessToken(accessToken);
             Long userId = userDAO.findByName(name)
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Пользователь не найден: " + name))
@@ -42,10 +41,8 @@ public class LogoutService {
             RefreshToken refreshTokenEntity = refreshTokenDAO.findByUserId(userId)
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Рефреш Токен не найден  для пользователя" + userId));
 
-            // Добавляем токен в черный список
             blackListService.addToBlacklist(refreshTokenEntity.getToken());
             refreshTokenDAO.delete(refreshTokenEntity);
-            //Контекстик чистим
             SecurityContextHolder.clearContext();
             log.info("Пользователь {} успешно вышел", name);
         } catch (Exception e) {

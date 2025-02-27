@@ -2,6 +2,10 @@ package com.api.glovoCRM.Models.EstablishmentModels;
 
 import com.api.glovoCRM.Embeddable.EstablishmentDetails;
 import com.api.glovoCRM.Models.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -60,32 +64,37 @@ public class Establishment extends BaseEntity {
     private LocalTime closeTime;
 
     @OneToMany(mappedBy = "establishment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OrderBy("name asc")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OrderBy("createdTime asc")
+    @JsonIgnore
     private List<Product> products = new ArrayList<>();
 
     @OneToMany(mappedBy = "establishment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OrderBy("name asc")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OrderBy("createdTime asc")
+    @JsonManagedReference
     private List<EstablishmentFilter> establishment_filters = new ArrayList<>();
 
-    @ManyToOne
+//    @JsonProperty ("products")
+//    public List<Product> getMergedProducts() {
+//        List<Product> allProducts = new ArrayList<>(this.products);
+//        this.establishment_filters.forEach(filter -> allProducts.addAll(filter.getProducts()));
+//        return allProducts;
+//    }
+
+    @ManyToOne()
     @JoinColumn(name = "subcategory_id", nullable = false)
     @NotNull(message = "Подкатегория обязательна")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private SubCategory subcategory;
 
     @OneToOne(mappedBy = "establishment", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private EstablishmentAddress establishmentAddress;
 
     @Embedded
     private EstablishmentDetails details;
 
-    public boolean getIsOpen() {
-        LocalTime now = LocalTime.now();
-        return now.isAfter(this.openTime) && now.isBefore(this.closeTime);
-    }
+//    public boolean getIsOpen() {
+//        LocalTime now = LocalTime.now();
+//        return now.isAfter(this.openTime) && now.isBefore(this.closeTime);
+//    }
     public double getRating() {
         if (quantityOfRatings == 0) {
             return 0;
@@ -99,12 +108,12 @@ public class Establishment extends BaseEntity {
         this.totalRating += newRating;
         this.quantityOfRatings++;
     }
-    @PreRemove
-    private void preRemove() {
-        log.debug("Вызов @PreRemove для заведения ID: {}", this.getId());
-        if (subcategory != null) {
-            subcategory.getEstablishments().remove(this);
-            log.debug("Заведение удалено из подкатегории ID: {}", subcategory.getId());
-        }
-    }
+//    @PreRemove
+//    private void preRemove() {
+//        log.debug("Вызов @PreRemove для заведения ID: {}", this.getId());
+//        if (subcategory != null) {
+//            subcategory.getEstablishments().remove(this);
+//            log.debug("Заведение удалено из подкатегории ID: {}", subcategory.getId());
+//        }
+//    }
 }

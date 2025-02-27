@@ -1,5 +1,6 @@
 package com.api.glovoCRM.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,11 +19,11 @@ public abstract class BaseEntity {
     @Column(updatable = false, name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @JsonIgnore
     @CreationTimestamp
     @Column(updatable = false, name = "createdTime")
     private LocalDateTime createdTime;
-
+    @JsonIgnore
     @UpdateTimestamp
     @Column(name = "updatedTime")
     private LocalDateTime updatedTime;

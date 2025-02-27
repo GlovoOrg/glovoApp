@@ -42,7 +42,6 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.oAuth2SuccessHandler = auth2SuccessHandler;
         this.stuffAuthProvider = stuffAuthProvider;
-
     }
 
     @Bean
@@ -62,8 +61,8 @@ public class SecurityConfig {
                                 .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(customOauth2UserService))
                                 .successHandler(oAuth2SuccessHandler))
                 .logout(logout -> logout.logoutSuccessUrl("/login")
-                        .invalidateHttpSession(true) // узнать
-                        .clearAuthentication(true)) // узнать
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true))
                 .formLogin(Customizer.withDefaults())
                 .authenticationProvider(phoneAuthProvider)
                 .authenticationProvider(stuffAuthProvider)

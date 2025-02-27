@@ -28,7 +28,6 @@ public class Category extends BaseEntity {
     private String name;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @OrderBy("name asc")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OrderBy("createdTime asc")
     private List<SubCategory> subCategories = new ArrayList<>();
 }

@@ -32,9 +32,5 @@ public class TwilioService {
                 "Ваш код безопасности для сайта glovo: " + code
         ).create();
     }
-    @Recover
-    public void recoverSendSms(Exception e, String toPhoneNumber, String code) {
-        log.error("Не удалось отправить смс после 4 попыток: {}", e.getMessage());
-        throw new RuntimeException("Ошибка отправки SMS");
-    }
+
 }

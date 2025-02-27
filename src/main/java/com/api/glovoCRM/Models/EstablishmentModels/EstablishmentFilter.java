@@ -1,6 +1,9 @@
 package com.api.glovoCRM.Models.EstablishmentModels;
 
 import com.api.glovoCRM.Models.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,11 +34,11 @@ public class EstablishmentFilter extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "establishment_id")
     @NotNull(message = "Заведение обязательно")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private Establishment establishment;
 
     @OneToMany(mappedBy = "establishmentFilter")
-    @OrderBy("name asc")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OrderBy("createdTime asc")
+    @JsonManagedReference
     private List<Product> products = new ArrayList<>();
 }

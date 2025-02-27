@@ -3,7 +3,9 @@ package com.api.glovoCRM.DAOs;
 import com.api.glovoCRM.Models.EstablishmentModels.SubCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,4 +18,8 @@ public interface SubCategoryDAO extends JpaRepository<SubCategory, Long>, JpaSpe
     Optional<SubCategory> findById(long id);
     @Query("select c from SubCategory c left join fetch c.establishments")
     List<SubCategory> findAllSubCategories();
+    @Modifying
+    @Query("delete from SubCategory c where c.id=:id")
+    void deleteSubcategoryById(@Param("id") long id);
+
 }

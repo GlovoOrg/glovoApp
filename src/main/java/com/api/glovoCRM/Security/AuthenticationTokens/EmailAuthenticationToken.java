@@ -6,10 +6,9 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 public class EmailAuthenticationToken extends AbstractAuthenticationToken {
-    private final Object principal; // Почта
-    private final Object credentials; // Пароль
+    private final Object principal;
+    private final Object credentials;
 
-    // Конструктор для НЕаутентифицированного токена (email + password)
     public EmailAuthenticationToken(Object principal, Object credentials) {
         super(null);
         this.principal = principal;
@@ -17,7 +16,6 @@ public class EmailAuthenticationToken extends AbstractAuthenticationToken {
         setAuthenticated(false);
     }
 
-    // Конструктор для аутентифицированного токена (с authorities)
     private EmailAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;

@@ -30,35 +30,33 @@ public class SubCategory extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "fk_category_subcategory"))
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull(message = "Категория обязательна")
     private Category category;
 
     @OneToMany(mappedBy = "subcategory", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @OrderBy("name asc")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OrderBy("createdTime asc")
     private List<Establishment> establishments = new ArrayList<>();
 
     @Transient
     private Long categoryId;
 
-    @PreRemove
-    private void preRemove() {
-        log.debug("Вызов @PreRemove для подкатегории ID: {}", this.getId());
-        if (category != null) {
-            category.getSubCategories().remove(this);
-            log.debug("Подкатегория удалена из категории ID: {}", category.getId());
-        }
-    }
-    @PreUpdate
-    private void preUpdate() {
-        log.debug("Вызов @PreUpdate для подкатегории ID: {}", this.getId());
-        if (category != null) {
-            category.getSubCategories().remove(this);
-            category.getSubCategories().add(this);
-            log.debug("Подкатегория обновлена в категории ID: {}", category.getId());
-        }
-    }
+//    @PreRemove
+//    private void preRemove() {
+//        log.debug("Вызов @PreRemove для подкатегории ID: {}", this.getId());
+//        if (category != null) {
+//            category.getSubCategories().remove(this);
+//            log.debug("Подкатегория удалена из категории ID: {}", category.getId());
+//        }
+//    }
+//    @PreUpdate
+//    private void preUpdate() {
+//        log.debug("Вызов @PreUpdate для подкатегории ID: {}", this.getId());
+//        if (category != null) {
+//            category.getSubCategories().remove(this);
+//            category.getSubCategories().add(this);
+//            log.debug("Подкатегория обновлена в категории ID: {}", category.getId());
+//        }
+//    }
     @PrePersist
     private void linkCategory(){
         if(this.category == null && this.categoryId != null){

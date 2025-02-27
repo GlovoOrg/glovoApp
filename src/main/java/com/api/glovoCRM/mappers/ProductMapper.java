@@ -2,6 +2,7 @@ package com.api.glovoCRM.mappers;
 
 import com.api.glovoCRM.DTOs.EstablishmentDTOs.ProductDTO;
 import com.api.glovoCRM.Models.EstablishmentModels.Product;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -9,8 +10,10 @@ import org.mapstruct.Named;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {DiscountProductMapper.class, EstablishmentFilterMapper.class})
+@Mapper(componentModel = "spring", uses = {DiscountProductMapper.class})
 public interface ProductMapper extends BaseMapper<Product, ProductDTO> {
+    
+    @Named("toProductForEstablishment")
     @Mapping(target = "id", source = "id")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "name", source = "name")
@@ -19,8 +22,20 @@ public interface ProductMapper extends BaseMapper<Product, ProductDTO> {
     @Mapping(target = "finalPrice", expression = "java(calculateFinalPrice(product))")
     @Mapping(target = "discountPercentage", expression = "java(getDiscountPercentage(product))")
     @Mapping(target = "discountMessage", expression = "java(getDiscountMessage(product))")
-    @Mapping(target = "discountProductDTO", source = "discountProduct")
     ProductDTO toDTO(Product product);
+
+    @Named("toProductForFilter")
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "description", source = "description")
+    @Mapping(target = "originalPrice", source = "price")
+    @Mapping(target = "imageUrl", expression = "java(com.api.glovoCRM.DTOs.EstablishmentDTOs.Utils.ImageUtil.getImageUrl(product.getId(), com.api.glovoCRM.constants.EntityType.Product))")
+    @Mapping(target = "finalPrice", expression = "java(calculateFinalPrice(product))")
+    @Mapping(target = "discountPercentage", expression = "java(getDiscountPercentage(product))")
+    @Mapping(target = "discountMessage", expression = "java(getDiscountMessage(product))")
+    ProductDTO toProductForFilter(Product product);
+
+
 
     default BigDecimal calculateFinalPrice(Product product) {
         if (product.getDiscountProduct() != null && product.getDiscountProduct().isActive()) {
@@ -50,4 +65,7 @@ public interface ProductMapper extends BaseMapper<Product, ProductDTO> {
                 .map(this::toDTO)
                 .toList();
     }
+
+//    @IterableMapping (qualifiedByName = "toProductForFilter")
+//    List<ProductDTO> toProductListForFilter(List<Product> products);
 }

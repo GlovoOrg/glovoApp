@@ -1,21 +1,13 @@
 package com.api.glovoCRM.DTOs.EstablishmentDTOs;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.util.List;
-
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode (callSuper = true)
 @Data
-@SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
-public class SubCategoryDTO extends BaseDTO{
+public class SubCategoryWithEstablishmentsDTO extends BaseDTO{
     private Long categoryId;
     private String categoryName;
     private List<EstablishmentDTO> establishments;
-
 }

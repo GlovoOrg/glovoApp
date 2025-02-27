@@ -1,6 +1,7 @@
 package com.api.glovoCRM.Rest.Requests.CategoryRequests;
 
 
+import com.api.glovoCRM.Rest.Requests.BaseRequest;
 import com.api.glovoCRM.Rest.Requests.BaseRequestNotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,6 +9,6 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class CategoryPatchRequest extends BaseRequestNotNull {
+public class CategoryPatchRequest extends BaseRequest {
 
 }

@@ -5,6 +5,7 @@ import com.api.glovoCRM.Rest.Requests.BaseRequest;
 import com.api.glovoCRM.Rest.Requests.BaseRequestNotNull;
 import com.api.glovoCRM.Services.BaseService;
 import com.api.glovoCRM.mappers.BaseMapper;
+import io.minio.errors.MinioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,7 +66,7 @@ public abstract class BaseControllerEstablishment<DTO, ENTITY, CREATE_REQUEST ex
     @Operation(summary = "Обновить сущность", description = "Обновляет сущность по ID")
     @ApiResponse(responseCode = "200", description = "Сущность успешно обновлена")
     @PutMapping("/{id}")
-    public ResponseEntity<DTO> updateEntity(@PathVariable Long id, @Valid @ModelAttribute UPDATE_REQUEST request) {
+    public ResponseEntity<DTO> updateEntity(@PathVariable Long id, @Valid @ModelAttribute UPDATE_REQUEST request) throws MinioException {
         ENTITY entity = baseService.updateEntity(id, request);
         return ResponseEntity.ok(baseMapper.toDTO(entity));
     }
@@ -73,7 +74,7 @@ public abstract class BaseControllerEstablishment<DTO, ENTITY, CREATE_REQUEST ex
     @Operation(summary = "Частично обновить сущность", description = "Частично обновляет сущность по ID")
     @ApiResponse(responseCode = "200", description = "Сущность успешно частично обновлена")
     @PatchMapping("/{id}")
-    public ResponseEntity<DTO> patchEntity(@PathVariable Long id, @Valid @ModelAttribute PATCH_REQUEST request) {
+    public ResponseEntity<DTO> patchEntity(@PathVariable Long id, @Valid @ModelAttribute PATCH_REQUEST request) throws MinioException {
         ENTITY entity = baseService.patchEntity(id, request);
         return ResponseEntity.ok(baseMapper.toDTO(entity));
     }
