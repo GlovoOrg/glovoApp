@@ -193,6 +193,16 @@
 			<artifactId>stripe-java</artifactId>
 			<version>28.4.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.konghq</groupId>
+			<artifactId>unirest-java</artifactId>
+			<version>3.14.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.11.0</version>
+		</dependency>
 
 
 	</dependencies>

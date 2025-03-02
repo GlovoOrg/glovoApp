@@ -1,6 +1,8 @@
 package com.api.glovoCRM.DTOs.OrderDTOs;
 
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTO;
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
+import com.api.glovoCRM.Models.OrderDetailModels.PaymentDetail;
 import com.api.glovoCRM.constants.EStatusOrder;
 import lombok.*;
 
@@ -19,4 +21,5 @@ public class OrderDTO {
     private Long userId;
     private AddressDTO address;
     private OrderDetailDTO orderDetail;
+    private PaymentDetailDTO paymentDetail;
 }

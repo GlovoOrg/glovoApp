@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "order_details")
 @Getter
@@ -24,7 +26,7 @@ public class OrderDetail extends BaseEntity {
 
     @PositiveOrZero(message = "Стоимость доставки не может быть отрицательной")
     @Column(name = "cost_of_delivery", nullable = false)
-    private int costOfDelivery;
+    private BigDecimal costOfDelivery;
 
     @PositiveOrZero(message = "Расстояние не может быть отрицательным")
     @Column(name = "distance", nullable = false)
