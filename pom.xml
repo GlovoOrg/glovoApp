@@ -187,20 +187,23 @@
 			<artifactId>twilio</artifactId>
 			<version>8.31.1</version>
 		</dependency>
-		<!-- QueryDLS -->
+
 		<dependency>
-			<groupId>com.querydsl</groupId>
-			<artifactId>querydsl-apt</artifactId>
-			<version>${querydsl.version}</version>
-			<classifier>jakarta</classifier>
-			<scope>provided</scope>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>28.4.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.querydsl</groupId>
-			<artifactId>querydsl-jpa</artifactId>
-			<classifier>jakarta</classifier>
-			<version>${querydsl.version}</version>
+			<groupId>com.konghq</groupId>
+			<artifactId>unirest-java</artifactId>
+			<version>3.14.5</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+
 
 	</dependencies>
 
