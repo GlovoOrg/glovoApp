@@ -84,7 +84,22 @@ services:
     networks:
       - glovoApp-backend
     mem_reservation: 256M
-
+  stripe-cli:
+    image: stripe/stripe-cli:latest
+    container_name: stripe-cli
+    environment:
+      - STRIPE_API_KEY=sk_test_51QmyzgKXEAbvN8fNH574XqzghIqD1jyKw1TYEXd5En77ZO7bNGrBFf79OXd244tAVbFB0kcuQ6Yxi8vFOcbRdn31004cx8ylOn # Замените на ваш тестовый API-ключ Stripe
+      - STRIPE_DEVICE_NAME=local-glovo # Имя устройства для Stripe CLI
+    command: listen --forward-to http://host.docker.internal:8080/api/v1/payments/webhook # Укажите URL вашего приложения
+    ports:
+      - "4242:4242" # Порт для Stripe CLI (по умолчанию для вебхуков)
+    networks:
+      - glovoApp-backend
+    depends_on:
+      - glovo-postgres # Предполагаем, что Stripe может зависеть от базы данных
+    volumes:
+      - ./stripe:/stripe # Опционально: для сохранения конфигурации
+    mem_reservation: 64M
 volumes:
   glovo-data: {}
   minio_runtime_data: {}
