@@ -8,6 +8,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface AddressMapper extends BaseMapper<Address, AddressDTO> {
+    @Override
     @Mapping(source = "order.id", target = "orderId")
     AddressDTO toDTO(Address address);
 }

@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface OrderItemMapper extends BaseMapper<OrderItem, OrderItemDTO> {
+    @Override
     @Mapping(source = "order.id", target = "orderId")
     @Mapping(source = "product.id", target = "productId")
     OrderItemDTO toDTO(OrderItem orderItem);

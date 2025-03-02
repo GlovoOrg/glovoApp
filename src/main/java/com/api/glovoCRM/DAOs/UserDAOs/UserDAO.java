@@ -4,6 +4,7 @@ import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.constants.AuthProviders;
 import com.api.glovoCRM.constants.EUserStatuses;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserDAO extends JpaRepository<User, Long> {
+public interface UserDAO extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     List<User> findByLastLoginDateBefore(LocalDateTime date);
 
     Optional<User> findByName(String name);
@@ -35,4 +36,6 @@ public interface UserDAO extends JpaRepository<User, Long> {
     Optional<User> findByPhoneNumber(String phoneNumber);
 
     boolean existsByPhoneNumber(String phoneNumber);
+
+
 }

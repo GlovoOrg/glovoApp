@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface PaymentDetailMapper extends BaseMapper<PaymentDetail, PaymentDetailDTO> {
+    @Override
     @Mapping(source = "order.id", target = "orderId")
     PaymentDetailDTO toDTO(PaymentDetail paymentDetail);
 }
