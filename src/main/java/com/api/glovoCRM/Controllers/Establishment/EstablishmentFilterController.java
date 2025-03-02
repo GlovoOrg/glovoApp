@@ -1,8 +1,10 @@
 package com.api.glovoCRM.Controllers.Establishment;
 
+import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentDTO;
 import com.api.glovoCRM.DTOs.EstablishmentDTOs.EstablishmentFilterDTO;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
+import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
 import com.api.glovoCRM.Models.EstablishmentModels.EstablishmentFilter;
 import com.api.glovoCRM.Rest.Requests.EstablishmentFilterRequests.*;
 import com.api.glovoCRM.Services.EstablishmentServices.EstablishmentFilterService;
@@ -128,4 +130,5 @@ public class EstablishmentFilterController {
         List<EstablishmentFilter> entity = establishmentFilterService.findSimilarByNameFilter(name);
         return ResponseEntity.ok(establishmentFilterMapper.toDTOList(entity));
     }
+
 }

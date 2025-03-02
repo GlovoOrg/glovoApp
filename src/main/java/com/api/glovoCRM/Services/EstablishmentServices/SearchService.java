@@ -39,4 +39,6 @@ public class SearchService {
 
         return establishmentsAndProducts;
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.api.glovoCRM.Specifications;
 
+
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,4 @@ public abstract class BaseSpecification <T>{
             );
         };
     }
-
-
 }

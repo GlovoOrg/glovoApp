@@ -222,4 +222,6 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
         Specification<Product> spec = productSpecification.getBySimilarNameFilter(name);
         return productDAO.findAll(spec);
     }
+
+
 }

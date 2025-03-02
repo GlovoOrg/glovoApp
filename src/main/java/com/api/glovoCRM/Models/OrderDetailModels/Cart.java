@@ -12,32 +12,36 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 //redisHash
-@Entity
-@Table
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@RedisHash("RedisCart")
-public class Cart extends BaseEntity {
+@RedisHash(value = "Cart", timeToLive = 86400)
+public class Cart {
+    @Id
+    private String id;
 
-    @PositiveOrZero(message = "Итоговая сумма не может быть отрицательной")
-    @Column(name = "total_charge", nullable = false)
-    private BigDecimal totalCharge = BigDecimal.valueOf(0);
+    @Indexed
+    private Long userId;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<CartItem> items;
+    private BigDecimal totalCharge = BigDecimal.ZERO;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    @NotNull(message = "Пользователь обязателен")
-    private User user;
+    private List<CartItem> items = new ArrayList<>();
+
+    public void recalculateTotal() {
+        this.totalCharge = items.stream()
+                .map(CartItem::getTotalPriceCart)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 }
 

@@ -86,4 +86,5 @@ public abstract class BaseControllerEstablishment<DTO, ENTITY, CREATE_REQUEST ex
         baseService.deleteEntity(id);
         return ResponseEntity.noContent().build();
     }
+
 }

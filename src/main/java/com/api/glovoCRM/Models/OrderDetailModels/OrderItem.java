@@ -27,7 +27,7 @@ public class OrderItem extends BaseEntity {
 
     @Positive(message = "Цена должна быть положительной")
     @Column(name = "one_product_price_order", nullable = false)
-    private BigDecimal OneProductPriceOrder;
+    private BigDecimal oneProductPriceOrder;
 
     @ManyToOne
     @JoinColumn(name = "order_detail_id", nullable = false)

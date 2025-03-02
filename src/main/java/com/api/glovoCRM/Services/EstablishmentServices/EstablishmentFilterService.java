@@ -145,4 +145,5 @@ public class EstablishmentFilterService {
         Specification<EstablishmentFilter> spec = establishmentFilterSpecification.getBySimilarNameFilter(name);
         return establishmentFilterDAO.findAll(spec);
     }
+
 }

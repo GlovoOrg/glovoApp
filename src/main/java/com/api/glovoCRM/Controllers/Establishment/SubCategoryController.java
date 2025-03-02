@@ -17,6 +17,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.beans.PropertyEditorSupport;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/non-secured/subcategories")
@@ -27,7 +28,14 @@ public class SubCategoryController extends BaseControllerEstablishment<
         SubCategoryUpdateRequest,
         SubCategoryPatchRequest> {
 
-    public SubCategoryController(SubCategoryService subCategoryService, SubCategoryMapper subCategoryMapper) {
+    private final SubCategoryService subCategoryService;
+    private final SubCategoryMapper subCategoryMapper;
+
+    public SubCategoryController( SubCategoryMapper subCategoryMapper, SubCategoryService subCategoryService) {
         super(subCategoryService, subCategoryMapper);
+        this.subCategoryService = subCategoryService;
+        this.subCategoryMapper = subCategoryMapper;
     }
+
+
 }

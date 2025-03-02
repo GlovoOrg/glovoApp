@@ -38,17 +38,17 @@ public class User extends BaseEntity implements UserDetails {
     @Length(min = 3, max = 50, message = "Имя пользователя должно быть в диапозоне 3-50 символов")
 //    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Имя пользователя может содержать только буквы, цифры и подчеркивания")
     @Column(name = "username", unique = true, nullable = false)
-    @NaturalId
+
     private String name;
 
     @Email(message = "Невалидная почта")
     @Column(name = "email", unique = true, length = 122)
-    @NaturalId
+
     private String email;
 
 //    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Неверный формат номера телефона")
     @Column(name = "phone_number", unique = true, length = 20)
-    @NaturalId
+
     private String phoneNumber;
 
 //    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[0-9]).{8,20}$", message = "Пароль должен содержать хотя бы одну заглавную букву, одну цифру и иметь длину от 8 до 20 символов")
@@ -84,8 +84,9 @@ public class User extends BaseEntity implements UserDetails {
                 inverseJoinColumns = @JoinColumn(name = "role_id"))
     public Set<Role> roles = new HashSet<>();
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
-    private Cart cart;
+    @Transient
+    private String cartId;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("createdTime desc")

@@ -44,4 +44,5 @@ public class SearchController {
         result.add(productDTOS);
         return ResponseEntity.ok(result);
     }
+
 }
