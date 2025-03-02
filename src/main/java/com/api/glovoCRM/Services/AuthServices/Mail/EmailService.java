@@ -1,21 +1,20 @@
 package com.api.glovoCRM.Services.AuthServices.Mail;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
 import com.api.glovoCRM.Exceptions.MailSendingEx;
+import com.api.glovoCRM.Services.AuthServices.VerificationCodeService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -23,8 +22,7 @@ import java.util.UUID;
 public class EmailService {
     private final JavaMailSender mailSender;
     private final VerificationCodeService verificationService;
-    private final UserDAO userDAO;
-
+    @Retryable (value = {MessagingException.class}, maxAttempts = 4, backoff = @Backoff (delay = 1000))
     public void sendVerificationEmail(String email) {
         String token = verificationService.generateConfirmationToken();
         verificationService.saveConfirmationToken(token, email);
@@ -126,6 +124,11 @@ public class EmailService {
                 + "</html>";
     }
 
-
-
+    @Recover
+    public void fallbackSendVerificationEmail(MessagingException e, String email) {
+        log.warn("Переключение на телефон для пользователя: {}", email);
+        // Вызов логики для телефона
+        // Например, вызов метода для отправки SMS или переключение на вход через телефон
+        throw new MailSendingEx("Не удалось отправить email, переключение на телефон");
+    }
 }

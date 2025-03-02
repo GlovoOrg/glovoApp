@@ -19,7 +19,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1/establishments")
+@RequestMapping("api/v1/non-secured/establishments")
 public class EstablishmentController extends BaseControllerEstablishment<EstablishmentDTO, Establishment, EstablishmentCreateRequest, EstablishmentUpdateRequest, EstablishmentPatchRequest> {
 
     private final EstablishmentService establishmentService;

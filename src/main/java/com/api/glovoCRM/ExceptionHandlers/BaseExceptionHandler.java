@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.ConcurrentModificationException;
 import java.util.Date;
 
 @Slf4j
@@ -50,5 +51,13 @@ public abstract class BaseExceptionHandler {
             MethodArgumentNotValidException ex, HttpServletRequest request) {
         return buildErrorResponse(ex, request, HttpStatus.BAD_REQUEST, "INVALID_INPUT", "Ошибка валидации запроса");
     }
+
+
+    @ExceptionHandler(ConcurrentModificationException.class)
+    public ResponseEntity<DetailedError> handleMethodArgumentNotValidException(
+            ConcurrentModificationException ex, HttpServletRequest request) {
+        return buildErrorResponse(ex, request, HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE, "GG", null);
+    }
+
 }
 

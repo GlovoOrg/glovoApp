@@ -13,10 +13,12 @@ public class EstablishmentUpdateRequest extends BaseRequestNotNull {
     @Positive(message = "Id подкатегории должен быть положительным")
     private Long subCategoryId;
 
+    @NotNull
     @Min(value = 50, message = "Минимальная стоимость доставки 50")
     @PositiveOrZero(message = "Стоимость доставки не может быть отрицательной")
     private Double priceOfDelivery;
 
+    @NotNull
     @Min(value = 10, message = "Время доставки не может быть меньше 10 минут")
     @Max(value = 60, message = "Время доставки не может быть больше 60 минут")
     @Positive(message = "Время доставки должно быть положительным")
@@ -27,11 +29,16 @@ public class EstablishmentUpdateRequest extends BaseRequestNotNull {
 
     @NotNull(message = "Время закрытия обязательно")
     private LocalTime closeTime;
+    @NotNull
     @NotBlank(message = "Адрес обязателен")
     private String addressLine;
+
+    @NotNull
     @Min(value = -90, message = "Широта должна быть в диапазоне от -90 до 90")
     @Max(value = 90, message = "Широта должна быть в диапазоне от -90 до 90")
     private Double latitude;
+
+    @NotNull
     @Min(value = -180, message = "Долгота должна быть в диапазоне от -180 до 180")
     @Max(value = 180, message = "Долгота должна быть в диапазоне от -180 до 180")
     private Double longitude;

@@ -6,13 +6,11 @@ import com.api.glovoCRM.Exceptions.AuthExceptions.UserNotVerifiedEx;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Security.AuthenticationTokens.EmailAuthenticationToken;
 import com.api.glovoCRM.Services.AuthServices.Mail.EmailService;
-import com.api.glovoCRM.Services.AuthServices.Mail.VerificationCodeService;
+import com.api.glovoCRM.Services.AuthServices.VerificationCodeService;
+import com.api.glovoCRM.constants.EUserStatuses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,18 +39,17 @@ public class EmailAuthProvider implements AuthenticationProvider {
             log.error("Пароль неправильный для пользователя с почтой: {}", email);
             throw new InvalidCredentialsEx("Неверный пароль");
         }
-        if (!user.isEmailVerified()) {
+        if (user.getStatus() == EUserStatuses.PENDING_EMAIL_VERIFICATION) {
             log.error("Пользователю с email: {} нужно подтвердить свою почту", email);
             emailService.sendVerificationEmail(email);
             throw new UserNotVerifiedEx("Аккаунт не подтвержден");
-
         }
         String code = verificationCodeService.generateCode();
         verificationCodeService.saveAuthCode(email, code);
         emailService.sendAuthCodeEmail(email, code);
         log.info("Отправлен 6 значный код для пользователя с почтой: {}", email);
 
-        return EmailAuthenticationToken.authenticated(user.getEmail(), null, user.getAuthorities());
+        return EmailAuthenticationToken.preAuthenticated(email, null);
     }
 
     @Override

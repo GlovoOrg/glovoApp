@@ -22,7 +22,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/api/v1/establishment-filters")
+@RequestMapping("/api/v1/non-secured/establishment-filters")
 @Slf4j
 public class EstablishmentFilterController {
 

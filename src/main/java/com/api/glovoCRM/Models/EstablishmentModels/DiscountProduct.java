@@ -1,11 +1,14 @@
 package com.api.glovoCRM.Models.EstablishmentModels;
 
 import com.api.glovoCRM.Models.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "discounts")
@@ -24,6 +27,7 @@ public class DiscountProduct extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "product_id", nullable = false)
     @NotNull(message = "Продукт обязателен")
+    @JsonIgnore
     private Product product;
 
     @Transient

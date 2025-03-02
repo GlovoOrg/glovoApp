@@ -3,6 +3,7 @@ package com.api.glovoCRM.Security.Config;
 import com.api.glovoCRM.Security.Providers.EmailAuthProvider;
 //import com.api.glovoCRM.Security.Providers.PhoneAuthProvider;
 import com.api.glovoCRM.Security.Providers.PhoneAuthProvider;
+import com.api.glovoCRM.Security.Providers.StuffAuthProvider;
 import com.api.glovoCRM.Services.AuthServices.Oauth2.CustomOauth2UserService;
 import com.api.glovoCRM.Security.jwt.Filter.JwtAuthenticationFilter;
 import com.api.glovoCRM.Services.AuthServices.Oauth2.OAuth2SuccessHandler;
@@ -31,28 +32,27 @@ public class SecurityConfig {
     private final CustomOauth2UserService customOauth2UserService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
-    private final UserDetailsService userDetailsService;
+    private final StuffAuthProvider stuffAuthProvider;
 
     @Autowired
-    public SecurityConfig(PhoneAuthProvider phoneAuthProvider,UserDetailsService userDetailsService, OAuth2SuccessHandler auth2SuccessHandler, EmailAuthProvider emailAuthProvider, CustomOauth2UserService customOauth2UserService, JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(StuffAuthProvider stuffAuthProvider, PhoneAuthProvider phoneAuthProvider, OAuth2SuccessHandler auth2SuccessHandler, EmailAuthProvider emailAuthProvider, CustomOauth2UserService customOauth2UserService, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.phoneAuthProvider = phoneAuthProvider;
         this.emailAuthProvider = emailAuthProvider;
         this.customOauth2UserService = customOauth2UserService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.oAuth2SuccessHandler = auth2SuccessHandler;
-        this.userDetailsService = userDetailsService;
-
+        this.stuffAuthProvider = stuffAuthProvider;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, StuffAuthProvider stuffAuthProvider) throws Exception {
         http
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/", "/non-secured/**", "api/v1/auth/**", "/oauth2/**", "/api/v1/**").permitAll()
+                        .requestMatchers("api/v1/non-secured/**", "api/v1/auth/**", "/oauth2/**", "api/v1").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/login/oauth2/code/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 ->
@@ -65,6 +65,7 @@ public class SecurityConfig {
                         .clearAuthentication(true))
                 .formLogin(Customizer.withDefaults())
                 .authenticationProvider(phoneAuthProvider)
+                .authenticationProvider(stuffAuthProvider)
                 .authenticationProvider(emailAuthProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -4,6 +4,7 @@ import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Security.Providers.EmailAuthProvider;
 import com.api.glovoCRM.Security.Providers.PhoneAuthProvider;
+import com.api.glovoCRM.Security.Providers.StuffAuthProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +39,7 @@ public class SecurityUtils {
             User user = userDAO.findByName(identifier)
                     .or(() -> userDAO.findByEmail(identifier))
                     .or(() -> userDAO.findByPhoneNumber(identifier))
+                    .or(() -> userDAO.findByLogin(identifier))
                     .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
             if(!user.isEnabled()) {
                 throw new RuntimeException("Аккаунт не активирован. Пожалуйста, подтвердите свою почту.");
@@ -46,7 +48,7 @@ public class SecurityUtils {
         };
     }
     @Bean
-    public AuthenticationManager authenticationManager(EmailAuthProvider emailAuthProvider, PhoneAuthProvider phoneAuthProvider) throws Exception {
-        return new ProviderManager(Arrays.asList(phoneAuthProvider, emailAuthProvider));
+    public AuthenticationManager authenticationManager(StuffAuthProvider stuffAuthProvider, EmailAuthProvider emailAuthProvider, PhoneAuthProvider phoneAuthProvider) throws Exception {
+        return new ProviderManager(Arrays.asList(phoneAuthProvider, emailAuthProvider, stuffAuthProvider));
     }
 }

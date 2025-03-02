@@ -5,6 +5,7 @@ import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Rest.Requests.AuthRequests.RegisterRequestPhone;
 import com.api.glovoCRM.Rest.Responses.Auth.RegisterResponse;
+import com.api.glovoCRM.Services.AuthServices.AuthService;
 import com.api.glovoCRM.constants.EUserStatuses;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class RegisterPhoneService {
     private final UserDAO userDAO;
     private final PasswordEncoder passwordEncoder;
+    private final AuthService authService;
 
     @Autowired
-    public RegisterPhoneService(UserDAO userDAO, PasswordEncoder passwordEncoder) {
+    public RegisterPhoneService(UserDAO userDAO, PasswordEncoder passwordEncoder, AuthService authService) {
         this.userDAO = userDAO;
         this.passwordEncoder = passwordEncoder;
+        this.authService = authService;
     }
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public RegisterResponse signUp(RegisterRequestPhone request){
@@ -38,7 +41,8 @@ public class RegisterPhoneService {
         newUser.setName(request.getName());
         newUser.setPhoneNumber(request.getPhoneNumber());
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
-        newUser.setStatus(EUserStatuses.PENDING_PHONE_VERIFICATION);
+        newUser.setStatus(EUserStatuses.PENDING_LOGIN_TO_THE_SYSTEM);
+        authService.assignDefaultRole(newUser);
         userDAO.save(newUser);
         log.info("Пользователь успешно сохранен с номером: {}", newUser.getPhoneNumber());
 

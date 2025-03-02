@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,34 +29,34 @@ public class SubCategory extends BaseEntity {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "fk_category_subcategory"))
     @NotNull(message = "Категория обязательна")
     private Category category;
 
     @OneToMany(mappedBy = "subcategory", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @OrderBy("name asc")
+    @OrderBy("createdTime asc")
     private List<Establishment> establishments = new ArrayList<>();
 
     @Transient
     private Long categoryId;
 
-    @PreRemove
-    private void preRemove() {
-        log.debug("Вызов @PreRemove для подкатегории ID: {}", this.getId());
-        if (category != null) {
-            category.getSubCategories().remove(this);
-            log.debug("Подкатегория удалена из категории ID: {}", category.getId());
-        }
-    }
-    @PreUpdate
-    private void preUpdate() {
-        log.debug("Вызов @PreUpdate для подкатегории ID: {}", this.getId());
-        if (category != null) {
-            category.getSubCategories().remove(this);
-            category.getSubCategories().add(this);
-            log.debug("Подкатегория обновлена в категории ID: {}", category.getId());
-        }
-    }
+//    @PreRemove
+//    private void preRemove() {
+//        log.debug("Вызов @PreRemove для подкатегории ID: {}", this.getId());
+//        if (category != null) {
+//            category.getSubCategories().remove(this);
+//            log.debug("Подкатегория удалена из категории ID: {}", category.getId());
+//        }
+//    }
+//    @PreUpdate
+//    private void preUpdate() {
+//        log.debug("Вызов @PreUpdate для подкатегории ID: {}", this.getId());
+//        if (category != null) {
+//            category.getSubCategories().remove(this);
+//            category.getSubCategories().add(this);
+//            log.debug("Подкатегория обновлена в категории ID: {}", category.getId());
+//        }
+//    }
     @PrePersist
     private void linkCategory(){
         if(this.category == null && this.categoryId != null){

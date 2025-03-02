@@ -25,6 +25,5 @@ public class ImageUtil {
         return imageAssociationsDAO.findByOwnerIdAndEntityType(ownerId, entityType)
                 .map(imageAssociation -> imageAssociation.getImage().getUrl())
                 .orElseThrow(()-> new SuchResourceNotFoundEx("такого изображения нет для таких ownerId и ownerType"));
-
     }
 }

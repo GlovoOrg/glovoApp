@@ -20,7 +20,7 @@ import java.beans.PropertyEditorSupport;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/subcategories")
+@RequestMapping("/api/v1/non-secured/subcategories")
 public class SubCategoryController extends BaseControllerEstablishment<
         SubCategoryDTO,
         SubCategory,

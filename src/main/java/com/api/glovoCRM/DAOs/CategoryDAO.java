@@ -3,7 +3,9 @@ package com.api.glovoCRM.DAOs;
 import com.api.glovoCRM.Models.EstablishmentModels.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,7 +14,16 @@ import java.util.Optional;
 @Repository
 public interface CategoryDAO extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
     boolean existsByName(String name);
-    Optional<Category> findByName(String name);
+//    Optional<Category> findByName(String name);
     @Query("select c from Category c LEFT JOIN FETCH c.subCategories")
     List<Category> findAllCategories();
+    @Modifying
+    @Query("delete from Category c where c.id = :id")
+    void deleteById(@Param ("id") Long id);
+    @Query("select c from Category c left join fetch c.subCategories sc LEFT JOIN FETCH sc.establishments")
+    List<Category> findAllWithSubcategoriesAndEstablishmentsOnly();
+    @Query("select c from Category c left join fetch c.subCategories sc LEFT JOIN FETCH sc.establishments")
+    List<Category> findCategoriesWithSubcategoriesAndEstablishmentsOnly();
+    @Query("select c from Category c left join fetch c.subCategories sc")
+    List<Category> findCategoriesWithSubcategoriesOnly();
 }

@@ -14,8 +14,7 @@ public class ProductDTO extends BaseDTO{
     private String description;
     private BigDecimal originalPrice;
     private BigDecimal finalPrice;
-    private boolean active;
+    private boolean discount_active;
     private int discountPercentage;
     private String discountMessage;
-    private DiscountProductDTO discountProductDTO;
 }

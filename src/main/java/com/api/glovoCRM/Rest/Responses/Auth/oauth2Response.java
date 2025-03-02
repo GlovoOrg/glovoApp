@@ -11,11 +11,18 @@ public class oauth2Response {
     private String refresh_token;
     private String message;
 
-    public oauth2Response(String access_token, String refresh_token) {
+    public oauth2Response(String access_token, String refresh_token, String message) {
+        this.message = message;
         this.access_token = access_token;
         this.refresh_token = refresh_token;
     }
     public oauth2Response(String message) {
         this.message = message;
     }
+
+    public oauth2Response(String access_token, String refresh_token) {
+        this.access_token = access_token;
+        this.refresh_token = refresh_token;
+    }
+
 }

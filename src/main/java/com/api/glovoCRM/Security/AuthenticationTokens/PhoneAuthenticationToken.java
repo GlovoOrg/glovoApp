@@ -6,10 +6,9 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 public class PhoneAuthenticationToken extends AbstractAuthenticationToken {
-    private final Object principal; // Номер телефона
-    private final Object credentials; // password
+    private final Object principal;
+    private final Object credentials;
 
-    // Конструктор для НЕаутентифицированного токена
     public PhoneAuthenticationToken(Object principal, Object credentials) {
         super(null);
         this.principal = principal;
@@ -17,7 +16,6 @@ public class PhoneAuthenticationToken extends AbstractAuthenticationToken {
         setAuthenticated(false);
     }
 
-    // Конструктор для аутентифицированного токена
     public PhoneAuthenticationToken(Object principal, Object credentials,
                                     Collection<? extends GrantedAuthority> authorities) {
         super(authorities);

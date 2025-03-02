@@ -6,7 +6,7 @@ import com.api.glovoCRM.Exceptions.MailSendingEx;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Security.AuthenticationTokens.PhoneAuthenticationToken;
 
-import com.api.glovoCRM.Services.AuthServices.Mail.VerificationCodeService;
+import com.api.glovoCRM.Services.AuthServices.VerificationCodeService;
 import com.api.glovoCRM.Services.AuthServices.Phone.TwilioService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;

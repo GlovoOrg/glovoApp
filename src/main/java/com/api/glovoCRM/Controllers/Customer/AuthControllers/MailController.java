@@ -7,9 +7,8 @@ import com.api.glovoCRM.Rest.Requests.AuthRequests.ResendRequest;
 import com.api.glovoCRM.Rest.Requests.AuthRequests.VerifyCodeRequestMail;
 import com.api.glovoCRM.Rest.Responses.Auth.LoginResponse;
 import com.api.glovoCRM.Rest.Responses.Auth.RegisterResponse;
-import com.api.glovoCRM.Services.AuthServices.LoginServiceMail;
-import com.api.glovoCRM.Services.AuthServices.LogoutService;
-import com.api.glovoCRM.Services.AuthServices.RegisterMailService;
+import com.api.glovoCRM.Services.AuthServices.Mail.LoginServiceMail;
+import com.api.glovoCRM.Services.AuthServices.Mail.RegisterMailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +25,6 @@ import java.util.Map;
 public class MailController {
 
     private final RegisterMailService registerMailService;
-    private final LogoutService logoutService;
     private final LoginServiceMail loginServiceMail;
 
     @PostMapping("/register-mail")
@@ -63,7 +61,7 @@ public class MailController {
 
     @PostMapping("/resend-code-mail")
     public ResponseEntity<?> resendCode(@RequestBody @Valid ResendRequest request) {
-        registerMailService.resendVerificationCode(request.getEmail());
+        loginServiceMail.resendVerificationCode(request.getEmail());
         return ResponseEntity.ok().body(Map.of("message", "Код подтверждения отправлен повторно"));
     }
 }

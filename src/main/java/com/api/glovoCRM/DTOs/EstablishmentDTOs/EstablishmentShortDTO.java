@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -17,4 +18,5 @@ public class EstablishmentShortDTO extends BaseDTO{
     private double priceOfDelivery;
     private int timeOfDelivery;
     private boolean isOpen;
+    private List<ProductDTO> products;
 }

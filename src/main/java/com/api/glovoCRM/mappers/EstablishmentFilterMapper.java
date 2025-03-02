@@ -14,7 +14,7 @@ public interface EstablishmentFilterMapper extends BaseMapper<EstablishmentFilte
     @Override
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
-    @Mapping(target = "products", source = "products")
+    @Mapping(target = "products", source = "products", qualifiedByName = "toProductForFilter")
     EstablishmentFilterDTO toDTO(EstablishmentFilter establishmentFilter);
 
     @Override

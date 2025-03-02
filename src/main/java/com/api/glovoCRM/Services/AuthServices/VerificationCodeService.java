@@ -1,5 +1,6 @@
-package com.api.glovoCRM.Services.AuthServices.Mail;
+package com.api.glovoCRM.Services.AuthServices;
 
+import com.api.glovoCRM.Exceptions.MailSendingEx;
 import com.api.glovoCRM.Utils.Cache.CacheService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,17 +46,45 @@ public class VerificationCodeService {
         cacheService.addAuthCode(emailOrPhone, code, codeExpirationSec);
     }
 
-    public boolean validateAuthCode(String emailOrPhone, String code) {
+    public boolean validateAuthCode(String identificator, String code) {
         log.info("Валидация кода безопасности {}", code);
+        String storedCode = cacheService.getAuthCode(identificator);
+        if (storedCode == null) {
+            log.warn("Код для {} не найден", identificator);
+            return false;
+        }
+        if (storedCode.equals("CONFIRMED")) {
+            log.warn("Код для {} уже подтвержден", identificator);
+            return true;
+        }
+        if (storedCode.equals(code)) {
+            cacheService.addAuthCode(identificator, "CONFIRMED", codeExpirationSec);
+            return true;
+        }
+        return false;
+    }
+//    public boolean validateConfirmationToken(String token) {
+//        log.info("Начался процесс верификации токена {}", token);
+//        String storedToken = cacheService.getAuthCode(token);
+//        if (storedToken == null || !storedToken.equals(token) || storedToken.equals("CONFIRMED") || storedToken.isEmpty()) {
+//            throw new MailSendingEx("Ошибка при проверке токена");
+//        }
+//        return true;
+//    }
+    public boolean isCodeConfirmed(String emailOrPhone) {
+        log.info("Проверка подтверждения кода для {}", emailOrPhone);
         String storedCode = cacheService.getAuthCode(emailOrPhone);
-        return storedCode != null && storedCode.equals(code);
+        if (storedCode == null) {
+            log.warn("Код для {} не найден во время confirmation", emailOrPhone);
+            return false;
+        }
+        return storedCode.equals("CONFIRMED");
     }
 
     public void saveConfirmationToken(String token, String email) {
         cacheService.addConfirmationToken(token, email, linkExpirationSec); // 3 min expiration
         log.info("Токен подтверждения сохранен для: {}", email);
     }
-
     public void removeConfirmationToken(String token) {
         log.info("Удаление токена подтверждения для {}", getEmailByToken(token));
         cacheService.remove(CacheService.CONFIRMATION_PREFIX + token);

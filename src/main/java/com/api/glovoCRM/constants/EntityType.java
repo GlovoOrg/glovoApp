@@ -5,5 +5,4 @@ public enum EntityType {
     SubCategory,
     Establishment,
     Product
-
 }
