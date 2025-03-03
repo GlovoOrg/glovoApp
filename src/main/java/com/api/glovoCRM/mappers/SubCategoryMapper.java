@@ -1,9 +1,8 @@
 package com.api.glovoCRM.mappers;
 
-import com.api.glovoCRM.DAOs.CategoryDAO;
+import com.api.glovoCRM.Repositories.CategoryRepository;
 import com.api.glovoCRM.DTOs.EstablishmentDTOs.SubCategoryDTO;
 import com.api.glovoCRM.DTOs.EstablishmentDTOs.SubCategoryWithEstablishmentsDTO;
-import com.api.glovoCRM.DTOs.EstablishmentDTOs.Utils.ImageUtil;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.EstablishmentModels.Category;
 import com.api.glovoCRM.Models.EstablishmentModels.SubCategory;
@@ -18,7 +17,7 @@ import java.util.List;
 public abstract class SubCategoryMapper implements BaseMapper<SubCategory, SubCategoryDTO>{
 
      @Autowired
-     private CategoryDAO categoryDAO;
+     private CategoryRepository categoryRepository;
 
 
      @Override
@@ -33,7 +32,7 @@ public abstract class SubCategoryMapper implements BaseMapper<SubCategory, SubCa
           if (category == null) {
                return null;
           }
-          return categoryDAO.findById(category.getId())
+          return categoryRepository.findById(category.getId())
                   .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"))
                   .getName();
      }

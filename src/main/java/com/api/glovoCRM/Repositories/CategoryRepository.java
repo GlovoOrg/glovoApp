@@ -1,4 +1,4 @@
-package com.api.glovoCRM.DAOs;
+package com.api.glovoCRM.Repositories;
 
 import com.api.glovoCRM.Models.EstablishmentModels.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,10 +9,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-public interface CategoryDAO extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
+public interface CategoryRepository extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
     boolean existsByName(String name);
 //    Optional<Category> findByName(String name);
     @Query("select c from Category c LEFT JOIN FETCH c.subCategories")

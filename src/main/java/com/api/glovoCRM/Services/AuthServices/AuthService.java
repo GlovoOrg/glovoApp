@@ -1,7 +1,7 @@
 package com.api.glovoCRM.Services.AuthServices;
 
-import com.api.glovoCRM.DAOs.UserDAOs.RoleDAO;
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.RoleRepository;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Models.UserModels.Role;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.constants.ERoles;
@@ -14,32 +14,32 @@ import java.util.HashSet;
 public class AuthService {
 
 
-    private final UserDAO userDAO;
-    private final RoleDAO roleDAO;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    public AuthService(UserDAO userDAO, RoleDAO roleDAO) {
-        this.userDAO = userDAO;
-        this.roleDAO = roleDAO;
+    public AuthService(UserRepository userRepository, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     public void assignDefaultRole(User user) {
-        Role role = roleDAO.findByName(ERoles.ROLE_CUSTOMER)
+        Role role = roleRepository.findByName(ERoles.ROLE_CUSTOMER)
                 .orElseGet(() -> {
                     Role newRole = new Role();
                     newRole.setName(ERoles.ROLE_CUSTOMER);
-                    return roleDAO.saveAndFlush(newRole);
+                    return roleRepository.saveAndFlush(newRole);
                 });
         user.setRoles(new HashSet<>(Collections.singletonList(role)));
-        userDAO.save(user);
+        userRepository.save(user);
     }
     public void assignDefaultRoleStuff(User user, ERoles TypeRole) {
-        Role role = roleDAO.findByName(TypeRole).orElseGet(
+        Role role = roleRepository.findByName(TypeRole).orElseGet(
                 ()-> {
                     Role newRole = new Role();
                     newRole.setName(TypeRole);
-                    return roleDAO.saveAndFlush(newRole);
+                    return roleRepository.saveAndFlush(newRole);
                 });
         user.setRoles(new HashSet<>(Collections.singletonList(role)));
-        userDAO.save(user);
+        userRepository.save(user);
     }
 }

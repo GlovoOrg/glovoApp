@@ -1,23 +1,21 @@
 package com.api.glovoCRM.Services.UserServices;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
-import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Models.OrderDetailModels.Order;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Rest.Requests.UserRequests.CustomerPatchRequest;
 import com.api.glovoCRM.Services.BaseUserService;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class CustomerService extends BaseUserService {
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
 
-    protected CustomerService( UserDAO userDAO) {
-        super(userDAO);
-        this.userDAO = userDAO;
+    protected CustomerService( UserRepository userRepository) {
+        super(userRepository);
+        this.userRepository = userRepository;
     }
 
     public List<Order> getAllOrders() {
@@ -27,7 +25,7 @@ public class CustomerService extends BaseUserService {
 
     public void deleteUserProfile() {
         Long user = getUserFromSecurityContext().getId();
-        userDAO.deleteById(user);
+        userRepository.deleteById(user);
     }
 
     public User patchCustomer(CustomerPatchRequest request) {
@@ -45,7 +43,7 @@ public class CustomerService extends BaseUserService {
         if(request.getPhone() != null) {
             user.setPhoneNumber(request.getPhone());
         }
-        return userDAO.save(user);
+        return userRepository.save(user);
     }
 
 

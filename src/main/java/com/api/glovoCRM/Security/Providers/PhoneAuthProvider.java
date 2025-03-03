@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Security.Providers;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Exceptions.AuthExceptions.InvalidCredentialsEx;
 import com.api.glovoCRM.Exceptions.MailSendingEx;
 import com.api.glovoCRM.Models.UserModels.User;
@@ -22,16 +22,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class PhoneAuthProvider implements AuthenticationProvider {
 
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final VerificationCodeService verificationCodeService;
     private final TwilioService twilioService;
 
-    public PhoneAuthProvider(UserDAO userDAO,
+    public PhoneAuthProvider(UserRepository userRepository,
                              PasswordEncoder passwordEncoder,
                              VerificationCodeService verificationCodeService,
                              TwilioService twilioService) {
-        this.userDAO = userDAO;
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.verificationCodeService = verificationCodeService;
         this.twilioService = twilioService;
@@ -45,7 +45,7 @@ public class PhoneAuthProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
 
         log.info("Попытка аутентификации по номеру: {}", phoneNumber);
-        User user = userDAO.findByPhoneNumber(phoneNumber)
+        User user = userRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + phoneNumber));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {

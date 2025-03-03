@@ -1,9 +1,9 @@
 package com.api.glovoCRM.Services.EstablishmentServices;
 
-import com.api.glovoCRM.DAOs.CategoryDAO;
-import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
-import com.api.glovoCRM.DAOs.ImageDAO;
-import com.api.glovoCRM.DAOs.SubCategoryDAO;
+import com.api.glovoCRM.Repositories.CategoryRepository;
+import com.api.glovoCRM.Repositories.ImageAssociationsRepository;
+import com.api.glovoCRM.Repositories.ImageRepository;
+import com.api.glovoCRM.Repositories.SubCategoryRepository;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Exceptions.MinioExceptions.FileUploadEx;
@@ -39,17 +39,17 @@ import java.util.Objects;
 @CacheConfig (cacheNames = "app_subcategories")
 public class SubCategoryService extends BaseService<SubCategory, SubCategoryCreateRequest, SubCategoryUpdateRequest, SubCategoryPatchRequest> {
 
-    private final SubCategoryDAO subCategoryDAO;
-    private final CategoryDAO categoryDAO;
+    private final SubCategoryRepository subCategoryRepository;
+    private final CategoryRepository categoryRepository;
     private final SubcategorySpecification subcategorySpecification;
     private final CacheManager cacheManager;
     private final TransactionTemplate transactionTemplate;
 
     @Autowired
-    public SubCategoryService(SubCategoryDAO subCategoryDAO, CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, SubcategorySpecification subcategorySpecification, @Qualifier ("cacheManager") CacheManager cacheManager, ImageCacheService imageCacheService, TransactionTemplate transactionTemplate) {
-        super(imageCacheService, imageDAO, imageAssociationsDAO, minioService);
-        this.subCategoryDAO = subCategoryDAO;
-        this.categoryDAO = categoryDAO;
+    public SubCategoryService(SubCategoryRepository subCategoryRepository, CategoryRepository categoryRepository, ImageRepository imageRepository, ImageAssociationsRepository imageAssociationsRepository, MinioService minioService, SubcategorySpecification subcategorySpecification, @Qualifier ("cacheManager") CacheManager cacheManager, ImageCacheService imageCacheService, TransactionTemplate transactionTemplate) {
+        super(imageCacheService, imageRepository, imageAssociationsRepository, minioService);
+        this.subCategoryRepository = subCategoryRepository;
+        this.categoryRepository = categoryRepository;
         this.subcategorySpecification = subcategorySpecification;
         this.cacheManager = cacheManager;
         this.transactionTemplate = transactionTemplate;
@@ -59,14 +59,14 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
     @Cacheable(value = "app_subcategories", key = "#id")
     @Override
     public SubCategory findById(Long id) {
-        return getEntityById(id, subCategoryDAO);
+        return getEntityById(id, subCategoryRepository);
     }
 
     @Transactional (readOnly = true, isolation = Isolation.READ_COMMITTED)
     @Cacheable(value = "app_subcategories", key = "'all_subcategories'")
     @Override
     public List<SubCategory> findAll() {
-        return subCategoryDAO.findAllSubCategories();
+        return subCategoryRepository.findAllSubCategories();
     }
 
     @Override
@@ -78,16 +78,16 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
     )
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public SubCategory createEntity(SubCategoryCreateRequest request) {
-        if (!categoryDAO.existsById(request.getCategoryId())) {
+        if (!categoryRepository.existsById(request.getCategoryId())) {
             throw new SuchResourceNotFoundEx("Такой категории нет в системе");
         }
-        if (subCategoryDAO.existsByName(request.getName())) {
+        if (subCategoryRepository.existsByName(request.getName())) {
             throw new AlreadyExistsEx("Такая подкатегория уже существует");
         }
         SubCategory subCategory = new SubCategory();
         subCategory.setName(request.getName());
         subCategory.setCategoryId(request.getCategoryId());
-        SubCategory savedSubCategory = subCategoryDAO.save(subCategory);
+        SubCategory savedSubCategory = subCategoryRepository.save(subCategory);
         log.debug("Подкатегория создана. ID: {}", savedSubCategory.getId());
         try {
             createImageRecord(request.getImage(), "subcategories", EntityType.SubCategory, savedSubCategory.getId());
@@ -111,19 +111,19 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
             }
     )
     public SubCategory updateEntity(Long id, SubCategoryUpdateRequest request) {
-        SubCategory subCategory = getEntityById(id, subCategoryDAO);
+        SubCategory subCategory = getEntityById(id, subCategoryRepository);
         if (request.getName() != null) {
             subCategory.setName(request.getName());
         }
         super.updateEntityImage(id, request.getImage(), EntityType.SubCategory);
         setCategoryToSubCategory(request, subCategory);
 
-        return subCategoryDAO.save(subCategory);
+        return subCategoryRepository.save(subCategory);
     }
 
     private void setCategoryToSubCategory(SubCategoryUpdateRequest request, SubCategory subCategory) {
         if (request.getCategoryId() != null && !request.getCategoryId().equals(subCategory.getCategory().getId())) {
-            Category newCategory = categoryDAO.findById(request.getCategoryId())
+            Category newCategory = categoryRepository.findById(request.getCategoryId())
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"));
             subCategory.setCategory(newCategory);
         }
@@ -139,24 +139,24 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
     )
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public SubCategory patchEntity(Long id, SubCategoryPatchRequest request) {
-        SubCategory subCategory = subCategoryDAO.findById(id)
+        SubCategory subCategory = subCategoryRepository.findById(id)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Подкатегория не найдена"));
         if (request.getName() != null) {
             subCategory.setName(request.getName());
         }
         updateEntityImage(id, request.getImage(), EntityType.SubCategory);
         if (request.getCategoryId() != null && !Objects.equals(request.getCategoryId(), subCategory.getCategory().getId())) {
-            Category newCategory = categoryDAO.findById(request.getCategoryId())
+            Category newCategory = categoryRepository.findById(request.getCategoryId())
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"));
             subCategory.setCategory(newCategory);
         }
-        return subCategoryDAO.save(subCategory);
+        return subCategoryRepository.save(subCategory);
     }
 
     @Override
     public List<SubCategory> findSimilarByNameFilter(String name) {
         Specification<SubCategory> spec = subcategorySpecification.getBySimilarNameFilter(name);
-        return subCategoryDAO.findAll(spec);
+        return subCategoryRepository.findAll(spec);
     }
 
     @Override
@@ -168,11 +168,11 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
             }
     )
     public void deleteEntity(Long id) {
-        SubCategory subCategory = subCategoryDAO.findById(id)
+        SubCategory subCategory = subCategoryRepository.findById(id)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Подкатегория не найдена"));
         transactionTemplate.execute(status -> {
             try {
-                subCategoryDAO.deleteSubcategoryById(subCategory.getId());
+                subCategoryRepository.deleteSubcategoryById(subCategory.getId());
                 deleteImageRecord(id, EntityType.SubCategory);
                 log.debug("Подкатегория успешно удалена. ID: {}", id);
                 return null;

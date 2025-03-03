@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services.AuthServices.Stuff;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Exceptions.AuthExceptions.UserNotVerifiedEx;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Rest.Responses.Auth.LoginResponse;
@@ -22,14 +22,14 @@ public class StuffLoginService {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
     private final VerificationCodeService verificationCodeService;
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
 
     @Autowired
-    public StuffLoginService(AuthenticationManager authenticationManager, TokenService tokenService, VerificationCodeService verificationCodeService, UserDAO userDAO) {
+    public StuffLoginService(AuthenticationManager authenticationManager, TokenService tokenService, VerificationCodeService verificationCodeService, UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
         this.verificationCodeService = verificationCodeService;
-        this.userDAO = userDAO;
+        this.userRepository = userRepository;
     }
 
     public String TipaLoginStuff(String login, String password) {
@@ -49,7 +49,7 @@ public class StuffLoginService {
         );
         User user = (User) postAuth.getPrincipal();
         user.setStatus(EUserStatuses.ACTIVE);
-        userDAO.save(user);
+        userRepository.save(user);
         Map<String, String> mapOfTokens = tokenService.generateTokens(user);
         return new LoginResponse(mapOfTokens.get("access_token"), mapOfTokens.get("refresh_token"));
     }

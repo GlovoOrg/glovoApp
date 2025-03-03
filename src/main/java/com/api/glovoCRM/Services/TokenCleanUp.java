@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services;
 
-import com.api.glovoCRM.DAOs.RefreshTokenDAO;
+import com.api.glovoCRM.Repositories.RefreshTokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,18 +13,18 @@ import java.time.Instant;
 @Slf4j
 public class TokenCleanUp {
 
-    private final RefreshTokenDAO refreshTokenDAO;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Autowired
-    public TokenCleanUp(RefreshTokenDAO refreshTokenDAO) {
-        this.refreshTokenDAO = refreshTokenDAO;
+    public TokenCleanUp(RefreshTokenRepository refreshTokenRepository) {
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Scheduled(cron = "0 0 * * * *")
     @Transactional
     public void cleanupExpiredTokens() {
         log.info("Запуск очистки протухших токенов...");
-        refreshTokenDAO.deleteByExpiryDateBefore(Instant.now());
+        refreshTokenRepository.deleteByExpiryDateBefore(Instant.now());
         log.info("Очистка завершена.");
     }
 }

@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Security.Providers;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Exceptions.AuthExceptions.InvalidCredentialsEx;
 import com.api.glovoCRM.Exceptions.AuthExceptions.UserNotVerifiedEx;
 import com.api.glovoCRM.Models.UserModels.User;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 public class EmailAuthProvider implements AuthenticationProvider {
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
     private final VerificationCodeService verificationCodeService;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
@@ -32,7 +32,7 @@ public class EmailAuthProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
 
         log.info("Попытка аутентификации пользователя с email: {}", email);
-        User user = userDAO.findByEmail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден с почтой: " + email));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {

@@ -1,7 +1,7 @@
 package com.api.glovoCRM.Services.EstablishmentServices;
 
-import com.api.glovoCRM.DAOs.EstablishmentDAO;
-import com.api.glovoCRM.DAOs.EstablishmentFilterDAO;
+import com.api.glovoCRM.Repositories.EstablishmentRepository;
+import com.api.glovoCRM.Repositories.EstablishmentFilterRepository;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
@@ -25,14 +25,14 @@ import java.util.List;
 @Service
 @CacheConfig (cacheNames = "app_filters")
 public class EstablishmentFilterService {
-    private final EstablishmentDAO establishmentDAO;
-    private final EstablishmentFilterDAO establishmentFilterDAO;
+    private final EstablishmentRepository establishmentRepository;
+    private final EstablishmentFilterRepository establishmentFilterRepository;
     private final EstablishmentFilterSpecification establishmentFilterSpecification;
 
     @Autowired
-    public EstablishmentFilterService(EstablishmentDAO establishmentDAO, EstablishmentFilterDAO establishmentFilterDAO, EstablishmentFilterSpecification establishmentFilterSpecification) {
-        this.establishmentDAO = establishmentDAO;
-        this.establishmentFilterDAO = establishmentFilterDAO;
+    public EstablishmentFilterService(EstablishmentRepository establishmentRepository, EstablishmentFilterRepository establishmentFilterRepository, EstablishmentFilterSpecification establishmentFilterSpecification) {
+        this.establishmentRepository = establishmentRepository;
+        this.establishmentFilterRepository = establishmentFilterRepository;
         this.establishmentFilterSpecification = establishmentFilterSpecification;
     }
 
@@ -48,16 +48,16 @@ public class EstablishmentFilterService {
     @Transactional
     public EstablishmentFilter createEntity(EstablishmentFilterCreateRequest request) {
 
-        Establishment establishment = establishmentDAO.findById(request.getEstablishmentId())
+        Establishment establishment = establishmentRepository.findById(request.getEstablishmentId())
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Заведение с указанным ID не найдено"));
-        if (establishmentFilterDAO.existsByNameAndEstablishmentId(request.getName(), request.getEstablishmentId())) {
+        if (establishmentFilterRepository.existsByNameAndEstablishmentId(request.getName(), request.getEstablishmentId())) {
             throw new AlreadyExistsEx("Фильтр с таким именем уже существует для данного заведения");
         }
         EstablishmentFilter filter = new EstablishmentFilter();
         filter.setName(request.getName());
         filter.setEstablishment(establishment);
 
-        EstablishmentFilter savedFilter = establishmentFilterDAO.save(filter);
+        EstablishmentFilter savedFilter = establishmentFilterRepository.save(filter);
         log.info("Создан новый фильтр с ID: {}", savedFilter.getId());
         return savedFilter;
 
@@ -74,15 +74,15 @@ public class EstablishmentFilterService {
             }
     )
     public EstablishmentFilter updateEntity(Long id, EstablishmentFilterUpdateRequest request) {
-            Establishment establishment = establishmentDAO.findById(request.getEstablishmentId())
+            Establishment establishment = establishmentRepository.findById(request.getEstablishmentId())
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Заведение с указанным ID не найдено"));
 
-            EstablishmentFilter filter = establishmentFilterDAO.findById(id)
+            EstablishmentFilter filter = establishmentFilterRepository.findById(id)
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Такой фильтр не существует"));
             filter.setName(request.getName());
             filter.setEstablishment(establishment);
 
-            EstablishmentFilter updatedFilter = establishmentFilterDAO.save(filter);
+            EstablishmentFilter updatedFilter = establishmentFilterRepository.save(filter);
             log.info("Обновлен фильтр с ID: {}", updatedFilter.getId());
             return updatedFilter;
     }
@@ -98,17 +98,17 @@ public class EstablishmentFilterService {
     )
     @Transactional
     public EstablishmentFilter patchEntity(Long id, EstablishmentFilterPatchRequest request) {
-            EstablishmentFilter filter = establishmentFilterDAO.findById(id)
+            EstablishmentFilter filter = establishmentFilterRepository.findById(id)
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Такого фильтра нет"));
             if (request.getName() != null) {
                 filter.setName(request.getName());
             }
             if (request.getEstablishmentId() != null) {
-                Establishment establishment = establishmentDAO.findById(request.getEstablishmentId())
+                Establishment establishment = establishmentRepository.findById(request.getEstablishmentId())
                         .orElseThrow(() -> new SuchResourceNotFoundEx("Заведение с указанным ID не найдено"));
                 filter.setEstablishment(establishment);
             }
-            return establishmentFilterDAO.save(filter);
+            return establishmentFilterRepository.save(filter);
     }
 
     @Caching (
@@ -122,28 +122,28 @@ public class EstablishmentFilterService {
     )
     @Transactional
     public void deleteEntity(Long id) {
-        if (!establishmentFilterDAO.existsById(id)) {
+        if (!establishmentFilterRepository.existsById(id)) {
             throw new SuchResourceNotFoundEx("Такого фильтра не существует");
         }
-        establishmentFilterDAO.deleteById(id);
+        establishmentFilterRepository.deleteById(id);
         log.info("Удален фильтр с ID: {}", id);
     }
     @Cacheable()
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<EstablishmentFilter> getAll() {
-        return establishmentFilterDAO.findAll();
+        return establishmentFilterRepository.findAll();
     }
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     @Cacheable(value = "app_filter", key = "#id")
     public EstablishmentFilter findById(Long id) {
-        return establishmentFilterDAO.findById(id).orElseThrow(
+        return establishmentFilterRepository.findById(id).orElseThrow(
                 () -> new SuchResourceNotFoundEx("Такого фильтра не существует")
         );
     }
 
     public List<EstablishmentFilter> findSimilarByNameFilter(String name) {
         Specification<EstablishmentFilter> spec = establishmentFilterSpecification.getBySimilarNameFilter(name);
-        return establishmentFilterDAO.findAll(spec);
+        return establishmentFilterRepository.findAll(spec);
     }
 
 }

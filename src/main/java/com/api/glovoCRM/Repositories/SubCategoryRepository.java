@@ -1,4 +1,4 @@
-package com.api.glovoCRM.DAOs;
+package com.api.glovoCRM.Repositories;
 
 import com.api.glovoCRM.Models.EstablishmentModels.SubCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface SubCategoryDAO extends JpaRepository<SubCategory, Long>, JpaSpecificationExecutor<SubCategory> {
+public interface SubCategoryRepository extends JpaRepository<SubCategory, Long>, JpaSpecificationExecutor<SubCategory> {
     boolean existsByName(String name);
     Optional<SubCategory> findByName(String name);
     Optional<SubCategory> findById(long id);

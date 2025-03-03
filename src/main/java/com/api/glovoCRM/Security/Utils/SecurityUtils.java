@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Security.Utils;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Security.Providers.EmailAuthProvider;
 import com.api.glovoCRM.Security.Providers.PhoneAuthProvider;
@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,11 +23,11 @@ import java.util.Arrays;
 @Configuration
 public class SecurityUtils {
 
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
 
     @Autowired
-    public SecurityUtils(UserDAO userDAO) {
-        this.userDAO = userDAO;
+    public SecurityUtils(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
     @Bean
     public PasswordEncoder getPasswordEncoder() {return new BCryptPasswordEncoder();}
@@ -36,10 +35,10 @@ public class SecurityUtils {
     @Bean
     public UserDetailsService userDetailsService() {
         return identifier -> {
-            User user = userDAO.findByName(identifier)
-                    .or(() -> userDAO.findByEmail(identifier))
-                    .or(() -> userDAO.findByPhoneNumber(identifier))
-                    .or(() -> userDAO.findByLogin(identifier))
+            User user = userRepository.findByName(identifier)
+                    .or(() -> userRepository.findByEmail(identifier))
+                    .or(() -> userRepository.findByPhoneNumber(identifier))
+                    .or(() -> userRepository.findByLogin(identifier))
                     .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
             if(!user.isEnabled()) {
                 throw new RuntimeException("Аккаунт не активирован. Пожалуйста, подтвердите свою почту.");

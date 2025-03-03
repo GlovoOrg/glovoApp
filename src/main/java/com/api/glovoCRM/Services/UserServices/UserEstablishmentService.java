@@ -1,13 +1,11 @@
 package com.api.glovoCRM.Services.UserServices;
 
-import com.api.glovoCRM.DAOs.EstablishmentDAO;
-import com.api.glovoCRM.DAOs.ProductDAO;
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
-import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
+import com.api.glovoCRM.Repositories.EstablishmentRepository;
+import com.api.glovoCRM.Repositories.ProductRepository;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Models.EstablishmentModels.Product;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Rest.Requests.UserRequests.AdminFindProductFilterRequest;
-import com.api.glovoCRM.Rest.Requests.UserRequests.AdminPatchRequest;
 import com.api.glovoCRM.Services.BaseUserService;
 import com.api.glovoCRM.Specifications.UserSpecifications.AdminSpecification;
 import com.api.glovoCRM.Specifications.UserSpecifications.UserSpecification;
@@ -18,29 +16,29 @@ import java.util.List;
 
 @Service
 public class UserEstablishmentService extends BaseUserService {
-    private final EstablishmentDAO establishmentDAO;
-    private final ProductDAO productDAO;
+    private final EstablishmentRepository establishmentRepository;
+    private final ProductRepository productRepository;
     private final UserSpecification userSpecification;
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
     private final AdminSpecification adminSpecification;
 
-    public UserEstablishmentService(EstablishmentDAO establishmentDAO, ProductDAO productDAO, UserSpecification userSpecification, UserDAO userDAO, AdminSpecification adminSpecification) {
-        super(userDAO);
-        this.establishmentDAO = establishmentDAO;
-        this.productDAO = productDAO;
+    public UserEstablishmentService(EstablishmentRepository establishmentRepository, ProductRepository productRepository, UserSpecification userSpecification, UserRepository userRepository, AdminSpecification adminSpecification) {
+        super(userRepository);
+        this.establishmentRepository = establishmentRepository;
+        this.productRepository = productRepository;
         this.userSpecification = userSpecification;
-        this.userDAO = userDAO;
+        this.userRepository = userRepository;
         this.adminSpecification = adminSpecification;
     }
 
     public List<User> getCustomersByEstablishmentId(Long establishmentId) {
         Specification<User> spec = userSpecification.getCustomersByEstablishmentId(establishmentId);
-        return userDAO.findAll(spec);
+        return userRepository.findAll(spec);
     }
 
     public List<Product> getProductsByFilter(AdminFindProductFilterRequest filter) {
         Specification<Product> spec = adminSpecification.getProductsByFilter(filter);
-        return productDAO.findAll(spec);
+        return productRepository.findAll(spec);
     }
 
 

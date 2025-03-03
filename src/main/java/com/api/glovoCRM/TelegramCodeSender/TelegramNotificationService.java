@@ -1,6 +1,6 @@
 package com.api.glovoCRM.TelegramCodeSender;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Exceptions.Telegram.AccountNotBoundEx;
 import com.api.glovoCRM.Services.AuthServices.VerificationCodeService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,14 +20,14 @@ public class TelegramNotificationService {
     private String adminChatId;
     private final NotifyAdminByEmail notifyAdminByEmail;
     private final TelegramCodeSenderBot telegramBot;
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
     private final VerificationCodeService verificationCodeService;
 
     @Autowired
-    public TelegramNotificationService(NotifyAdminByEmail notifyAdminByEmail, TelegramCodeSenderBot telegramBot, UserDAO userDAO, VerificationCodeService verificationCodeService) {
+    public TelegramNotificationService(NotifyAdminByEmail notifyAdminByEmail, TelegramCodeSenderBot telegramBot, UserRepository userRepository, VerificationCodeService verificationCodeService) {
         this.notifyAdminByEmail = notifyAdminByEmail;
         this.telegramBot = telegramBot;
-        this.userDAO = userDAO;
+        this.userRepository = userRepository;
         this.verificationCodeService = verificationCodeService;
     }
 
@@ -50,19 +50,19 @@ public class TelegramNotificationService {
 
     @Cacheable(value = "telegramChatIds", key = "#username")
     public String getChatIdByUsername(String username) {
-        return userDAO.findChatIdByLogin(username)
+        return userRepository.findChatIdByLogin(username)
                 .orElseThrow(() -> new AccountNotBoundEx("Аккаунт не привязан"));
     }
 
     @CacheEvict (value = "telegramChatIds", key = "#username")
     public void clearChatId(String username) {
-        userDAO.clearTelegramChatId(username);
+        userRepository.clearTelegramChatId(username);
     }
 
     private void handleSendError(String chatId, TelegramApiException e) {
         if (e.getMessage().contains("chat not found")) {
             log.warn("Чат {} не найден, очищаем привязку", chatId);
-            userDAO.findByChatId(chatId).ifPresent(user ->
+            userRepository.findByChatId(chatId).ifPresent(user ->
                     clearChatId(user.getLogin())
             );
         }

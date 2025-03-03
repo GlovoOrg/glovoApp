@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("api/v1/non-secured/**", "api/v1/auth/**", "/oauth2/**", "api/v1").permitAll()
+                        .requestMatchers("api/v1/non-secured/**", "api/v1/auth/**", "/oauth2/**", "api/v1", "/api/v1/payments/webhook").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/login/oauth2/code/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 ->
