@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services.AuthServices.Phone;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Exceptions.AuthExceptions.InvalidCredentialsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.UserModels.User;
@@ -24,13 +24,13 @@ public class LoginPhoneService {
     private final AuthenticationManager authenticationManager;
     private final VerificationCodeService verificationCodeService;
     private final TokenService tokenService;
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
 
-    public LoginPhoneService(AuthenticationManager authenticationManager, VerificationCodeService verificationCodeService, TokenService tokenService, UserDAO userDAO) {
+    public LoginPhoneService(AuthenticationManager authenticationManager, VerificationCodeService verificationCodeService, TokenService tokenService, UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.verificationCodeService = verificationCodeService;
         this.tokenService = tokenService;
-        this.userDAO = userDAO;
+        this.userRepository = userRepository;
     }
 
     public void TipaLoginPhone(LoginRequestPhone request){
@@ -47,10 +47,10 @@ public class LoginPhoneService {
             log.warn("Неверный код для номера: {}", phoneNumber);
             throw new InvalidCredentialsEx("Неверный код подтверждения");
         }
-        User user = userDAO.findByPhoneNumber(phoneNumber)
+        User user = userRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Пользователь не найден"));
         user.setStatus(EUserStatuses.ACTIVE);
-        userDAO.save(user);
+        userRepository.save(user);
         Map<String, String> tokens = tokenService.generateTokens(user);
         PhoneAuthenticationToken authenticatedToken = new PhoneAuthenticationToken(
                 user.getPhoneNumber(),

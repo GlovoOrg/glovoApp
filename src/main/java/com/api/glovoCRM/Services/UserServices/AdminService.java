@@ -1,8 +1,8 @@
 package com.api.glovoCRM.Services.UserServices;
 
-import com.api.glovoCRM.DAOs.EstablishmentDAO;
-import com.api.glovoCRM.DAOs.ProductDAO;
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.EstablishmentRepository;
+import com.api.glovoCRM.Repositories.ProductRepository;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
 import com.api.glovoCRM.Models.EstablishmentModels.Product;
@@ -22,37 +22,37 @@ import java.util.List;
 public class AdminService extends BaseUserService {
 
     private final AdminSpecification adminSpecification;
-    private final UserDAO userDAO;
-    private final EstablishmentDAO establishmentDAO;
-    private final ProductDAO productDAO;
+    private final UserRepository userRepository;
+    private final EstablishmentRepository establishmentRepository;
+    private final ProductRepository productRepository;
 
-    public AdminService(UserDAO userDAO, AdminSpecification adminSpecification, UserDAO userDAO1, EstablishmentDAO establishmentDAO, ProductDAO productDAO) {
-        super(userDAO);
+    public AdminService(UserRepository userRepository, AdminSpecification adminSpecification, UserRepository userRepository1, EstablishmentRepository establishmentRepository, ProductRepository productRepository) {
+        super(userRepository);
         this.adminSpecification = adminSpecification;
-        this.userDAO = userDAO1;
-        this.establishmentDAO = establishmentDAO;
-        this.productDAO = productDAO;
+        this.userRepository = userRepository1;
+        this.establishmentRepository = establishmentRepository;
+        this.productRepository = productRepository;
     }
 
 
     public List<User> getUsersByFilter(AdminFindUserFilterRequest filter) {
         Specification<User> spec = adminSpecification.getUserByFilter(filter);
-        return userDAO.findAll(spec);
+        return userRepository.findAll(spec);
     }
 
     public List<Establishment> getEstablishmentsByFilter(AdminFindEstablishmentFilterRequest filter) {
         Specification<Establishment> spec = adminSpecification.getEstablishmentsByFilter(filter);
-        return establishmentDAO.findAll(spec);
+        return establishmentRepository.findAll(spec);
     }
 
     public List<Product> getProductsByFilter(AdminFindProductFilterRequest filter) {
         Specification<Product> spec = adminSpecification.getProductsByFilter(filter);
-        return productDAO.findAll(spec);
+        return productRepository.findAll(spec);
     }
 
 
     public User patchUser(Long id,AdminPatchRequest request) {
-        User user = userDAO.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("User Not Found"));
 
         if(request.getUsername() != null) {
@@ -76,13 +76,13 @@ public class AdminService extends BaseUserService {
         if(request.getPassword() != null) {
             user.setPassword(request.getPassword());
         }
-        return userDAO.save(user);
+        return userRepository.save(user);
     }
 
     public void deleteUserById(Long id) {
-        if(!userDAO.existsById(id)) {
+        if(!userRepository.existsById(id)) {
             throw new SuchResourceNotFoundEx("User Not Found");
         }
-        userDAO.deleteById(id);
+        userRepository.deleteById(id);
     }
 }

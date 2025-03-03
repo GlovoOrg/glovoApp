@@ -1,7 +1,7 @@
 package com.api.glovoCRM.Services.CartService;
 
-import com.api.glovoCRM.DAOs.Redis.CartDAO;
-import com.api.glovoCRM.DAOs.Redis.CartItemDAO;
+import com.api.glovoCRM.Repositories.Redis.CartRepository;
+import com.api.glovoCRM.Repositories.Redis.CartItemRepository;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.EstablishmentModels.Product;
 import com.api.glovoCRM.Models.OrderDetailModels.Cart;
@@ -19,26 +19,26 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class CartService {
-    private final CartDAO cartDAO;
-    private final CartItemDAO cartItemDAO;
+    private final CartRepository cartRepository;
+    private final CartItemRepository cartItemRepository;
     private final ProductService productService;
 
     @Autowired
-    public CartService(CartDAO cartDAO, CartItemDAO cartItemDAO, ProductService productService) {
-        this.cartDAO = cartDAO;
-        this.cartItemDAO = cartItemDAO;
+    public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository, ProductService productService) {
+        this.cartRepository = cartRepository;
+        this.cartItemRepository = cartItemRepository;
         this.productService = productService;
     }
 
     public Optional<Cart> getCartByUserId(Long userId) {
-        return cartDAO.findCartByUserId(userId);
+        return cartRepository.findCartByUserId(userId);
     }
 
     public Cart getOrCreateCartByUserId(Long userId) {
-        return cartDAO.findCartByUserId(userId)
+        return cartRepository.findCartByUserId(userId)
                 .orElseGet(() -> {
                     Cart newCart = createNewCart(userId);
-                    return cartDAO.save(newCart);
+                    return cartRepository.save(newCart);
                 });
     }
 
@@ -54,15 +54,15 @@ public class CartService {
             CartItem item = isCartItemInCart.get();
             item.setQuantity(item.getQuantity() + quantity);
             item.recalculateTotal();
-            cartItemDAO.save(item);
+            cartItemRepository.save(item);
         } else {
             CartItem newItem = createCartItem(cart.getId(), productId, quantity);
             cart.getItems().add(newItem);
-            cartItemDAO.save(newItem);
+            cartItemRepository.save(newItem);
         }
 
         cart.recalculateTotal();
-        return cartDAO.save(cart);
+        return cartRepository.save(cart);
     }
 
     @Transactional
@@ -76,17 +76,15 @@ public class CartService {
         if (itemToUpdate.isPresent()) {
             CartItem item = itemToUpdate.get();
             if (item.getQuantity() > 1) {
-                // Уменьшаем количество на 1
                 item.setQuantity(item.getQuantity() - 1);
                 item.recalculateTotal();
-                cartItemDAO.save(item);
+                cartItemRepository.save(item);
             } else {
-                // Удаляем элемент, если quantity = 1
                 cart.getItems().remove(item);
-                cartItemDAO.deleteById(item.getId());
+                cartItemRepository.deleteById(item.getId());
             }
             cart.recalculateTotal();
-            return cartDAO.save(cart);
+            return cartRepository.save(cart);
         } else {
             throw new SuchResourceNotFoundEx("Продукт с id:  " + productId + " не найден в корзине");
         }
@@ -95,10 +93,10 @@ public class CartService {
     @Transactional
     public void clearCartByUserId(Long userId) {
         Cart cart = getOrCreateCartByUserId(userId);
-        cartItemDAO.deleteAll(cart.getItems());
+        cartItemRepository.deleteAll(cart.getItems());
         cart.getItems().clear();
         cart.setTotalCharge(BigDecimal.ZERO);
-        cartDAO.save(cart);
+        cartRepository.save(cart);
     }
 
     private Cart createNewCart(Long userId) {
@@ -123,25 +121,5 @@ public class CartService {
         item.recalculateTotal();
 
         return item;
-    }
-
-    @Transactional
-    public void removeCartItemFromCart(String cartId, String cartItemId) {
-        Cart cart = cartDAO.findById(cartId)
-                .orElseThrow(() -> new SuchResourceNotFoundEx("Корзина не найдена"));
-        cart.getItems().removeIf(item -> item.getId().equals(cartItemId));
-        cart.recalculateTotal();
-        cartDAO.save(cart);
-        cartItemDAO.deleteById(cartItemId);
-    }
-
-    @Transactional
-    public void clearCart(String cartId) {
-        Cart cart = cartDAO.findById(cartId)
-                .orElseThrow(() -> new SuchResourceNotFoundEx("Корзина не найдена"));
-        cartItemDAO.deleteAll(cart.getItems());
-        cart.getItems().clear();
-        cart.setTotalCharge(BigDecimal.ZERO);
-        cartDAO.save(cart);
     }
 }

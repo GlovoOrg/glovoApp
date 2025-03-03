@@ -1,4 +1,4 @@
-package com.api.glovoCRM.DAOs;
+package com.api.glovoCRM.Repositories;
 
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
 import jakarta.validation.constraints.NotBlank;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface EstablishmentDAO extends JpaRepository<Establishment, Long>, JpaSpecificationExecutor<Establishment> {
+public interface EstablishmentRepository extends JpaRepository<Establishment, Long>, JpaSpecificationExecutor<Establishment> {
 
     boolean existsByName(@NotBlank(message = "Название не может быть null") @Size(min = 3, max = 355, message = "Название обязательно от 3 до 355 символов") String name);
 

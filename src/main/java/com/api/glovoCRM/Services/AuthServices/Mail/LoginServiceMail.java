@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services.AuthServices.Mail;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Exceptions.AuthExceptions.InvalidCredentialsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.UserModels.User;
@@ -23,15 +23,15 @@ import java.util.Map;
 @Service
 @Slf4j
 public class LoginServiceMail {
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
     private final VerificationCodeService verificationCodeService;
     private final EmailService emailService;
 
     @Autowired
-    public LoginServiceMail(UserDAO userDAO, AuthenticationManager authenticationManager, TokenService tokenService, VerificationCodeService verificationCodeService, EmailService emailService) {
-        this.userDAO = userDAO;
+    public LoginServiceMail(UserRepository userRepository, AuthenticationManager authenticationManager, TokenService tokenService, VerificationCodeService verificationCodeService, EmailService emailService) {
+        this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
         this.verificationCodeService = verificationCodeService;
@@ -53,10 +53,10 @@ public class LoginServiceMail {
             throw new InvalidCredentialsEx("Неверный код подтверждения");
         }
 
-        User user = userDAO.findByEmail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Пользователь не найден"));
         user.setStatus(EUserStatuses.ACTIVE);
-        userDAO.save(user);
+        userRepository.save(user);
         EmailAuthenticationToken authenticatedToken = EmailAuthenticationToken.postAuthenticated(
                 user.getEmail(),
                 null,
@@ -70,7 +70,7 @@ public class LoginServiceMail {
                 .build();
     }
     public void resendVerificationCode(String email) {
-        if (!userDAO.existsByEmail(email)) {
+        if (!userRepository.existsByEmail(email)) {
             throw new UsernameNotFoundException("Пользователь не найден");
         }
 

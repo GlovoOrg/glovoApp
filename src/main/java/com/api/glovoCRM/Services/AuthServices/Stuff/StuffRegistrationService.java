@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services.AuthServices.Stuff;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Rest.Requests.AuthRequests.RegisterRequestStuff;
@@ -17,29 +17,29 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class StuffRegistrationService {
 
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
 
     @Autowired
-    public StuffRegistrationService(UserDAO userDAO, PasswordEncoder passwordEncoder, AuthService authService) {
-        this.userDAO = userDAO;
+    public StuffRegistrationService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthService authService) {
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authService = authService;
     }
 
     @Transactional
     public String registrationStuff(RegisterRequestStuff request) {
-        if (userDAO.existsByName(request.getName())) {
+        if (userRepository.existsByName(request.getName())) {
             throw new AlreadyExistsEx("User with this name already exists");
         }
-        if(userDAO.existsByEmail(request.getEmail())) {
+        if(userRepository.existsByEmail(request.getEmail())) {
             throw new AlreadyExistsEx("User with this email already exists");
         }
-        if(userDAO.existsByPhoneNumber(request.getPhoneNumber())) {
+        if(userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
             throw new AlreadyExistsEx("User with this phone number already exists");
         }
-        if(userDAO.existsByLogin(request.getLogin())){
+        if(userRepository.existsByLogin(request.getLogin())){
             throw new AlreadyExistsEx("User with this login already exists");
         }
         User user = new User();
@@ -50,7 +50,7 @@ public class StuffRegistrationService {
         user.setPhoneNumber(request.getPhoneNumber());
         user.setStatus(EUserStatuses.PENDING_LOGIN_TO_THE_SYSTEM);
         authService.assignDefaultRoleStuff(user, ERoles.valueOf(request.getRole()));
-        userDAO.save(user);
+        userRepository.save(user);
         log.info("Пользователь {} успешно зарегистрирован", request.getLogin());
         return "Пользователь с логином " + request.getLogin() + " успешно зарегистрирован. Привяжите Telegram через бота.";
     }

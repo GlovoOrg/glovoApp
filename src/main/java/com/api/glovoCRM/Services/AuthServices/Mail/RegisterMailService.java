@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services.AuthServices.Mail;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Exceptions.AuthExceptions.JwtExceptions.InvalidTokenEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Models.UserModels.User;
@@ -22,23 +22,23 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class RegisterMailService {
     private final PasswordEncoder passwordEncoder;
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
     private final EmailService emailService;
     private final VerificationCodeService verificationService;
     private final AuthService authService;
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public RegisterResponse signUp(RegisterRequestMail request) {
-        if (userDAO.existsByName(request.getName())) {
+        if (userRepository.existsByName(request.getName())) {
             throw new AlreadyExistsEx("Имя пользователя уже занято");
         }
-        User existingUser = userDAO.findByEmail(request.getEmail()).orElse(null);
+        User existingUser = userRepository.findByEmail(request.getEmail()).orElse(null);
         if (existingUser != null) {
             if (existingUser.getSocialAccounts() != null && !existingUser.getPassword().isEmpty()) {
                 throw new AlreadyExistsEx("Email уже зарегистрирован");
             }
             existingUser.setPassword(passwordEncoder.encode(request.getPassword()));
-            userDAO.save(existingUser);
+            userRepository.save(existingUser);
 
             log.info("Пароль успешно добавлен для существующего пользователя: {}", request.getEmail());
             return new RegisterResponse("Пароль успешно добавлен для существующего аккаунта");
@@ -51,7 +51,7 @@ public class RegisterMailService {
         newUser.setStatus(EUserStatuses.PENDING_EMAIL_VERIFICATION);
         authService.assignDefaultRole(newUser);
 
-        userDAO.save(newUser);
+        userRepository.save(newUser);
         log.info("Начата регистрация пользователя: {}", request.getEmail());
 
         emailService.sendVerificationEmail(request.getEmail());
@@ -67,10 +67,10 @@ public class RegisterMailService {
             throw new InvalidTokenEx("Неверный токен подтверждения");
         }
 
-        User user = userDAO.findByEmail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         user.setStatus(EUserStatuses.PENDING_LOGIN_TO_THE_SYSTEM);
-        userDAO.save(user);
+        userRepository.save(user);
 
         verificationService.removeConfirmationToken(token);
         log.info("Email подтвержден: {}", email);
@@ -78,7 +78,7 @@ public class RegisterMailService {
 
 
     public void resendConfirmationEmail(String email) {
-        if (!userDAO.existsByEmail(email)) {
+        if (!userRepository.existsByEmail(email)) {
             throw new UsernameNotFoundException("Пользователь не найден");
         }
         emailService.sendVerificationEmail(email);

@@ -1,8 +1,8 @@
 package com.api.glovoCRM.Services.EstablishmentServices;
 
-import com.api.glovoCRM.DAOs.CategoryDAO;
-import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
-import com.api.glovoCRM.DAOs.ImageDAO;
+import com.api.glovoCRM.Repositories.CategoryRepository;
+import com.api.glovoCRM.Repositories.ImageAssociationsRepository;
+import com.api.glovoCRM.Repositories.ImageRepository;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Exceptions.MinioExceptions.FileUploadEx;
@@ -34,14 +34,14 @@ import java.util.List;
 @Service
 @CacheConfig (cacheNames = "app_categories")
 public class CategoryService extends BaseService<Category, CategoryCreateRequest, CategoryUpdateRequest, CategoryPatchRequest> {
-    private final CategoryDAO categoryDAO;
+    private final CategoryRepository categoryRepository;
     private final CategorySpecification categorySpecification;
     private final TransactionTemplate transactionTemplate;
 
     @Autowired
-    public CategoryService(ImageCacheService imageCacheService, TransactionTemplate transactionTemplate, CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, CategorySpecification categorySpecification) {
-        super(imageCacheService, imageDAO, imageAssociationsDAO, minioService);
-        this.categoryDAO = categoryDAO;
+    public CategoryService(ImageCacheService imageCacheService, TransactionTemplate transactionTemplate, CategoryRepository categoryRepository, ImageRepository imageRepository, ImageAssociationsRepository imageAssociationsRepository, MinioService minioService, CategorySpecification categorySpecification) {
+        super(imageCacheService, imageRepository, imageAssociationsRepository, minioService);
+        this.categoryRepository = categoryRepository;
         this.categorySpecification = categorySpecification;
         this.transactionTemplate = transactionTemplate;
     }
@@ -55,12 +55,12 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
     )
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Category createEntity(CategoryCreateRequest request){
-        if (categoryDAO.existsByName(request.getName())) {
+        if (categoryRepository.existsByName(request.getName())) {
             throw new AlreadyExistsEx("Такая категория уже существует");
         }
         Category category = new Category();
         category.setName(request.getName());
-        Category savedCategory = categoryDAO.save(category);
+        Category savedCategory = categoryRepository.save(category);
 
         try {
             super.createImageRecord(request.getImage(), "categories", EntityType.Category, savedCategory.getId());
@@ -82,12 +82,12 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
             }
     )
     public void deleteEntity(Long categoryId) {
-        if (!categoryDAO.existsById(categoryId)) {
+        if (!categoryRepository.existsById(categoryId)) {
             throw new SuchResourceNotFoundEx("Данной категории нет в системе");
         }
         transactionTemplate.execute(status -> {
             try {
-                categoryDAO.deleteById(categoryId);
+                categoryRepository.deleteById(categoryId);
                 super.deleteImageRecord(categoryId, EntityType.Category);
                 return null;
             } catch (MinioException e) {
@@ -111,23 +111,23 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Override
     public Category updateEntity(Long categoryId, CategoryUpdateRequest request) {
-        Category category = getEntityById(categoryId, categoryDAO);
+        Category category = getEntityById(categoryId, categoryRepository);
         category.setName(request.getName());
         super.updateEntityImage(categoryId, request.getImage(), EntityType.Category);
-        return categoryDAO.save(category);
+        return categoryRepository.save(category);
     }
 
     @Transactional (isolation = Isolation.READ_COMMITTED, readOnly = true)
     @Cacheable(value = "app_categories", key = "#id")
     @Override
     public Category findById(Long id) {
-        return getEntityById(id, categoryDAO);
+        return getEntityById(id, categoryRepository);
     }
     @Override
     @Cacheable(value = "app_categories", key = "'all_categories'")
     @Transactional (isolation = Isolation.READ_COMMITTED, readOnly = true)
     public List<Category> findAll() {
-        return categoryDAO.findAllCategories();
+        return categoryRepository.findAllCategories();
     }
 
     @Caching(
@@ -139,19 +139,19 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Override
     public Category patchEntity(Long id, CategoryPatchRequest request) {
-        Category category = getEntityById(id, categoryDAO);
+        Category category = getEntityById(id, categoryRepository);
         if (request.getName() != null) {
             category.setName(request.getName());
         }
         super.updateEntityImage(id, request.getImage(), EntityType.Category);
-        return categoryDAO.save(category);
+        return categoryRepository.save(category);
     }
     public List<Category> getCategoriesWithSubcategoriesOnly() {
-        return categoryDAO.findCategoriesWithSubcategoriesOnly();
+        return categoryRepository.findCategoriesWithSubcategoriesOnly();
     }
 
     public List<Category> getCategoriesWithSubcategoriesAndEstablishmentsOnly() {
-        List<Category> categories = categoryDAO.findCategoriesWithSubcategoriesOnly();
+        List<Category> categories = categoryRepository.findCategoriesWithSubcategoriesOnly();
         categories.forEach(category -> category.getSubCategories().forEach(
                 subCategory -> subCategory.getEstablishments().size()
         ));
@@ -164,6 +164,6 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
     @Override
     public List<Category> findSimilarByNameFilter(String name) {
         Specification<Category> spec = categorySpecification.getBySimilarNameFilter(name);
-        return categoryDAO.findAll(spec);
+        return categoryRepository.findAll(spec);
     }
 }

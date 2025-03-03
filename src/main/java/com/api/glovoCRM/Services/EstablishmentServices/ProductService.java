@@ -1,7 +1,6 @@
 package com.api.glovoCRM.Services.EstablishmentServices;
 
-import com.api.glovoCRM.DAOs.*;
-import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
+import com.api.glovoCRM.Repositories.*;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Exceptions.MinioExceptions.FileUploadEx;
 import com.api.glovoCRM.Exceptions.MinioExceptions.MinioOperationEx;
@@ -16,7 +15,6 @@ import com.api.glovoCRM.Utils.Minio.MinioService;
 import com.api.glovoCRM.constants.EntityType;
 import io.minio.errors.MinioException;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.annotation.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Isolation;
@@ -33,21 +31,21 @@ import java.util.List;
 @CacheConfig (cacheNames = "app_products")
 public class ProductService extends BaseService<Product, ProductWithDiscountCreateRequest, ProductWithDiscountUpdateRequest, ProductWithDiscountPatchRequest> {
 
-    private final ProductDAO productDAO;
-    private final EstablishmentDAO establishmentDAO;
+    private final ProductRepository productRepository;
+    private final EstablishmentRepository establishmentRepository;
     private final ProductSpecification productSpecification;
-    private final EstablishmentFilterDAO establishmentFilterDAO;
+    private final EstablishmentFilterRepository establishmentFilterRepository;
     private final TransactionTemplate transactionTemplate;
 
 
     @Autowired
-    public ProductService(ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService,
-                          ProductDAO productDAO, EstablishmentDAO establishmentDAO, ProductSpecification productSpecification, ImageCacheService imageCacheService, EstablishmentFilterDAO establishmentFilterDAO, TransactionTemplate transactionTemplate) {
-        super(imageCacheService, imageDAO, imageAssociationsDAO, minioService);
-        this.productDAO = productDAO;
-        this.establishmentDAO = establishmentDAO;
+    public ProductService(ImageRepository imageRepository, ImageAssociationsRepository imageAssociationsRepository, MinioService minioService,
+                          ProductRepository productRepository, EstablishmentRepository establishmentRepository, ProductSpecification productSpecification, ImageCacheService imageCacheService, EstablishmentFilterRepository establishmentFilterRepository, TransactionTemplate transactionTemplate) {
+        super(imageCacheService, imageRepository, imageAssociationsRepository, minioService);
+        this.productRepository = productRepository;
+        this.establishmentRepository = establishmentRepository;
         this.productSpecification = productSpecification;
-        this.establishmentFilterDAO = establishmentFilterDAO;
+        this.establishmentFilterRepository = establishmentFilterRepository;
         this.transactionTemplate = transactionTemplate;
     }
 
@@ -56,7 +54,7 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
     @Override
     public Product findById(Long id) {
         log.info("Находим продукт с id: {}", id);
-        return productDAO.findById(id).orElseThrow(
+        return productRepository.findById(id).orElseThrow(
                 () -> new SuchResourceNotFoundEx("Такого продукта нет")
         );
     }
@@ -66,7 +64,7 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
     @Override
     public List<Product> findAll() {
         log.info("Получаем все продукты");
-        return productDAO.findAll();
+        return productRepository.findAll();
     }
 
     @Caching (
@@ -81,13 +79,13 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
     @Override
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Product createEntity(ProductWithDiscountCreateRequest request) {
-        Establishment establishment = establishmentDAO.findById(request.getEstablishmentId())
+        Establishment establishment = establishmentRepository.findById(request.getEstablishmentId())
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Заведение не найдено"));
-        EstablishmentFilter establishmentFilter = establishmentFilterDAO.findById(request.getEstablishmentId())
+        EstablishmentFilter establishmentFilter = establishmentFilterRepository.findById(request.getEstablishmentId())
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Заведение фильтр не найдено"));
         Product product = getProduct(request, establishment, establishmentFilter);
 
-        Product savedProduct = productDAO.save(product);
+        Product savedProduct = productRepository.save(product);
         try {
             createImageRecord(request.getImage(), "products", EntityType.Product, savedProduct.getId());
             return savedProduct;
@@ -129,12 +127,12 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
     )
     @Override
     public void deleteEntity(Long entityId) {
-        Product product = productDAO.findById(entityId)
+        Product product = productRepository.findById(entityId)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Продукт не найден"));
 
         transactionTemplate.execute(status -> {
             try {
-                productDAO.deleteByProductId(product.getId());
+                productRepository.deleteByProductId(product.getId());
                 deleteImageRecord(entityId, EntityType.Product);
                 log.debug("Продукт успешно удалена. ID: {}", entityId);
                 return null;
@@ -164,7 +162,7 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Product updateEntity(Long entityId, ProductWithDiscountUpdateRequest request) {
 
-        Product existingProduct = productDAO.findById(entityId)
+        Product existingProduct = productRepository.findById(entityId)
                 .orElseThrow(() -> new SuchResourceNotFoundEx(String.format("Продукт с id %s не найден", entityId)));
 
         existingProduct.setName(request.getName());
@@ -179,7 +177,7 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
         }
         discountProduct.setDiscount(request.getDiscount());
         discountProduct.setActive(true);
-        return productDAO.save(existingProduct);
+        return productRepository.save(existingProduct);
     }
 
     @Caching (
@@ -193,7 +191,7 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
     )
     @Override
     public Product patchEntity(Long entityId, ProductWithDiscountPatchRequest request) {
-        Product existingProduct = productDAO.findById(entityId).orElseThrow(
+        Product existingProduct = productRepository.findById(entityId).orElseThrow(
                 () -> new SuchResourceNotFoundEx(String.format("Продукт с id %s не найден", entityId))
         );
         if (request.getName() != null) {
@@ -214,13 +212,13 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
         if(request.getImage() != null) {
             updateEntityImage(entityId, request.getImage(), EntityType.Product);
         }
-        return productDAO.save(existingProduct);
+        return productRepository.save(existingProduct);
     }
 
     @Override
     public List<Product> findSimilarByNameFilter(String name) {
         Specification<Product> spec = productSpecification.getBySimilarNameFilter(name);
-        return productDAO.findAll(spec);
+        return productRepository.findAll(spec);
     }
 
 

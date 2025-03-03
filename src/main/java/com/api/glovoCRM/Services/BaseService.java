@@ -1,7 +1,7 @@
 package com.api.glovoCRM.Services;
 
-import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
-import com.api.glovoCRM.DAOs.ImageDAO;
+import com.api.glovoCRM.Repositories.ImageAssociationsRepository;
+import com.api.glovoCRM.Repositories.ImageRepository;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Exceptions.MinioExceptions.*;
 import com.api.glovoCRM.Rest.Requests.BaseRequest;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -28,15 +27,15 @@ import java.util.UUID;
 @Transactional
 public abstract class BaseService<T, C extends BaseRequestNotNull, U extends BaseRequestNotNull, P extends BaseRequest> {
 
-    protected final ImageDAO imageDAO;
-    protected final ImageAssociationsDAO imageAssociationsDAO;
+    protected final ImageRepository imageRepository;
+    protected final ImageAssociationsRepository imageAssociationsRepository;
     protected final MinioService minioService;
     protected final ImageCacheService imageCacheService;
 
     @Autowired
-    protected BaseService(ImageCacheService imageCacheService, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService) {
-        this.imageDAO = imageDAO;
-        this.imageAssociationsDAO = imageAssociationsDAO;
+    protected BaseService(ImageCacheService imageCacheService, ImageRepository imageRepository, ImageAssociationsRepository imageAssociationsRepository, MinioService minioService) {
+        this.imageRepository = imageRepository;
+        this.imageAssociationsRepository = imageAssociationsRepository;
         this.minioService = minioService;
         this.imageCacheService = imageCacheService;
     }
@@ -77,13 +76,13 @@ public abstract class BaseService<T, C extends BaseRequestNotNull, U extends Bas
                     .originalFilename(file.getOriginalFilename())
                     .build();
 
-            Image savedImage = imageDAO.save(image);
+            Image savedImage = imageRepository.save(image);
 
             ImageAssociation association = new ImageAssociation();
             association.setImage(savedImage);
             association.setEntityType(entityType);
             association.setOwnerId(ownerId);
-            imageAssociationsDAO.save(association);
+            imageAssociationsRepository.save(association);
         }
     }
 
@@ -103,7 +102,7 @@ public abstract class BaseService<T, C extends BaseRequestNotNull, U extends Bas
             log.error("Ошибка при удалении изображения(500): {}", e.getMessage());
             throw e;
         }
-        imageAssociationsDAO.deleteById(imageAssociation.getId());
+        imageAssociationsRepository.deleteById(imageAssociation.getId());
         log.debug("Удаление записи из ImageAssociations...");
 
     }
@@ -141,9 +140,9 @@ public abstract class BaseService<T, C extends BaseRequestNotNull, U extends Bas
                     .originalFilename(newImage.getOriginalFilename())
                     .build();
 
-            Image savedImage = imageDAO.save(newImageEntity);
+            Image savedImage = imageRepository.save(newImageEntity);
             imageAssociation.setImage(savedImage);
-            imageAssociationsDAO.save(imageAssociation);
+            imageAssociationsRepository.save(imageAssociation);
 
             minioService.deleteFile(bucket, oldObjectName);
             log.info("Старое изображение успешно удалено: {}", oldObjectName);

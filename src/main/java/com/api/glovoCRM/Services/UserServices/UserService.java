@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services.UserServices;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.constants.EUserStatuses;
 import jakarta.transaction.Transactional;
@@ -14,10 +14,10 @@ import java.util.List;
 @Slf4j
 @Service
 public class UserService {
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
 
-    public UserService(UserDAO userDAO) {
-        this.userDAO = userDAO;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -25,15 +25,15 @@ public class UserService {
     public void markInactiveUsers() {
         log.info("Запуск задачи markInactiveUsers... Загрузка");
         LocalDateTime threeMonthsBefore = LocalDateTime.now().minusMonths(3);
-        List<User> inactiveUsers = userDAO.findByLastLoginDateBefore(threeMonthsBefore);
+        List<User> inactiveUsers = userRepository.findByLastLoginDateBefore(threeMonthsBefore);
         log.info("Найдено неактивных пользователей в БД: {}", inactiveUsers.size());
         inactiveUsers.forEach(user -> user.setStatus(EUserStatuses.INACTIVE));
-        userDAO.saveAll(inactiveUsers);
+        userRepository.saveAll(inactiveUsers);
         log.info("Завершено выполнение задачи markInactiveUsers.");
     }
 
     public User findById(Long id) {
-        return userDAO.findById(id).orElse(null);
+        return userRepository.findById(id).orElse(null);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.api.glovoCRM.Services.AuthServices;
 
-import com.api.glovoCRM.DAOs.RefreshTokenDAO;
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.RefreshTokenRepository;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Models.UserModels.RefreshToken;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Security.jwt.JwtCore;
@@ -19,15 +19,15 @@ import java.util.Map;
 public class TokenService {
 
     private final JwtCore jwtCore;
-    private final RefreshTokenDAO refreshTokenDAO;
-    private final UserDAO userDAO;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final UserRepository userRepository;
     private final BlackListService blackListService;
 
     @Autowired
-    public TokenService(JwtCore jwtCore, RefreshTokenDAO refreshTokenDAO, UserDAO userDAO, BlackListService blackListService) {
+    public TokenService(JwtCore jwtCore, RefreshTokenRepository refreshTokenRepository, UserRepository userRepository, BlackListService blackListService) {
         this.jwtCore = jwtCore;
-        this.refreshTokenDAO = refreshTokenDAO;
-        this.userDAO = userDAO;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.userRepository = userRepository;
         this.blackListService = blackListService;
     }
     @Transactional
@@ -35,18 +35,18 @@ public class TokenService {
         String accessToken = jwtCore.generateAccessToken(user);
         String refreshToken = jwtCore.generateRefreshToken(user);
 
-        RefreshToken existingToken = refreshTokenDAO.findByUserId(user.getId()).orElse(null);
+        RefreshToken existingToken = refreshTokenRepository.findByUserId(user.getId()).orElse(null);
 
         if (existingToken != null) {
             existingToken.setToken(refreshToken);
             existingToken.setExpiryDate(Instant.now().plusSeconds(jwtCore.getRefreshExpiration()));
-            refreshTokenDAO.save(existingToken);
+            refreshTokenRepository.save(existingToken);
         } else {
             RefreshToken refreshTokenEntity = new RefreshToken();
             refreshTokenEntity.setUser(user);
             refreshTokenEntity.setToken(refreshToken);
             refreshTokenEntity.setExpiryDate(Instant.now().plusSeconds(jwtCore.getRefreshExpiration()));
-            refreshTokenDAO.save(refreshTokenEntity);
+            refreshTokenRepository.save(refreshTokenEntity);
         }
 
         return Map.of(
@@ -63,7 +63,7 @@ public class TokenService {
             }
             String name = jwtCore.getSubjectFromRefreshToken(refreshToken);
 
-            User user = userDAO.findByName(name)
+            User user = userRepository.findByName(name)
                     .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
             String newAccessToken = jwtCore.generateAccessToken(user);
 

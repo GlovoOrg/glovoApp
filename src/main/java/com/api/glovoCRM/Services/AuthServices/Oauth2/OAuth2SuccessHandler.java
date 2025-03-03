@@ -1,8 +1,7 @@
 package com.api.glovoCRM.Services.AuthServices.Oauth2;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Models.UserModels.User;
-import com.api.glovoCRM.Rest.Responses.Auth.LoginResponse;
 import com.api.glovoCRM.Rest.Responses.Auth.oauth2Response;
 import com.api.glovoCRM.Services.AuthServices.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +15,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -24,13 +22,13 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final CustomOauth2UserService customOauth2UserService;
     private final TokenService tokenService;
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
 
     @Autowired
-    public OAuth2SuccessHandler(CustomOauth2UserService customOauth2UserService, TokenService tokenService, UserDAO userDAO) {
+    public OAuth2SuccessHandler(CustomOauth2UserService customOauth2UserService, TokenService tokenService, UserRepository userRepository) {
         this.customOauth2UserService = customOauth2UserService;
         this.tokenService = tokenService;
-        this.userDAO = userDAO;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -41,7 +39,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         }
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getAttribute("email");
-        User user = userDAO.findByEmail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
         oauth2Response oauth2Response;

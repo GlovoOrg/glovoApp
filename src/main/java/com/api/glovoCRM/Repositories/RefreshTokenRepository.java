@@ -1,4 +1,4 @@
-package com.api.glovoCRM.DAOs;
+package com.api.glovoCRM.Repositories;
 
 import com.api.glovoCRM.Models.UserModels.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.Instant;
 import java.util.Optional;
 
-public interface RefreshTokenDAO extends JpaRepository<RefreshToken, Long> {
+public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
 
     Optional<RefreshToken> findByToken(String refreshToken);
 

@@ -1,6 +1,6 @@
 package com.api.glovoCRM.TelegramCodeSender;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class TelegramCodeSenderBot extends TelegramLongPollingBot {
 
 
     private static boolean isBotRunning = false;
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
     private static final String START_INSTRUCTIONS = """
         ⚽🔐⚽ Для привязки Telegram аккаунта:
         1. Войдите в основное приложение Glovo(регистрация)
@@ -71,8 +71,8 @@ public class TelegramCodeSenderBot extends TelegramLongPollingBot {
         }
     }
 
-    public TelegramCodeSenderBot(UserDAO userDAO) {
-        this.userDAO = userDAO;
+    public TelegramCodeSenderBot(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -103,9 +103,9 @@ public class TelegramCodeSenderBot extends TelegramLongPollingBot {
         }
     }
     public void handleLoginBinding(String chatId, String login) {
-        userDAO.findByLogin(login).ifPresentOrElse(
+        userRepository.findByLogin(login).ifPresentOrElse(
                 user -> {
-                    userDAO.updateTelegramChatId(login, chatId);
+                    userRepository.updateTelegramChatId(login, chatId);
                     sendSuccessMessage(chatId, "✅ Аккаунт привязан к логину: " + login);
                 },
                 () -> sendErrorMessage(chatId, "❌ Пользователь с логином " + login + " не найден")

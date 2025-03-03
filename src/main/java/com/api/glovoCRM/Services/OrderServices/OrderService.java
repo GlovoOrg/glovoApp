@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services.OrderServices;
 
-import com.api.glovoCRM.DAOs.OrderDAO;
+import com.api.glovoCRM.Repositories.OrderRepository;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
 import com.api.glovoCRM.Models.OrderDetailModels.*;
@@ -22,14 +22,14 @@ import java.util.Optional;
 
 @Service
 public class OrderService {
-    private final OrderDAO orderDAO;
+    private final OrderRepository orderRepository;
     private final CartService cartService;
     private final UserService userService;
     private final ProductService productService;
     private final PaymentService paymentService;
 
-    public OrderService(OrderDAO orderDAO, CartService cartService, UserService userService, ProductService productService, PaymentService paymentService) {
-        this.orderDAO = orderDAO;
+    public OrderService(OrderRepository orderRepository, CartService cartService, UserService userService, ProductService productService, PaymentService paymentService) {
+        this.orderRepository = orderRepository;
         this.cartService = cartService;
         this.userService = userService;
         this.productService = productService;
@@ -107,7 +107,7 @@ public class OrderService {
         }
 
 
-        Order savedOrder = orderDAO.save(order);
+        Order savedOrder = orderRepository.save(order);
 
         cartService.clearCartByUserId(userId);
 

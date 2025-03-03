@@ -1,9 +1,9 @@
 package com.api.glovoCRM.Services.EstablishmentServices;
 
-import com.api.glovoCRM.DAOs.EstablishmentDAO;
-import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
-import com.api.glovoCRM.DAOs.ImageDAO;
-import com.api.glovoCRM.DAOs.SubCategoryDAO;
+import com.api.glovoCRM.Repositories.EstablishmentRepository;
+import com.api.glovoCRM.Repositories.ImageAssociationsRepository;
+import com.api.glovoCRM.Repositories.ImageRepository;
+import com.api.glovoCRM.Repositories.SubCategoryRepository;
 import com.api.glovoCRM.Embeddable.EstablishmentDetails;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
@@ -41,16 +41,16 @@ import java.util.Objects;
 @CacheConfig (cacheNames = "app_establishments")
 public class EstablishmentService extends BaseService<Establishment, EstablishmentCreateRequest, EstablishmentUpdateRequest, EstablishmentPatchRequest> {
 
-    private final EstablishmentDAO establishmentDAO;
-    private final SubCategoryDAO subCategoryDAO;
+    private final EstablishmentRepository establishmentRepository;
+    private final SubCategoryRepository subCategoryRepository;
     private final EstablismentSpecification establismentSpecification;
     private final TransactionTemplate transactionTemplate;
 
     @Autowired
-    public EstablishmentService(ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, EstablishmentDAO establishmentDAO, SubCategoryDAO subCategoryDAO, EstablismentSpecification establismentSpecification, ImageCacheService imageCacheService, TransactionTemplate transactionTemplate) {
-        super(imageCacheService, imageDAO, imageAssociationsDAO, minioService);
-        this.establishmentDAO = establishmentDAO;
-        this.subCategoryDAO = subCategoryDAO;
+    public EstablishmentService(ImageRepository imageRepository, ImageAssociationsRepository imageAssociationsRepository, MinioService minioService, EstablishmentRepository establishmentRepository, SubCategoryRepository subCategoryRepository, EstablismentSpecification establismentSpecification, ImageCacheService imageCacheService, TransactionTemplate transactionTemplate) {
+        super(imageCacheService, imageRepository, imageAssociationsRepository, minioService);
+        this.establishmentRepository = establishmentRepository;
+        this.subCategoryRepository = subCategoryRepository;
         this.establismentSpecification = establismentSpecification;
         this.transactionTemplate = transactionTemplate;
     }
@@ -60,7 +60,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
     @Override
     public Establishment findById(Long id) {
         log.info("Находим заведение с id: {}", id);
-        return establishmentDAO.findById(id).orElseThrow(
+        return establishmentRepository.findById(id).orElseThrow(
                 () -> new SuchResourceNotFoundEx(String.format("Заведение с id %s не найдено", id))
         );
     }
@@ -69,7 +69,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
     @Transactional (readOnly = true, isolation = Isolation.READ_COMMITTED)
     @Override
     public List<Establishment> findAll() {
-        return establishmentDAO.findAll();
+        return establishmentRepository.findAll();
     }
     @Override
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -83,15 +83,15 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
             }
     )
     public Establishment createEntity(EstablishmentCreateRequest request) {
-        if (!subCategoryDAO.existsById(request.getSubCategoryId())) {
+        if (!subCategoryRepository.existsById(request.getSubCategoryId())) {
             throw new SuchResourceNotFoundEx("Такой подкатегории нет в системе");
         }
-        if (establishmentDAO.existsByName(request.getName())) {
+        if (establishmentRepository.existsByName(request.getName())) {
             throw new AlreadyExistsEx("Такое заведение уже существует");
         }
 
         Establishment establishment = createEstablishment(request);
-        Establishment savedEstablishment = establishmentDAO.save(establishment);
+        Establishment savedEstablishment = establishmentRepository.save(establishment);
 
         EstablishmentAddress address = savedEstablishment.getEstablishmentAddress();
         if (address != null) {
@@ -122,11 +122,11 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
             }
     )
     public void deleteEntity(Long entityId) {
-        Establishment establishment = establishmentDAO.findById(entityId)
+        Establishment establishment = establishmentRepository.findById(entityId)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Заведение не найдено"));
         transactionTemplate.execute(status -> {
             try {
-                establishmentDAO.deleteEstablishmentById(establishment.getId());
+                establishmentRepository.deleteEstablishmentById(establishment.getId());
                 deleteImageRecord(entityId, EntityType.Establishment);
                 log.debug("Подкатегория успешно удалена. ID: {}", entityId);
                 return null;
@@ -154,7 +154,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
             }
     )
     public Establishment updateEntity(Long entityId, EstablishmentUpdateRequest request) {
-        Establishment establishment = getEntityById(entityId, establishmentDAO);
+        Establishment establishment = getEntityById(entityId, establishmentRepository);
 
         establishment.setName(request.getName());
         establishment.setPriceOfDelivery(request.getPriceOfDelivery());
@@ -163,7 +163,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
         establishment.setCloseTime(request.getCloseTime());
         updateEntityImage(entityId, request.getImage(), EntityType.Establishment);
         if (request.getSubCategoryId() != null && !request.getSubCategoryId().equals(establishment.getSubcategory().getId())) {
-            SubCategory newSubCategory = subCategoryDAO.findById(request.getSubCategoryId())
+            SubCategory newSubCategory = subCategoryRepository.findById(request.getSubCategoryId())
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Категория не найдена"));
             establishment.setSubcategory(newSubCategory);
         }
@@ -183,7 +183,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
             establishment.setDetails(details);
         }
         details.setSubCategoryId(request.getSubCategoryId());
-        return establishmentDAO.save(establishment);
+        return establishmentRepository.save(establishment);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
             }
     )
     public Establishment patchEntity(Long entityId, EstablishmentPatchRequest request) {
-        Establishment existingEstablishment = establishmentDAO.findById(entityId)
+        Establishment existingEstablishment = establishmentRepository.findById(entityId)
                 .orElseThrow(() -> new SuchResourceNotFoundEx(String.format("Заведение с id %s не найдено", entityId)));
         if (request.getName() != null) {
             existingEstablishment.setName(request.getName());
@@ -216,7 +216,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
             existingEstablishment.setCloseTime(request.getCloseTime());
         }
         if (request.getSubCategoryId() != null && !Objects.equals(request.getSubCategoryId(), existingEstablishment.getSubcategory().getId())) {
-            SubCategory newSubCategory = subCategoryDAO.findById(request.getSubCategoryId())
+            SubCategory newSubCategory = subCategoryRepository.findById(request.getSubCategoryId())
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Подкатегория не найдена"));
             existingEstablishment.setSubcategory(newSubCategory);
         }
@@ -245,17 +245,17 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
         if (request.getSubCategoryId() != null) {
             details.setSubCategoryId(request.getSubCategoryId());
         }
-        return establishmentDAO.save(existingEstablishment);
+        return establishmentRepository.save(existingEstablishment);
     }
 
     @Override
     public List<Establishment> findSimilarByNameFilter(String name) {
         Specification<Establishment> spec = establismentSpecification.getBySimilarNameFilter(name);
-        return establishmentDAO.findAll(spec);
+        return establishmentRepository.findAll(spec);
     }
 
     private Establishment createEstablishment(EstablishmentCreateRequest request) {
-        SubCategory subCategory = subCategoryDAO.findById(request.getSubCategoryId())
+        SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId())
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Такой подкатегории нет в системе"));
 
         EstablishmentAddress address = new EstablishmentAddress();
@@ -288,18 +288,18 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
         return establishment;
     }
     public List<Establishment> getEstablishmentsByRatingAscFilter() {
-        return establishmentDAO.findAll(establismentSpecification.getEstablishmentByRatingAscFilter());
+        return establishmentRepository.findAll(establismentSpecification.getEstablishmentByRatingAscFilter());
     }
 
     public List<Establishment> getEstablishmentsByRatingDescFilter() {
-        return establishmentDAO.findAll(establismentSpecification.getEstablishmentByRatingDescFilter());
+        return establishmentRepository.findAll(establismentSpecification.getEstablishmentByRatingDescFilter());
     }
 
     public List<Establishment> getEstablishmentsByDeliveryPriceAscFilter() {
-        return establishmentDAO.findAll(establismentSpecification.getEstablishmentByDeliveryPriceAscFilter());
+        return establishmentRepository.findAll(establismentSpecification.getEstablishmentByDeliveryPriceAscFilter());
     }
 
     public List<Establishment> getEstablishmentsByDeliveryPriceDescFilter() {
-        return establishmentDAO.findAll(establismentSpecification.getEstablishmentByDeliveryPriceDescFilter());
+        return establishmentRepository.findAll(establismentSpecification.getEstablishmentByDeliveryPriceDescFilter());
     }
 }

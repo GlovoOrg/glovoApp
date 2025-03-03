@@ -1,7 +1,7 @@
 package com.api.glovoCRM.Services.AuthServices;
 
-import com.api.glovoCRM.DAOs.RefreshTokenDAO;
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.RefreshTokenRepository;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.UserModels.RefreshToken;
 import com.api.glovoCRM.Security.jwt.JwtCore;
@@ -15,16 +15,16 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class LogoutService {
     private final BlackListService blackListService;
-    private final RefreshTokenDAO refreshTokenDAO;
-    private final UserDAO userDAO;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final UserRepository userRepository;
     private final JwtCore jwtCore;
 
 
     @Autowired
-    public LogoutService(BlackListService blackListService, RefreshTokenDAO refreshTokenDAO, UserDAO userDAO, JwtCore jwtCore) {
+    public LogoutService(BlackListService blackListService, RefreshTokenRepository refreshTokenRepository, UserRepository userRepository, JwtCore jwtCore) {
         this.blackListService = blackListService;
-        this.refreshTokenDAO = refreshTokenDAO;
-        this.userDAO = userDAO;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.userRepository = userRepository;
         this.jwtCore = jwtCore;
     }
     public void logout(String authorizationHeader) {
@@ -35,14 +35,14 @@ public class LogoutService {
         String accessToken= authorizationHeader.substring(7);
         try {
             String name = jwtCore.getSubjectFromAccessToken(accessToken);
-            Long userId = userDAO.findByName(name)
+            Long userId = userRepository.findByName(name)
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Пользователь не найден: " + name))
                     .getId();
-            RefreshToken refreshTokenEntity = refreshTokenDAO.findByUserId(userId)
+            RefreshToken refreshTokenEntity = refreshTokenRepository.findByUserId(userId)
                     .orElseThrow(() -> new SuchResourceNotFoundEx("Рефреш Токен не найден  для пользователя" + userId));
 
             blackListService.addToBlacklist(refreshTokenEntity.getToken());
-            refreshTokenDAO.delete(refreshTokenEntity);
+            refreshTokenRepository.delete(refreshTokenEntity);
             SecurityContextHolder.clearContext();
             log.info("Пользователь {} успешно вышел", name);
         } catch (Exception e) {

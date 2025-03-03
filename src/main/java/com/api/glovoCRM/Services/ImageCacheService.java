@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services;
 
-import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
+import com.api.glovoCRM.Repositories.ImageAssociationsRepository;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.EstablishmentModels.ImageAssociation;
 import com.api.glovoCRM.constants.EntityType;
@@ -11,15 +11,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class ImageCacheService {
 
-    private final ImageAssociationsDAO imageAssociationsDAO;
+    private final ImageAssociationsRepository imageAssociationsRepository;
     @Autowired
-    public ImageCacheService(ImageAssociationsDAO imageAssociationsDAO) {
-        this.imageAssociationsDAO = imageAssociationsDAO;
+    public ImageCacheService(ImageAssociationsRepository imageAssociationsRepository) {
+        this.imageAssociationsRepository = imageAssociationsRepository;
     }
 
     @Cacheable (value = "imageAssociations", key = "#ownerId + ':' + #entityType.name()")
     public ImageAssociation getImageAssociation(Long ownerId, EntityType entityType) {
-        return imageAssociationsDAO.findByOwnerIdAndEntityType(ownerId, entityType)
+        return imageAssociationsRepository.findByOwnerIdAndEntityType(ownerId, entityType)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Ассоциация не найдена"));
     }
 

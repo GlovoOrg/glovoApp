@@ -1,4 +1,4 @@
-package com.api.glovoCRM.DAOs.UserDAOs;
+package com.api.glovoCRM.Repositories.UserDAOs;
 
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.constants.EUserStatuses;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserDAO extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     List<User> findByLastLoginDateBefore(LocalDateTime date);
 
     Optional<User> findByName(String name);

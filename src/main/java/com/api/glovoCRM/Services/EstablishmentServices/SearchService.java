@@ -1,7 +1,7 @@
 package com.api.glovoCRM.Services.EstablishmentServices;
 
-import com.api.glovoCRM.DAOs.EstablishmentDAO;
-import com.api.glovoCRM.DAOs.ProductDAO;
+import com.api.glovoCRM.Repositories.EstablishmentRepository;
+import com.api.glovoCRM.Repositories.ProductRepository;
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
 import com.api.glovoCRM.Models.EstablishmentModels.Product;
 import com.api.glovoCRM.Specifications.EstablimentSpecifications.SearchSpecification;
@@ -14,15 +14,15 @@ import java.util.List;
 
 @Service
 public class SearchService {
-    private final EstablishmentDAO establishmentDao;
-    private final ProductDAO productDao;
+    private final EstablishmentRepository establishmentRepository;
+    private final ProductRepository productRepository;
     private final SearchSpecification searchSpecification;
 
 
     @Autowired
-    public SearchService(EstablishmentDAO establishmentDao, ProductDAO productDao, SearchSpecification searchSpecification) {
-        this.establishmentDao = establishmentDao;
-        this.productDao = productDao;
+    public SearchService(EstablishmentRepository establishmentRepository, ProductRepository productRepository, SearchSpecification searchSpecification) {
+        this.establishmentRepository = establishmentRepository;
+        this.productRepository = productRepository;
         this.searchSpecification = searchSpecification;
     }
 
@@ -30,8 +30,8 @@ public class SearchService {
         Specification<Establishment> establishmentSpecification = searchSpecification.getEstablishmentsFilter(name);
         Specification<Product> productSpecification = searchSpecification.getProductsFilter(name);
 
-        List<Establishment> establishments = establishmentDao.findAll(establishmentSpecification);
-        List<Product> products = productDao.findAll(productSpecification);
+        List<Establishment> establishments = establishmentRepository.findAll(establishmentSpecification);
+        List<Product> products = productRepository.findAll(productSpecification);
 
         List<List<?>> establishmentsAndProducts = new ArrayList<>();
         establishmentsAndProducts.add(establishments);

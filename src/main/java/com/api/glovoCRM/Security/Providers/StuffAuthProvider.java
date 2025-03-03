@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Security.Providers;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Exceptions.AuthExceptions.InvalidCredentialsEx;
 import com.api.glovoCRM.Exceptions.AuthExceptions.UserNotVerifiedEx;
 import com.api.glovoCRM.Models.UserModels.User;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class StuffAuthProvider implements AuthenticationProvider {
 
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TelegramNotificationService telegramNotificationService;
     private final VerificationCodeService verificationCodeService;
@@ -34,7 +34,7 @@ public class StuffAuthProvider implements AuthenticationProvider {
             String login = (String) authentication.getPrincipal();
             log.info("Первый этап аутентификации для пользователя: {}", login);
             String password = (String) authentication.getCredentials();
-            User user = userDAO.findByLogin(login)
+            User user = userRepository.findByLogin(login)
                     .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
             if (!passwordEncoder.matches(password, user.getPassword())) {
                 throw new InvalidCredentialsEx("Неверный пароль");
@@ -59,7 +59,7 @@ public class StuffAuthProvider implements AuthenticationProvider {
                 throw new UserNotVerifiedEx("Код подтверждения не подтвержден");
             }
 
-            User user = userDAO.findByLogin(login)
+            User user = userRepository.findByLogin(login)
                     .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
             PostAuthenticationTokenStuff token = new PostAuthenticationTokenStuff(user, user.getAuthorities());
             token.setAuthenticated(true);

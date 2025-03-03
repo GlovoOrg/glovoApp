@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services.AuthServices.Oauth2;
 
-import com.api.glovoCRM.DAOs.UserDAOs.UserDAO;
+import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
 import com.api.glovoCRM.Models.UserModels.SocialAccount;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Services.AuthServices.TokenService;
@@ -33,13 +33,13 @@ import java.util.*;
 @Slf4j
 @Service
 public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
     private final AuthService authService;
     private final TokenService tokenService;
 
     @Autowired
-    public CustomOauth2UserService(AuthService authService, UserDAO userDAO, TokenService tokenService) {
-        this.userDAO = userDAO;
+    public CustomOauth2UserService(AuthService authService, UserRepository userRepository, TokenService tokenService) {
+        this.userRepository = userRepository;
         this.authService = authService;
         this.tokenService = tokenService;
     }
@@ -61,9 +61,9 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
         log.info("Пользователь авторизован через {}: email={}, name={}", provider, email, name);
         //todo можно обхединить в 1 метод в query
         // Ищем пользователя по email или социальному ID
-        User user = userDAO.findByEmail(email).orElse(null);
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
-            user = userDAO.findBySocialAccountsProviderId(oAuth2User.getName()).orElse(null);
+            user = userRepository.findBySocialAccountsProviderId(oAuth2User.getName()).orElse(null);
         }
 
         if (user == null) {
@@ -126,7 +126,7 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
         socialAccount.setProvider(AuthProviders.valueOf("AUTH_PROVIDERS_" + provider.toUpperCase()));
         socialAccount.setProviderId(oAuth2User.getName());
         user.addSocialAccount(socialAccount);
-        userDAO.save(user);
+        userRepository.save(user);
 
         Map<String, Object> mapResponse = new HashMap<>(oAuth2User.getAttributes());
         mapResponse.put("message", "Пользователь успешно создан");
@@ -145,7 +145,7 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
         boolean hasSocialAccount = user.getSocialAccounts().stream()
                 .anyMatch(sa -> sa.getProvider().name().equals("AUTH_PROVIDERS_" + provider.toUpperCase()));
         user.setStatus(EUserStatuses.ACTIVE);
-        userDAO.save(user);
+        userRepository.save(user);
 
         Map<String, Object> mapOfAccessAndRefresh = generateTokens(oAuth2User, user);
         if(!hasSocialAccount && user.getPassword() != null) {
@@ -183,7 +183,7 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
         socialAccount.setProvider(AuthProviders.valueOf("AUTH_PROVIDERS_" + provider.toUpperCase()));
         socialAccount.setProviderId(oAuth2User.getName());
         user.addSocialAccount(socialAccount);
-        userDAO.save(user);
+        userRepository.save(user);
     }
 
     private Map<String, Object> generateTokens(OAuth2User oAuth2User, User user) {
