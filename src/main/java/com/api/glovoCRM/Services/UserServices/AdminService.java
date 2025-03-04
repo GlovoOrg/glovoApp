@@ -2,7 +2,7 @@ package com.api.glovoCRM.Services.UserServices;
 
 import com.api.glovoCRM.Repositories.EstablishmentRepository;
 import com.api.glovoCRM.Repositories.ProductRepository;
-import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
+import com.api.glovoCRM.Repositories.UserRepositories.UserRepository;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.EstablishmentModels.Establishment;
 import com.api.glovoCRM.Models.EstablishmentModels.Product;

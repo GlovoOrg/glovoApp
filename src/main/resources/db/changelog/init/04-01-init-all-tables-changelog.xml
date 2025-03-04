@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1741077322567-1" author="malibuchka">
+        <createTable tableName="addresses">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_addresses"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="address_line" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="latitude" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="longitude" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-2" author="malibuchka">
+        <createTable tableName="categories">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_categories"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="name" type="VARCHAR(355)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-3" author="malibuchka">
+        <createTable tableName="discounts">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_discounts"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="discount" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-4" author="malibuchka">
+        <createTable tableName="establishment_adresses">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_establishment_adresses"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="address_line" type="VARCHAR(700)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="latitude" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="longitude" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="establishment_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-5" author="malibuchka">
+        <createTable tableName="establishment_filters">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_establishment_filters"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="name" type="VARCHAR(355)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="establishment_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-6" author="malibuchka">
+        <createTable tableName="establishments">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_establishments"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="name" type="VARCHAR(455)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_of_delivery" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_rating" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity_of_ratings" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_of_delivery" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="open_time" type="TIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="close_time" type="TIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subcategory_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sub_category_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-7" author="malibuchka">
+        <createTable tableName="image_associations">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_image_associations"/>
+            </column>
+            <column name="image_id" type="BIGINT"/>
+            <column name="entity_type" type="VARCHAR(255)"/>
+            <column name="owner_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-8" author="malibuchka">
+        <createTable tableName="images">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_images"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="url" type="VARCHAR(800)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="filename" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="size" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bucket" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="original_filename" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-9" author="malibuchka">
+        <createTable tableName="order_details">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_order_details"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="time_of_delivery" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cost_of_delivery" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="distance" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-10" author="malibuchka">
+        <createTable tableName="order_items">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_order_items"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="quantity" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="one_product_price_order" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_detail_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-11" author="malibuchka">
+        <createTable tableName="orders">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_orders"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="total_amount" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-12" author="malibuchka">
+        <createTable tableName="payment_details">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_payment_details"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="order_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="session_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_id" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_amount" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency" type="VARCHAR(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="provider" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payment_url" type="VARCHAR(1024)"/>
+            <column name="is_paid" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-13" author="malibuchka">
+        <createTable tableName="products">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_products"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="name" type="VARCHAR(266)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="establishment_id" type="BIGINT"/>
+            <column name="establishment_filter_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-14" author="malibuchka">
+        <createTable tableName="refresh_tokens">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_refreshtokens"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiry_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-15" author="malibuchka">
+        <createTable tableName="roles">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_roles"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-16" author="malibuchka">
+        <createTable tableName="social_accounts">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_social_accounts"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="providers" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="provider_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-17" author="malibuchka">
+        <createTable tableName="subcategories">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_subcategories"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="name" type="VARCHAR(355)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-18" author="malibuchka">
+        <createTable tableName="user_roles">
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user_roles"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user_roles"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-19" author="malibuchka">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
+            </column>
+            <column name="created_time" type="DATETIME"/>
+            <column name="updated_time" type="DATETIME"/>
+            <column name="username" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(122)"/>
+            <column name="phone_number" type="VARCHAR(20)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_login_date" type="DATETIME"/>
+            <column name="login" type="VARCHAR(255)"/>
+            <column name="chat_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1741077322567-20" author="malibuchka">
+        <addUniqueConstraint columnNames="order_id" constraintName="uc_addresses_order" tableName="addresses"/>
+    </changeSet>
+    <changeSet id="1741077322567-21" author="malibuchka">
+        <addUniqueConstraint columnNames="product_id" constraintName="uc_discounts_product" tableName="discounts"/>
+    </changeSet>
+    <changeSet id="1741077322567-22" author="malibuchka">
+        <addUniqueConstraint columnNames="establishment_id" constraintName="uc_establishment_adresses_establishment"
+                             tableName="establishment_adresses"/>
+    </changeSet>
+    <changeSet id="1741077322567-23" author="malibuchka">
+        <addUniqueConstraint columnNames="image_id" constraintName="uc_image_associations_image"
+                             tableName="image_associations"/>
+    </changeSet>
+    <changeSet id="1741077322567-24" author="malibuchka">
+        <addUniqueConstraint columnNames="order_id" constraintName="uc_order_details_order" tableName="order_details"/>
+    </changeSet>
+    <changeSet id="1741077322567-25" author="malibuchka">
+        <addUniqueConstraint columnNames="order_id" constraintName="uc_payment_details_order"
+                             tableName="payment_details"/>
+    </changeSet>
+    <changeSet id="1741077322567-26" author="malibuchka">
+        <addUniqueConstraint columnNames="session_id" constraintName="uc_payment_details_session"
+                             tableName="payment_details"/>
+    </changeSet>
+    <changeSet id="1741077322567-27" author="malibuchka">
+        <addUniqueConstraint columnNames="transaction_id" constraintName="uc_payment_details_transaction"
+                             tableName="payment_details"/>
+    </changeSet>
+    <changeSet id="1741077322567-28" author="malibuchka">
+        <addUniqueConstraint columnNames="user_id" constraintName="uc_refreshtokens_user" tableName="refresh_tokens"/>
+    </changeSet>
+    <changeSet id="1741077322567-29" author="malibuchka">
+        <addUniqueConstraint columnNames="name" constraintName="uc_roles_name" tableName="roles"/>
+    </changeSet>
+    <changeSet id="1741077322567-30" author="malibuchka">
+        <addUniqueConstraint columnNames="email" constraintName="uc_users_email" tableName="users"/>
+    </changeSet>
+    <changeSet id="1741077322567-31" author="malibuchka">
+        <addUniqueConstraint columnNames="phone_number" constraintName="uc_users_phone_number" tableName="users"/>
+    </changeSet>
+    <changeSet id="1741077322567-32" author="malibuchka">
+        <addUniqueConstraint columnNames="username" constraintName="uc_users_username" tableName="users"/>
+    </changeSet>
+    <changeSet id="1741077322567-33" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="addresses"
+                                 constraintName="FK_ADDRESSES_ON_ORDER" referencedColumnNames="id"
+                                 referencedTableName="orders"/>
+    </changeSet>
+    <changeSet id="1741077322567-34" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="subcategories"
+                                 constraintName="FK_CATEGORY_SUBCATEGORY" referencedColumnNames="id"
+                                 referencedTableName="categories"/>
+    </changeSet>
+    <changeSet id="1741077322567-35" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="product_id" baseTableName="discounts"
+                                 constraintName="FK_DISCOUNTS_ON_PRODUCT" referencedColumnNames="id"
+                                 referencedTableName="products"/>
+    </changeSet>
+    <changeSet id="1741077322567-36" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="subcategory_id" baseTableName="establishments"
+                                 constraintName="FK_ESTABLISHMENTS_ON_SUBCATEGORY" referencedColumnNames="id"
+                                 referencedTableName="subcategories"/>
+    </changeSet>
+    <changeSet id="1741077322567-37" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="establishment_id" baseTableName="establishment_adresses"
+                                 constraintName="FK_ESTABLISHMENT_ADRESSES_ON_ESTABLISHMENT" referencedColumnNames="id"
+                                 referencedTableName="establishments"/>
+    </changeSet>
+    <changeSet id="1741077322567-38" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="establishment_id" baseTableName="establishment_filters"
+                                 constraintName="FK_ESTABLISHMENT_FILTERS_ON_ESTABLISHMENT" referencedColumnNames="id"
+                                 referencedTableName="establishments"/>
+    </changeSet>
+    <changeSet id="1741077322567-39" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="image_id" baseTableName="image_associations"
+                                 constraintName="FK_IMAGE_ASSOCIATIONS_ON_IMAGE" onDelete="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="images"/>
+    </changeSet>
+    <changeSet id="1741077322567-40" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="orders" constraintName="FK_ORDERS_ON_USER"
+                                 referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1741077322567-41" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="order_details"
+                                 constraintName="FK_ORDER_DETAILS_ON_ORDER" referencedColumnNames="id"
+                                 referencedTableName="orders"/>
+    </changeSet>
+    <changeSet id="1741077322567-42" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="order_detail_id" baseTableName="order_items"
+                                 constraintName="FK_ORDER_ITEMS_ON_ORDER_DETAIL" referencedColumnNames="id"
+                                 referencedTableName="orders"/>
+    </changeSet>
+    <changeSet id="1741077322567-43" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="product_id" baseTableName="order_items"
+                                 constraintName="FK_ORDER_ITEMS_ON_PRODUCT" referencedColumnNames="id"
+                                 referencedTableName="products"/>
+    </changeSet>
+    <changeSet id="1741077322567-44" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="payment_details"
+                                 constraintName="FK_PAYMENT_DETAILS_ON_ORDER" referencedColumnNames="id"
+                                 referencedTableName="orders"/>
+    </changeSet>
+    <changeSet id="1741077322567-45" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="establishment_id" baseTableName="products"
+                                 constraintName="FK_PRODUCTS_ON_ESTABLISHMENT" referencedColumnNames="id"
+                                 referencedTableName="establishments"/>
+    </changeSet>
+    <changeSet id="1741077322567-46" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="establishment_filter_id" baseTableName="products"
+                                 constraintName="FK_PRODUCTS_ON_ESTABLISHMENTFILTER" referencedColumnNames="id"
+                                 referencedTableName="establishment_filters"/>
+    </changeSet>
+    <changeSet id="1741077322567-47" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="refresh_tokens"
+                                 constraintName="FK_REFRESHTOKENS_ON_USER" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1741077322567-48" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="social_accounts"
+                                 constraintName="FK_SOCIAL_ACCOUNTS_ON_USER" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1741077322567-49" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user_roles" constraintName="fk_userol_on_role"
+                                 referencedColumnNames="id" referencedTableName="roles"/>
+    </changeSet>
+    <changeSet id="1741077322567-50" author="malibuchka">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_roles" constraintName="fk_userol_on_user"
+                                 referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+
+</databaseChangeLog>

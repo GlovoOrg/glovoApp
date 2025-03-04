@@ -1,7 +1,7 @@
 package com.api.glovoCRM.Services.AuthServices;
 
-import com.api.glovoCRM.Repositories.UserDAOs.RoleRepository;
-import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
+import com.api.glovoCRM.Repositories.UserRepositories.RoleRepository;
+import com.api.glovoCRM.Repositories.UserRepositories.UserRepository;
 import com.api.glovoCRM.Models.UserModels.Role;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.constants.ERoles;

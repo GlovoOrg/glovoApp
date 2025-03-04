@@ -2,7 +2,7 @@ package com.api.glovoCRM.Services.UserServices;
 
 import com.api.glovoCRM.Repositories.EstablishmentRepository;
 import com.api.glovoCRM.Repositories.ProductRepository;
-import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
+import com.api.glovoCRM.Repositories.UserRepositories.UserRepository;
 import com.api.glovoCRM.Models.EstablishmentModels.Product;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Rest.Requests.UserRequests.AdminFindProductFilterRequest;

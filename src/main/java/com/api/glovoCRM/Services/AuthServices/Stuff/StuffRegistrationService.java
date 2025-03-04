@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services.AuthServices.Stuff;
 
-import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
+import com.api.glovoCRM.Repositories.UserRepositories.UserRepository;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Rest.Requests.AuthRequests.RegisterRequestStuff;
@@ -49,7 +49,7 @@ public class StuffRegistrationService {
         user.setEmail(request.getEmail());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setStatus(EUserStatuses.PENDING_LOGIN_TO_THE_SYSTEM);
-        authService.assignDefaultRoleStuff(user, ERoles.valueOf(request.getRole()));
+        authService.assignDefaultRoleStuff(user, ERoles.ROLE_ESTABLISHMENT);
         userRepository.save(user);
         log.info("Пользователь {} успешно зарегистрирован", request.getLogin());
         return "Пользователь с логином " + request.getLogin() + " успешно зарегистрирован. Привяжите Telegram через бота.";

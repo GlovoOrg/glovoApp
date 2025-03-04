@@ -1,6 +1,6 @@
 package com.api.glovoCRM.TelegramCodeSender;
 
-import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
+import com.api.glovoCRM.Repositories.UserRepositories.UserRepository;
 import com.api.glovoCRM.Exceptions.Telegram.AccountNotBoundEx;
 import com.api.glovoCRM.Services.AuthServices.VerificationCodeService;
 import lombok.extern.slf4j.Slf4j;

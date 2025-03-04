@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Security.Providers;
 
-import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
+import com.api.glovoCRM.Repositories.UserRepositories.UserRepository;
 import com.api.glovoCRM.Exceptions.AuthExceptions.InvalidCredentialsEx;
 import com.api.glovoCRM.Exceptions.AuthExceptions.UserNotVerifiedEx;
 import com.api.glovoCRM.Models.UserModels.User;

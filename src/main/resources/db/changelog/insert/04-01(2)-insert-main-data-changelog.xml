@@ -1,0 +1,2234 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="malibuchka (generated)" id="1741083222727-4">
+        <insert tableName="categories">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_time" valueDate="2025-03-04T15:02:58.690888"/>
+            <column name="updated_time" valueDate="2025-03-04T15:02:58.690888"/>
+            <column name="name" value="Еда1"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:03.584847"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:03.584847"/>
+            <column name="name" value="Здоровье и красота"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:08.155337"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:08.155337"/>
+            <column name="name" value="Магазины"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="id" valueNumeric="4"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:12.804695"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:12.804695"/>
+            <column name="name" value="Супермаркеты"/>
+        </insert>
+    </changeSet>
+    <changeSet author="malibuchka (generated)" id="1741083222727-9">
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:17.665633"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:17.665633"/>
+            <column name="name" value="Бургеры"/>
+            <column name="category_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:21.734599"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:21.734599"/>
+            <column name="name" value="Алкоголь"/>
+            <column name="category_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:26.458391"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:26.458391"/>
+            <column name="name" value="Курица"/>
+            <column name="category_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="4"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:30.645051"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:30.645051"/>
+            <column name="name" value="Фаст-фуд"/>
+            <column name="category_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="5"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:35.946154"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:35.946154"/>
+            <column name="name" value="Кыргызская"/>
+            <column name="category_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="6"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:41.198422"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:41.198422"/>
+            <column name="name" value="Аптеки"/>
+            <column name="category_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="7"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:46.047176"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:46.047176"/>
+            <column name="name" value="Средства по уходу"/>
+            <column name="category_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="8"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:51.025102"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:51.025102"/>
+            <column name="name" value="Секс Шоп"/>
+            <column name="category_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="9"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:55.733356"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:55.733356"/>
+            <column name="name" value="Табачная продукция"/>
+            <column name="category_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="10"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:00.264508"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:00.264508"/>
+            <column name="name" value="Секс шоп"/>
+            <column name="category_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="11"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:05.060871"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:05.060871"/>
+            <column name="name" value="Средства  по уходу"/>
+            <column name="category_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="12"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:09.640909"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:09.640909"/>
+            <column name="name" value="Цветы"/>
+            <column name="category_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="13"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:14.226708"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:14.226708"/>
+            <column name="name" value="Электроника"/>
+            <column name="category_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="14"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:18.641141"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:18.641141"/>
+            <column name="name" value="Продукты"/>
+            <column name="category_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="subcategories">
+            <column name="id" valueNumeric="15"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:24.209727"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:24.209727"/>
+            <column name="name" value="Супермаркет"/>
+            <column name="category_id" valueNumeric="4"/>
+        </insert>
+    </changeSet>
+    <changeSet author="malibuchka (generated)" id="1741083222727-6">
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:31.826321"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:31.826321"/>
+            <column name="name" value="Mr. BBQ"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="1"/>
+            <column name="sub_category_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:36.920988"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:36.920988"/>
+            <column name="name" value="KFC"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="1"/>
+            <column name="sub_category_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:41.307007"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:41.307007"/>
+            <column name="name" value="Oasis"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="1"/>
+            <column name="sub_category_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="4"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:46.125083"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:46.125083"/>
+            <column name="name" value="Berlin Pub Beer"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="2"/>
+            <column name="sub_category_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="5"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:50.807024"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:50.807024"/>
+            <column name="name" value="BBC кафе-бары"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="2"/>
+            <column name="sub_category_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="6"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:56.390327"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:56.390327"/>
+            <column name="name" value="Кыргыз Коньягы"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="2"/>
+            <column name="sub_category_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="7"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:01.398651"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:01.398651"/>
+            <column name="name" value="KFC "/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="3"/>
+            <column name="sub_category_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="8"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:05.885278"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:05.885278"/>
+            <column name="name" value="Malik al Broast"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="3"/>
+            <column name="sub_category_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="9"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:11.882436"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:11.882436"/>
+            <column name="name" value="Begemot"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="3"/>
+            <column name="sub_category_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="10"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:18.598929"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:18.598929"/>
+            <column name="name" value="Malik al Broast "/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="4"/>
+            <column name="sub_category_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="11"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:36.769801"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:36.769801"/>
+            <column name="name" value="Бухара Ассорти / Buhara Assorti"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="5"/>
+            <column name="sub_category_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="12"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:52.906235"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:52.906235"/>
+            <column name="name" value="Сеть аптек &quot;ФАРМАМИР&quot;"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="6"/>
+            <column name="sub_category_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="13"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:57.632068"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:57.632068"/>
+            <column name="name" value="Korean Beauty Lab"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="7"/>
+            <column name="sub_category_id" valueNumeric="7"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="14"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:01.724529"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:01.724529"/>
+            <column name="name" value="WeSafe"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="8"/>
+            <column name="sub_category_id" valueNumeric="8"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="15"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:06.545469"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:06.545469"/>
+            <column name="name" value="Vaping"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="9"/>
+            <column name="sub_category_id" valueNumeric="9"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="16"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:12.058434"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:12.058434"/>
+            <column name="name" value="Бездымная продукция IQOS"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="9"/>
+            <column name="sub_category_id" valueNumeric="9"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="17"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:26.289845"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:26.289845"/>
+            <column name="name" value="WeShop"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="10"/>
+            <column name="sub_category_id" valueNumeric="10"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="18"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:50.914168"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:50.914168"/>
+            <column name="name" value="Don Pion"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="12"/>
+            <column name="sub_category_id" valueNumeric="12"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="19"/>
+            <column name="created_time" valueDate="2025-03-04T15:07:03.854226"/>
+            <column name="updated_time" valueDate="2025-03-04T15:07:03.854226"/>
+            <column name="name" value="iCon "/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="13"/>
+            <column name="sub_category_id" valueNumeric="13"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="20"/>
+            <column name="created_time" valueDate="2025-03-04T15:07:10.865043"/>
+            <column name="updated_time" valueDate="2025-03-04T15:07:10.865043"/>
+            <column name="name" value="АЗИЯ (ФРУНЗЕ)"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="14"/>
+            <column name="sub_category_id" valueNumeric="14"/>
+        </insert>
+        <insert tableName="establishments">
+            <column name="id" valueNumeric="21"/>
+            <column name="created_time" valueDate="2025-03-04T15:07:16.815066"/>
+            <column name="updated_time" valueDate="2025-03-04T15:07:16.815066"/>
+            <column name="name" value="Glovo Express"/>
+            <column name="price_of_delivery" valueNumeric="80.0"/>
+            <column name="total_rating" valueNumeric="0.0"/>
+            <column name="quantity_of_ratings" valueNumeric="0"/>
+            <column name="time_of_delivery" valueNumeric="30"/>
+            <column name="open_time" valueDate="08:00:00"/>
+            <column name="close_time" valueDate="22:00:00"/>
+            <column name="subcategory_id" valueNumeric="14"/>
+            <column name="sub_category_id" valueNumeric="14"/>
+        </insert>
+    </changeSet>
+    <changeSet author="malibuchka (generated)" id="1741083222727-2">
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:31.83009"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:31.83009"/>
+            <column name="address_line" value="​ул. Торокула Айтматова, 56/8"/>
+            <column name="latitude" valueNumeric="42.8746"/>
+            <column name="longitude" valueNumeric="74.6265"/>
+            <column name="establishment_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:36.924218"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:36.924218"/>
+            <column name="address_line" value="​ул. ​Юнусалиева, 185"/>
+            <column name="latitude" valueNumeric="42.8311"/>
+            <column name="longitude" valueNumeric="74.6219"/>
+            <column name="establishment_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:41.309166"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:41.309166"/>
+            <column name="address_line" value="​ул. ​Проспект Чуй, 54"/>
+            <column name="latitude" valueNumeric="42.8753"/>
+            <column name="longitude" valueNumeric="74.6223"/>
+            <column name="establishment_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="4"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:46.127801"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:46.127801"/>
+            <column name="address_line" value="​Улица Максима Горького, 29/1"/>
+            <column name="latitude" valueNumeric="42.8573"/>
+            <column name="longitude" valueNumeric="74.6074"/>
+            <column name="establishment_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="5"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:50.809791"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:50.809791"/>
+            <column name="address_line" value="​Улица Юсупа Абдрахманова, 137"/>
+            <column name="latitude" valueNumeric="42.8724"/>
+            <column name="longitude" valueNumeric="74.6121"/>
+            <column name="establishment_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="6"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:56.392448"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:56.392448"/>
+            <column name="address_line" value="​Токтогула, 90"/>
+            <column name="latitude" valueNumeric="42.8718"/>
+            <column name="longitude" valueNumeric="74.6083"/>
+            <column name="establishment_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="7"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:01.401473"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:01.401473"/>
+            <column name="address_line" value="​ул. ​Юнусалиева, 185"/>
+            <column name="latitude" valueNumeric="42.8311"/>
+            <column name="longitude" valueNumeric="74.6219"/>
+            <column name="establishment_id" valueNumeric="7"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="8"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:05.887963"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:05.887963"/>
+            <column name="address_line" value="​ул. ​Юнусалиева, 185"/>
+            <column name="latitude" valueNumeric="42.8311"/>
+            <column name="longitude" valueNumeric="74.6219"/>
+            <column name="establishment_id" valueNumeric="8"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="9"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:11.884574"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:11.884574"/>
+            <column name="address_line" value="​Проспект Чынгыза Айтматова, 51/1"/>
+            <column name="latitude" valueNumeric="42.844"/>
+            <column name="longitude" valueNumeric="74.5859"/>
+            <column name="establishment_id" valueNumeric="9"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="10"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:18.601048"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:18.601048"/>
+            <column name="address_line" value="​ул. Суеркулова, 20/14"/>
+            <column name="latitude" valueNumeric="42.8354"/>
+            <column name="longitude" valueNumeric="74.6275"/>
+            <column name="establishment_id" valueNumeric="10"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="11"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:36.771946"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:36.771946"/>
+            <column name="address_line" value="​Медерова, 36"/>
+            <column name="latitude" valueNumeric="42.8516"/>
+            <column name="longitude" valueNumeric="74.619"/>
+            <column name="establishment_id" valueNumeric="11"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="12"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:52.908395"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:52.908395"/>
+            <column name="address_line" value="​Микрорайон Джал-23, 92"/>
+            <column name="latitude" valueNumeric="42.8423"/>
+            <column name="longitude" valueNumeric="74.5682"/>
+            <column name="establishment_id" valueNumeric="12"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="13"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:57.63421"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:57.63421"/>
+            <column name="address_line" value="​Шопокова, 121/1"/>
+            <column name="latitude" valueNumeric="42.8769"/>
+            <column name="longitude" valueNumeric="74.6155"/>
+            <column name="establishment_id" valueNumeric="13"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="14"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:01.727238"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:01.727238"/>
+            <column name="address_line" value="​Манаса, 47"/>
+            <column name="latitude" valueNumeric="42.8847"/>
+            <column name="longitude" valueNumeric="74.5891"/>
+            <column name="establishment_id" valueNumeric="14"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="15"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:06.548189"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:06.548189"/>
+            <column name="address_line" value="​Токтогула, 160"/>
+            <column name="latitude" valueNumeric="42.8724"/>
+            <column name="longitude" valueNumeric="74.5902"/>
+            <column name="establishment_id" valueNumeric="15"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="16"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:12.061683"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:12.061683"/>
+            <column name="address_line" value="​Медерова, 44/1"/>
+            <column name="latitude" valueNumeric="42.8724"/>
+            <column name="longitude" valueNumeric="74.5902"/>
+            <column name="establishment_id" valueNumeric="16"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="17"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:26.291428"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:26.291428"/>
+            <column name="address_line" value="​Манаса, 47"/>
+            <column name="latitude" valueNumeric="42.8847"/>
+            <column name="longitude" valueNumeric="74.5891"/>
+            <column name="establishment_id" valueNumeric="17"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="18"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:50.916261"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:50.916276"/>
+            <column name="address_line" value="​Киевская улица, 93"/>
+            <column name="latitude" valueNumeric="42.8751"/>
+            <column name="longitude" valueNumeric="74.5982"/>
+            <column name="establishment_id" valueNumeric="18"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="19"/>
+            <column name="created_time" valueDate="2025-03-04T15:07:03.855844"/>
+            <column name="updated_time" valueDate="2025-03-04T15:07:03.855844"/>
+            <column name="address_line" value="​Улица Радищева, 1"/>
+            <column name="latitude" valueNumeric="42.8567"/>
+            <column name="longitude" valueNumeric="74.6104"/>
+            <column name="establishment_id" valueNumeric="19"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="20"/>
+            <column name="created_time" valueDate="2025-03-04T15:07:10.866651"/>
+            <column name="updated_time" valueDate="2025-03-04T15:07:10.866651"/>
+            <column name="address_line" value="​Улица Фрунзе, 41"/>
+            <column name="latitude" valueNumeric="42.8814"/>
+            <column name="longitude" valueNumeric="74.5901"/>
+            <column name="establishment_id" valueNumeric="20"/>
+        </insert>
+        <insert tableName="establishment_adresses">
+            <column name="id" valueNumeric="21"/>
+            <column name="created_time" valueDate="2025-03-04T15:07:16.816659"/>
+            <column name="updated_time" valueDate="2025-03-04T15:07:16.816659"/>
+            <column name="address_line" value="​Улица Фрунзе, 41"/>
+            <column name="latitude" valueNumeric="42.8814"/>
+            <column name="longitude" valueNumeric="74.5901"/>
+            <column name="establishment_id" valueNumeric="21"/>
+        </insert>
+    </changeSet>
+    <changeSet author="malibuchka (generated)" id="1741083222727-5">
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_time" valueDate="2025-03-04T15:07:45.066879"/>
+            <column name="updated_time" valueDate="2025-03-04T15:07:45.066879"/>
+            <column name="name" value="Бургер"/>
+            <column name="establishment_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_time" valueDate="2025-03-04T15:08:03.551178"/>
+            <column name="updated_time" valueDate="2025-03-04T15:08:03.551178"/>
+            <column name="name" value="Баскет"/>
+            <column name="establishment_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_time" valueDate="2025-03-04T15:08:27.431112"/>
+            <column name="updated_time" valueDate="2025-03-04T15:08:27.431112"/>
+            <column name="name" value="Донер"/>
+            <column name="establishment_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="4"/>
+            <column name="created_time" valueDate="2025-03-04T15:08:46.093189"/>
+            <column name="updated_time" valueDate="2025-03-04T15:08:46.093189"/>
+            <column name="name" value="Пиво"/>
+            <column name="establishment_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="5"/>
+            <column name="created_time" valueDate="2025-03-04T15:09:14.687028"/>
+            <column name="updated_time" valueDate="2025-03-04T15:09:14.687028"/>
+            <column name="name" value="Комбо"/>
+            <column name="establishment_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="6"/>
+            <column name="created_time" valueDate="2025-03-04T15:09:35.487778"/>
+            <column name="updated_time" valueDate="2025-03-04T15:09:35.487778"/>
+            <column name="name" value="Коньяк"/>
+            <column name="establishment_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="7"/>
+            <column name="created_time" valueDate="2025-03-04T15:09:59.734643"/>
+            <column name="updated_time" valueDate="2025-03-04T15:09:59.734643"/>
+            <column name="name" value="Баскет"/>
+            <column name="establishment_id" valueNumeric="7"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="8"/>
+            <column name="created_time" valueDate="2025-03-04T15:10:14.952664"/>
+            <column name="updated_time" valueDate="2025-03-04T15:10:14.952664"/>
+            <column name="name" value="Комбо"/>
+            <column name="establishment_id" valueNumeric="7"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="9"/>
+            <column name="created_time" valueDate="2025-03-04T15:10:39.679003"/>
+            <column name="updated_time" valueDate="2025-03-04T15:10:39.679003"/>
+            <column name="name" value="Комбо"/>
+            <column name="establishment_id" valueNumeric="8"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="10"/>
+            <column name="created_time" valueDate="2025-03-04T15:11:30.807215"/>
+            <column name="updated_time" valueDate="2025-03-04T15:11:30.807215"/>
+            <column name="name" value="Бургер"/>
+            <column name="establishment_id" valueNumeric="9"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="11"/>
+            <column name="created_time" valueDate="2025-03-04T15:11:34.458894"/>
+            <column name="updated_time" valueDate="2025-03-04T15:11:34.458894"/>
+            <column name="name" value="Бургер"/>
+            <column name="establishment_id" valueNumeric="10"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="12"/>
+            <column name="created_time" valueDate="2025-03-04T15:11:36.61732"/>
+            <column name="updated_time" valueDate="2025-03-04T15:11:36.61732"/>
+            <column name="name" value="Бургер"/>
+            <column name="establishment_id" valueNumeric="11"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="13"/>
+            <column name="created_time" valueDate="2025-03-04T15:11:37.926256"/>
+            <column name="updated_time" valueDate="2025-03-04T15:11:37.926256"/>
+            <column name="name" value="Бургер"/>
+            <column name="establishment_id" valueNumeric="12"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="14"/>
+            <column name="created_time" valueDate="2025-03-04T15:11:39.216165"/>
+            <column name="updated_time" valueDate="2025-03-04T15:11:39.216165"/>
+            <column name="name" value="Бургер"/>
+            <column name="establishment_id" valueNumeric="13"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="15"/>
+            <column name="created_time" valueDate="2025-03-04T15:11:40.535289"/>
+            <column name="updated_time" valueDate="2025-03-04T15:11:40.535289"/>
+            <column name="name" value="Бургер"/>
+            <column name="establishment_id" valueNumeric="14"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="16"/>
+            <column name="created_time" valueDate="2025-03-04T15:11:42.083414"/>
+            <column name="updated_time" valueDate="2025-03-04T15:11:42.083414"/>
+            <column name="name" value="Бургер"/>
+            <column name="establishment_id" valueNumeric="15"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="17"/>
+            <column name="created_time" valueDate="2025-03-04T15:11:43.451631"/>
+            <column name="updated_time" valueDate="2025-03-04T15:11:43.451653"/>
+            <column name="name" value="Бургер"/>
+            <column name="establishment_id" valueNumeric="16"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="18"/>
+            <column name="created_time" valueDate="2025-03-04T15:11:46.138675"/>
+            <column name="updated_time" valueDate="2025-03-04T15:11:46.138675"/>
+            <column name="name" value="Бургер"/>
+            <column name="establishment_id" valueNumeric="17"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="19"/>
+            <column name="created_time" valueDate="2025-03-04T15:11:47.440058"/>
+            <column name="updated_time" valueDate="2025-03-04T15:11:47.440058"/>
+            <column name="name" value="Бургер"/>
+            <column name="establishment_id" valueNumeric="18"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="20"/>
+            <column name="created_time" valueDate="2025-03-04T15:11:48.659235"/>
+            <column name="updated_time" valueDate="2025-03-04T15:11:48.659757"/>
+            <column name="name" value="Бургер"/>
+            <column name="establishment_id" valueNumeric="19"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="21"/>
+            <column name="created_time" valueDate="2025-03-04T15:11:50.750664"/>
+            <column name="updated_time" valueDate="2025-03-04T15:11:50.750664"/>
+            <column name="name" value="Бургер"/>
+            <column name="establishment_id" valueNumeric="20"/>
+        </insert>
+        <insert tableName="establishment_filters">
+            <column name="id" valueNumeric="22"/>
+            <column name="created_time" valueDate="2025-03-04T15:11:52.11201"/>
+            <column name="updated_time" valueDate="2025-03-04T15:11:52.11201"/>
+            <column name="name" value="Бургер"/>
+            <column name="establishment_id" valueNumeric="21"/>
+        </insert>
+    </changeSet>
+    <changeSet author="malibuchka (generated)" id="1741083222727-8">
+        <insert tableName="products">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:03.90843"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:03.90843"/>
+            <column name="name" value="Мистер Биг (330 г)"/>
+            <column name="description" value="Бургер со сливочной булочкой , сочной котлетой говядины “Мистер Биг». Тающий сыр Чеддер, свежиепомидоров, хрустящие солёные огурцы и ароматные листья салата. Всё это дополняют два соуса — сливочный “Цезарь” и пикантный “Бургер”"/>
+            <column name="price" valueNumeric="349"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="1"/>
+            <column name="establishment_filter_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:07.992294"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:07.992294"/>
+            <column name="name" value="Баскет Дуэт Ориг."/>
+            <column name="description" value="2 оригинальные или острые куриные ножки, 2 куриных крыла, 6 стрипса в оригинальной или острой панировке, 1 картофель фри стандартный"/>
+            <column name="price" valueNumeric="824"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="2"/>
+            <column name="establishment_filter_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:12.187204"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:12.187204"/>
+            <column name="name" value="Запеченный донер говядина"/>
+            <column name="description" value="Лаваш, говядина, овощи, соус, сыр"/>
+            <column name="price" valueNumeric="175"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="3"/>
+            <column name="establishment_filter_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="4"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:16.379125"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:16.379125"/>
+            <column name="name" value="Пиво разливное Beliner pilsner 2л"/>
+            <column name="description" value="светлое, фильтрованное, классическое пиво"/>
+            <column name="price" valueNumeric="175"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="4"/>
+            <column name="establishment_filter_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="5"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:20.473959"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:20.473959"/>
+            <column name="name" value="Комбо Стейк Ковбой (350 гр.) + Фри (100 гр.) + Корона Алатау (0,45 л.)"/>
+            <column name="description" value="Стейк 350 гр. + Картофель фри 100 гр. + Корона Алатау 0,45 л., вес мяса указан в сыром виде."/>
+            <column name="price" valueNumeric="1156"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="5"/>
+            <column name="establishment_filter_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="6"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:24.799335"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:24.799335"/>
+            <column name="name" value="Коньяк &quot;Кыргызстан&quot; 42% 0,5л"/>
+            <column name="description" value="7 летний коньяк КВ &quot;Кыргызстан&quot; классика кыргызского коньячного производства. Его гармоничный сбалансированный орехово шоколадный вкус доставит Вам радость и наслаждение. Коньяк изготовлен из натурального виноградного спирта по уникальной"/>
+            <column name="price" valueNumeric="615"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="6"/>
+            <column name="establishment_filter_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="7"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:29.944852"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:29.944852"/>
+            <column name="name" value="Баскет Дуэт Ориг."/>
+            <column name="description" value="2 оригинальные или острые куриные ножки, 2 куриных крыла, 6 стрипса в оригинальной или острой панировке, 1 картофель фри стандартный"/>
+            <column name="price" valueNumeric="824"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="7"/>
+            <column name="establishment_filter_id" valueNumeric="7"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="8"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:34.772262"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:34.772262"/>
+            <column name="name" value="Комбо на двоих с курицей"/>
+            <column name="description" value="-2 бургера с курицей - 2 pepsi 0,5 л. -фри стандарт"/>
+            <column name="price" valueNumeric="599"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="8"/>
+            <column name="establishment_filter_id" valueNumeric="8"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="9"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:39.791994"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:39.791994"/>
+            <column name="name" value="Двойной чизбургер говядина"/>
+            <column name="description" value="Свежая булочка,Две говяжьи котлеты, два ломтика сыра, майонез,маринованные огурцы, листья салата и кетчуп"/>
+            <column name="price" valueNumeric="288"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="9"/>
+            <column name="establishment_filter_id" valueNumeric="9"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="10"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:44.311256"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:44.311256"/>
+            <column name="name" value="Двойной чизбургер говядинаdsa"/>
+            <column name="description" value="Свежая булочка,Две говяжьи котлеты, два ломтика сыра, майонез,маринованные огурцы, листья салата и кетчуп"/>
+            <column name="price" valueNumeric="288"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="10"/>
+            <column name="establishment_filter_id" valueNumeric="10"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="11"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:49.126338"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:49.126338"/>
+            <column name="name" value="Двойной чизбургер говядинаdas"/>
+            <column name="description" value="Свежая булочка,Две говяжьи котлеты, два ломтика сыра, майонез,маринованные огурцы, листья салата и кетчуп"/>
+            <column name="price" valueNumeric="288"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="11"/>
+            <column name="establishment_filter_id" valueNumeric="11"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="12"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:53.402151"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:53.402151"/>
+            <column name="name" value="Двойной чизбургер говядина"/>
+            <column name="description" value="Свежая булочка,Две говяжьи котлеты, два ломтика сыра, майонез,маринованные огурцы, листья салата и кетчуп"/>
+            <column name="price" valueNumeric="288"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="12"/>
+            <column name="establishment_filter_id" valueNumeric="12"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="13"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:58.955132"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:58.955132"/>
+            <column name="name" value="Двойной чизбургер говядина"/>
+            <column name="description" value="Свежая булочка,Две говяжьи котлеты, два ломтика сыра, майонез,маринованные огурцы, листья салата и кетчуп"/>
+            <column name="price" valueNumeric="288"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="9"/>
+            <column name="establishment_filter_id" valueNumeric="9"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="14"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:04.831343"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:04.831343"/>
+            <column name="name" value="Двойной чизбургер говядина"/>
+            <column name="description" value="Свежая булочка,Две говяжьи котлеты, два ломтика сыра, майонез,маринованные огурцы, листья салата и кетчуп"/>
+            <column name="price" valueNumeric="288"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="9"/>
+            <column name="establishment_filter_id" valueNumeric="9"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="15"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:09.355743"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:09.355743"/>
+            <column name="name" value="Двойной чизбургер говядина"/>
+            <column name="description" value="Свежая булочка,Две говяжьи котлеты, два ломтика сыра, майонез,маринованные огурцы, листья салата и кетчуп"/>
+            <column name="price" valueNumeric="288"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="15"/>
+            <column name="establishment_filter_id" valueNumeric="15"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="16"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:13.961894"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:13.961894"/>
+            <column name="name" value="Двойной чизбургер говядина"/>
+            <column name="description" value="Свежая булочка,Две говяжьи котлеты, два ломтика сыра, майонез,маринованные огурцы, листья салата и кетчуп"/>
+            <column name="price" valueNumeric="288"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="16"/>
+            <column name="establishment_filter_id" valueNumeric="16"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="17"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:18.203715"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:18.203715"/>
+            <column name="name" value="Двойной чизбургер говядина"/>
+            <column name="description" value="Свежая булочка,Две говяжьи котлеты, два ломтика сыра, майонез,маринованные огурцы, листья салата и кетчуп"/>
+            <column name="price" valueNumeric="288"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="17"/>
+            <column name="establishment_filter_id" valueNumeric="17"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="18"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:22.378318"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:22.378318"/>
+            <column name="name" value="Двойной чизбургер говядина"/>
+            <column name="description" value="Свежая булочка,Две говяжьи котлеты, два ломтика сыра, майонез,маринованные огурцы, листья салата и кетчуп"/>
+            <column name="price" valueNumeric="288"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="18"/>
+            <column name="establishment_filter_id" valueNumeric="18"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="19"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:26.722305"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:26.722305"/>
+            <column name="name" value="Двойной чизбургер говядина(устал)"/>
+            <column name="description" value="Свежая булочка,Две говяжьи котлеты, два ломтика сыра, майонез,маринованные огурцы, листья салата и кетчуп"/>
+            <column name="price" valueNumeric="290"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="19"/>
+            <column name="establishment_filter_id" valueNumeric="19"/>
+        </insert>
+        <insert tableName="products">
+            <column name="id" valueNumeric="20"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:30.819272"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:30.819272"/>
+            <column name="name" value="Двойной чизбургер говядина"/>
+            <column name="description" value="Свежая булочка,Две говяжьи котлеты, два ломтика сыра, майонез,маринованные огурцы, листья салата и кетчуп"/>
+            <column name="price" valueNumeric="288"/>
+            <column name="active" valueBoolean="false"/>
+            <column name="establishment_id" valueNumeric="20"/>
+            <column name="establishment_filter_id" valueNumeric="20"/>
+        </insert>
+    </changeSet>
+    <changeSet author="malibuchka (generated)" id="1741083222727-1">
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:03.915792"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:03.915792"/>
+            <column name="discount" valueNumeric="0"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:07.994434"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:07.994434"/>
+            <column name="discount" valueNumeric="0"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:12.189465"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:12.189465"/>
+            <column name="discount" valueNumeric="30"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="4"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:16.381279"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:16.381279"/>
+            <column name="discount" valueNumeric="0"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="5"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:20.476095"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:20.476095"/>
+            <column name="discount" valueNumeric="0"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="6"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:24.802602"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:24.802602"/>
+            <column name="discount" valueNumeric="0"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="7"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:29.947004"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:29.947004"/>
+            <column name="discount" valueNumeric="0"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="7"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="8"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:34.774396"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:34.774396"/>
+            <column name="discount" valueNumeric="0"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="8"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="9"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:39.79467"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:39.79467"/>
+            <column name="discount" valueNumeric="0"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="9"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="10"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:44.314019"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:44.314019"/>
+            <column name="discount" valueNumeric="0"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="10"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="11"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:49.127969"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:49.127969"/>
+            <column name="discount" valueNumeric="0"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="11"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="12"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:53.403783"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:53.403783"/>
+            <column name="discount" valueNumeric="0"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="12"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="13"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:58.956738"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:58.956738"/>
+            <column name="discount" valueNumeric="0"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="13"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="14"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:04.832918"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:04.832918"/>
+            <column name="discount" valueNumeric="5"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="14"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="15"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:09.357357"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:09.357357"/>
+            <column name="discount" valueNumeric="10"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="15"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="16"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:13.964627"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:13.964627"/>
+            <column name="discount" valueNumeric="50"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="16"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="17"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:18.205713"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:18.205713"/>
+            <column name="discount" valueNumeric="30"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="17"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="18"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:22.37989"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:22.37989"/>
+            <column name="discount" valueNumeric="0"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="18"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="19"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:26.723899"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:26.723899"/>
+            <column name="discount" valueNumeric="15"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="19"/>
+        </insert>
+        <insert tableName="discounts">
+            <column name="id" valueNumeric="20"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:30.82086"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:30.82086"/>
+            <column name="discount" valueNumeric="99"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="product_id" valueNumeric="20"/>
+        </insert>
+    </changeSet>
+    <changeSet author="malibuchka (generated)" id="1741083222727-7">
+        <insert tableName="images">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_time" valueDate="2025-03-04T15:02:58.77317"/>
+            <column name="updated_time" valueDate="2025-03-04T15:02:58.77317"/>
+            <column name="url" value="http://localhost:9000/categories/category-d27a7ab5-7622-4d3e-8f72-e5dcc170d903.png"/>
+            <column name="filename" value="category-d27a7ab5-7622-4d3e-8f72-e5dcc170d903.png"/>
+            <column name="size" valueNumeric="16229"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="categories"/>
+            <column name="original_filename" value="category1 eda.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:03.608635"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:03.608635"/>
+            <column name="url" value="http://localhost:9000/categories/category-6e84bec9-88d8-4572-a915-cf4c5d9aaffd.png"/>
+            <column name="filename" value="category-6e84bec9-88d8-4572-a915-cf4c5d9aaffd.png"/>
+            <column name="size" valueNumeric="17518"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="categories"/>
+            <column name="original_filename" value="category2 zdorodiye.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:08.17977"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:08.17977"/>
+            <column name="url" value="http://localhost:9000/categories/category-15d96917-a139-4e1a-9973-99dd216a6ac6.png"/>
+            <column name="filename" value="category-15d96917-a139-4e1a-9973-99dd216a6ac6.png"/>
+            <column name="size" valueNumeric="18535"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="categories"/>
+            <column name="original_filename" value="category3 shops.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="4"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:12.828038"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:12.828038"/>
+            <column name="url" value="http://localhost:9000/categories/category-ab86a93a-0dbe-41e2-82aa-9f9abdfc741a.png"/>
+            <column name="filename" value="category-ab86a93a-0dbe-41e2-82aa-9f9abdfc741a.png"/>
+            <column name="size" valueNumeric="21346"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="categories"/>
+            <column name="original_filename" value="category4 supermarkety.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="5"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:17.692593"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:17.692593"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-740fdb8a-191c-453b-a2d7-ce6d413c5fa7.png"/>
+            <column name="filename" value="subcategory-740fdb8a-191c-453b-a2d7-ce6d413c5fa7.png"/>
+            <column name="size" valueNumeric="2752"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategory1 eda burgery.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="6"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:21.758055"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:21.758055"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-a08b7e78-17bb-4d00-8166-5adce62399b4.png"/>
+            <column name="filename" value="subcategory-a08b7e78-17bb-4d00-8166-5adce62399b4.png"/>
+            <column name="size" valueNumeric="1832"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategory5 eda alcohol.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="7"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:26.486211"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:26.486211"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-e44a1378-5214-4be1-af3b-16c0bae85970.png"/>
+            <column name="filename" value="subcategory-e44a1378-5214-4be1-af3b-16c0bae85970.png"/>
+            <column name="size" valueNumeric="2508"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategory2 eda kurica.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="8"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:30.667898"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:30.667898"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-76c4af03-ce74-419f-817a-4c67256ee4f0.png"/>
+            <column name="filename" value="subcategory-76c4af03-ce74-419f-817a-4c67256ee4f0.png"/>
+            <column name="size" valueNumeric="2674"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategory3 eda fastfood.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="9"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:35.971027"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:35.971027"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-36aba985-3232-46c7-9a94-9d39b498f2d0.png"/>
+            <column name="filename" value="subcategory-36aba985-3232-46c7-9a94-9d39b498f2d0.png"/>
+            <column name="size" valueNumeric="3201"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategory4 eda kyrgyz eda.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="10"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:41.221593"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:41.221593"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-b2c7327f-659a-4f44-99f6-c1da519dfcb4.png"/>
+            <column name="filename" value="subcategory-b2c7327f-659a-4f44-99f6-c1da519dfcb4.png"/>
+            <column name="size" valueNumeric="1023"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategory1 zdoroviye apteki.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="11"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:46.068702"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:46.068702"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-092a414b-7dc2-41c7-bb30-41e6e02cf298.png"/>
+            <column name="filename" value="subcategory-092a414b-7dc2-41c7-bb30-41e6e02cf298.png"/>
+            <column name="size" valueNumeric="3371"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategory3 zdoroviye sredstva po uhodu.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="12"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:51.047662"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:51.047662"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-d7137cdc-c117-46bf-b88a-c8b4e8034e0b.png"/>
+            <column name="filename" value="subcategory-d7137cdc-c117-46bf-b88a-c8b4e8034e0b.png"/>
+            <column name="size" valueNumeric="1975"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategory2 zdoroviye seks shop.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="13"/>
+            <column name="created_time" valueDate="2025-03-04T15:03:55.75746"/>
+            <column name="updated_time" valueDate="2025-03-04T15:03:55.75746"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-e1214b7e-8ef4-4f7d-afb7-c1e385fcf36b.png"/>
+            <column name="filename" value="subcategory-e1214b7e-8ef4-4f7d-afb7-c1e385fcf36b.png"/>
+            <column name="size" valueNumeric="7699"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategoy1 shops tabak kurit.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="14"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:00.286443"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:00.28649"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-3ad323c0-220c-423c-980a-bc391b55e642.png"/>
+            <column name="filename" value="subcategory-3ad323c0-220c-423c-980a-bc391b55e642.png"/>
+            <column name="size" valueNumeric="1975"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategoy4 shops seks shop.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="15"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:05.083152"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:05.083167"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-153e305a-174e-4705-987b-3313ad0bb96c.png"/>
+            <column name="filename" value="subcategory-153e305a-174e-4705-987b-3313ad0bb96c.png"/>
+            <column name="size" valueNumeric="3371"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategoy5 shops sredstva po uhodu.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="16"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:09.676628"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:09.676628"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-b84b47ec-ae7e-442a-b885-dd9beae96fc4.png"/>
+            <column name="filename" value="subcategory-b84b47ec-ae7e-442a-b885-dd9beae96fc4.png"/>
+            <column name="size" valueNumeric="3287"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategoy2 shops flowers.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="17"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:14.248551"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:14.248551"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-d80ebd83-45e1-4665-b017-12cf408ba3f7.png"/>
+            <column name="filename" value="subcategory-d80ebd83-45e1-4665-b017-12cf408ba3f7.png"/>
+            <column name="size" valueNumeric="1625"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategoy3 shops electronic.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="18"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:18.666141"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:18.666141"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-6d2da65b-665a-4dc9-9967-24a15fec92ed.png"/>
+            <column name="filename" value="subcategory-6d2da65b-665a-4dc9-9967-24a15fec92ed.png"/>
+            <column name="size" valueNumeric="1381"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategory4 supermarkety markety.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="19"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:24.235732"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:24.235732"/>
+            <column name="url" value="http://localhost:9000/subcategories/subcategory-eb870d99-aab6-48cd-9e45-553ad2429545.png"/>
+            <column name="filename" value="subcategory-eb870d99-aab6-48cd-9e45-553ad2429545.png"/>
+            <column name="size" valueNumeric="3279"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="subcategories"/>
+            <column name="original_filename" value="subcategory5 supermarkety supermarkety.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="20"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:31.852961"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:31.852961"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-22f24975-52ee-4d88-91d9-20f6456557d9.jpeg"/>
+            <column name="filename" value="establishment-22f24975-52ee-4d88-91d9-20f6456557d9.jpeg"/>
+            <column name="size" valueNumeric="12592"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="mr bbq.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="21"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:36.95313"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:36.95313"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-b7d13b88-f9a2-4980-914f-8885aba4363c.jpeg"/>
+            <column name="filename" value="establishment-b7d13b88-f9a2-4980-914f-8885aba4363c.jpeg"/>
+            <column name="size" valueNumeric="15133"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="kfc.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="22"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:41.332106"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:41.332106"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-b2db0263-0673-4cc3-bfbc-a84de17c22f6.jpeg"/>
+            <column name="filename" value="establishment-b2db0263-0673-4cc3-bfbc-a84de17c22f6.jpeg"/>
+            <column name="size" valueNumeric="6035"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="oasis.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="23"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:46.152727"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:46.152727"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-3522d558-2337-4e2b-862c-d5302fa84793.jpeg"/>
+            <column name="filename" value="establishment-3522d558-2337-4e2b-862c-d5302fa84793.jpeg"/>
+            <column name="size" valueNumeric="12535"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="Berlin Pub Beer.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="24"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:50.844779"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:50.844779"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-824770eb-bb14-4726-ab18-dca713d058cd.png"/>
+            <column name="filename" value="establishment-824770eb-bb14-4726-ab18-dca713d058cd.png"/>
+            <column name="size" valueNumeric="358870"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="BBC кафе-бары.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="25"/>
+            <column name="created_time" valueDate="2025-03-04T15:04:56.41532"/>
+            <column name="updated_time" valueDate="2025-03-04T15:04:56.41532"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-ce18dfc3-35d8-4b40-a437-1d3f10435382.jpeg"/>
+            <column name="filename" value="establishment-ce18dfc3-35d8-4b40-a437-1d3f10435382.jpeg"/>
+            <column name="size" valueNumeric="8086"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="Кыргыз Коньягы.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="26"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:01.423077"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:01.423077"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-1c1640ad-cd48-4731-834d-6de9b6ca05d4.jpeg"/>
+            <column name="filename" value="establishment-1c1640ad-cd48-4731-834d-6de9b6ca05d4.jpeg"/>
+            <column name="size" valueNumeric="15133"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="kfc.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="27"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:05.909814"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:05.909814"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-88ace472-243c-48a3-beb7-72c9a59470fc.jpeg"/>
+            <column name="filename" value="establishment-88ace472-243c-48a3-beb7-72c9a59470fc.jpeg"/>
+            <column name="size" valueNumeric="15816"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="Malik al Broast.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="28"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:11.906298"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:11.906298"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-627b8a06-9c96-4aee-9b1e-a52ba342ea67.jpeg"/>
+            <column name="filename" value="establishment-627b8a06-9c96-4aee-9b1e-a52ba342ea67.jpeg"/>
+            <column name="size" valueNumeric="13215"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="begemot.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="29"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:18.622808"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:18.622808"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-68f6746d-1687-4d7e-a6ae-9f14ce232a2f.jpeg"/>
+            <column name="filename" value="establishment-68f6746d-1687-4d7e-a6ae-9f14ce232a2f.jpeg"/>
+            <column name="size" valueNumeric="15816"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="Malik al Broast.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="30"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:36.814337"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:36.814337"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-418327c8-160d-4645-b6de-00877dfe8c85.png"/>
+            <column name="filename" value="establishment-418327c8-160d-4645-b6de-00877dfe8c85.png"/>
+            <column name="size" valueNumeric="224053"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="Бухара Ассорти.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="31"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:52.934998"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:52.934998"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-28a1263e-8fae-4c90-bc8e-308b8dc8a1dd.jpeg"/>
+            <column name="filename" value="establishment-28a1263e-8fae-4c90-bc8e-308b8dc8a1dd.jpeg"/>
+            <column name="size" valueNumeric="6026"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="Сеть аптек ФАРМАМИР.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="32"/>
+            <column name="created_time" valueDate="2025-03-04T15:05:57.657593"/>
+            <column name="updated_time" valueDate="2025-03-04T15:05:57.657593"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-80414ffd-c53a-4c9f-adf7-3f4e2b06044b.jpeg"/>
+            <column name="filename" value="establishment-80414ffd-c53a-4c9f-adf7-3f4e2b06044b.jpeg"/>
+            <column name="size" valueNumeric="13282"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="Korean Beauty Lab.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="33"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:01.74917"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:01.74917"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-1de2a918-5dca-41d9-9144-ca77232f86cf.jpeg"/>
+            <column name="filename" value="establishment-1de2a918-5dca-41d9-9144-ca77232f86cf.jpeg"/>
+            <column name="size" valueNumeric="26640"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="WeSafe.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="34"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:06.572898"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:06.572898"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-91219551-1a49-4b76-b710-a5daac9f0598.jpeg"/>
+            <column name="filename" value="establishment-91219551-1a49-4b76-b710-a5daac9f0598.jpeg"/>
+            <column name="size" valueNumeric="85875"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="Vaping.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="35"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:12.119632"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:12.119632"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-f46a5430-06ac-4578-85f1-00b8283cbd10.png"/>
+            <column name="filename" value="establishment-f46a5430-06ac-4578-85f1-00b8283cbd10.png"/>
+            <column name="size" valueNumeric="186224"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="Бездымная продукция IQOS.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="36"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:26.326503"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:26.326503"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-eef19bf7-964d-412e-9071-f1ac5821c79a.jpeg"/>
+            <column name="filename" value="establishment-eef19bf7-964d-412e-9071-f1ac5821c79a.jpeg"/>
+            <column name="size" valueNumeric="7582"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="WeShop.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="37"/>
+            <column name="created_time" valueDate="2025-03-04T15:06:50.94104"/>
+            <column name="updated_time" valueDate="2025-03-04T15:06:50.94104"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-3c245008-e9bd-4827-b510-4fa394f7bf0a.jpeg"/>
+            <column name="filename" value="establishment-3c245008-e9bd-4827-b510-4fa394f7bf0a.jpeg"/>
+            <column name="size" valueNumeric="12381"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="Don Pion.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="38"/>
+            <column name="created_time" valueDate="2025-03-04T15:07:03.882988"/>
+            <column name="updated_time" valueDate="2025-03-04T15:07:03.882988"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-005021e1-c6b9-4a6a-a264-2a23faa525f2.jpeg"/>
+            <column name="filename" value="establishment-005021e1-c6b9-4a6a-a264-2a23faa525f2.jpeg"/>
+            <column name="size" valueNumeric="8819"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="iCon.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="39"/>
+            <column name="created_time" valueDate="2025-03-04T15:07:10.891702"/>
+            <column name="updated_time" valueDate="2025-03-04T15:07:10.891702"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-46cd95e0-8c8b-4e51-a090-2f5dfddf5f37.jpeg"/>
+            <column name="filename" value="establishment-46cd95e0-8c8b-4e51-a090-2f5dfddf5f37.jpeg"/>
+            <column name="size" valueNumeric="8187"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="АЗИЯ (ФРУНЗЕ).jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="40"/>
+            <column name="created_time" valueDate="2025-03-04T15:07:16.839797"/>
+            <column name="updated_time" valueDate="2025-03-04T15:07:16.839818"/>
+            <column name="url" value="http://localhost:9000/establishments/establishment-d942a436-470e-4ea3-9453-ddf0aa09b2b0.jpeg"/>
+            <column name="filename" value="establishment-d942a436-470e-4ea3-9453-ddf0aa09b2b0.jpeg"/>
+            <column name="size" valueNumeric="13546"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="establishments"/>
+            <column name="original_filename" value="Glovo Express.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="41"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:03.94337"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:03.94337"/>
+            <column name="url" value="http://localhost:9000/products/product-b1ac9326-627b-43c1-b38e-94a5a04844ed.jpeg"/>
+            <column name="filename" value="product-b1ac9326-627b-43c1-b38e-94a5a04844ed.jpeg"/>
+            <column name="size" valueNumeric="35011"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Мистер Биг (330 г).jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="42"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:08.032286"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:08.032286"/>
+            <column name="url" value="http://localhost:9000/products/product-4a161d49-ae96-433a-8f7a-720073b6ec65.png"/>
+            <column name="filename" value="product-4a161d49-ae96-433a-8f7a-720073b6ec65.png"/>
+            <column name="size" valueNumeric="485928"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Баскет Дуэт Ориг..png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="43"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:12.220087"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:12.220087"/>
+            <column name="url" value="http://localhost:9000/products/product-fb880015-852d-4a88-ba0d-9e73ed3eeab8.png"/>
+            <column name="filename" value="product-fb880015-852d-4a88-ba0d-9e73ed3eeab8.png"/>
+            <column name="size" valueNumeric="226132"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Запеченный донер говядина.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="44"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:16.438584"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:16.438584"/>
+            <column name="url" value="http://localhost:9000/products/product-e3a5f231-c3a0-479c-9d5e-432e16dadf9b.png"/>
+            <column name="filename" value="product-e3a5f231-c3a0-479c-9d5e-432e16dadf9b.png"/>
+            <column name="size" valueNumeric="882921"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Пиво разливное Beliner pilsner 2л.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="45"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:20.524523"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:20.524523"/>
+            <column name="url" value="http://localhost:9000/products/product-5a78ffbe-427c-463a-8c5f-824bbe7e69a5.png"/>
+            <column name="filename" value="product-5a78ffbe-427c-463a-8c5f-824bbe7e69a5.png"/>
+            <column name="size" valueNumeric="1043507"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Комбо Стейк Ковбой (350 гр.) + Фри (100 гр.) + Корона Алатау (0,45 л.).png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="46"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:24.825342"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:24.825342"/>
+            <column name="url" value="http://localhost:9000/products/product-8d5370b0-9e6c-442b-9114-9d9569092540.jpeg"/>
+            <column name="filename" value="product-8d5370b0-9e6c-442b-9114-9d9569092540.jpeg"/>
+            <column name="size" valueNumeric="11700"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Коньяк Кыргызстан 42% 0,5л.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="47"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:29.981435"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:29.981435"/>
+            <column name="url" value="http://localhost:9000/products/product-89965be2-1898-4cc4-8dc6-0a047ae3da00.png"/>
+            <column name="filename" value="product-89965be2-1898-4cc4-8dc6-0a047ae3da00.png"/>
+            <column name="size" valueNumeric="485928"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Баскет Дуэт Ориг..png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="48"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:34.794853"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:34.794853"/>
+            <column name="url" value="http://localhost:9000/products/product-cd6ecc73-fbd9-49fd-b349-c4938d4376a8.jpeg"/>
+            <column name="filename" value="product-cd6ecc73-fbd9-49fd-b349-c4938d4376a8.jpeg"/>
+            <column name="size" valueNumeric="26240"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Комбо на двоих с курицей.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="49"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:39.83606"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:39.83606"/>
+            <column name="url" value="http://localhost:9000/products/product-c1662039-6830-4b15-991d-49806f90119c.png"/>
+            <column name="filename" value="product-c1662039-6830-4b15-991d-49806f90119c.png"/>
+            <column name="size" valueNumeric="331199"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Двойной чизбургер говядина.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="50"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:44.339288"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:44.339288"/>
+            <column name="url" value="http://localhost:9000/products/product-8835f506-e112-4cda-9231-d206b009531d.jpeg"/>
+            <column name="filename" value="product-8835f506-e112-4cda-9231-d206b009531d.jpeg"/>
+            <column name="size" valueNumeric="26240"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Комбо на двоих с курицей.jpeg"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="51"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:49.175676"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:49.175676"/>
+            <column name="url" value="http://localhost:9000/products/product-81252552-1c50-4fd1-b32a-a01a4e4ead0e.png"/>
+            <column name="filename" value="product-81252552-1c50-4fd1-b32a-a01a4e4ead0e.png"/>
+            <column name="size" valueNumeric="1043507"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Комбо Стейк Ковбой (350 гр.) + Фри (100 гр.) + Корона Алатау (0,45 л.).png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="52"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:53.449696"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:53.449696"/>
+            <column name="url" value="http://localhost:9000/products/product-3e548b6d-890c-490c-a02d-6f1480f1cce5.png"/>
+            <column name="filename" value="product-3e548b6d-890c-490c-a02d-6f1480f1cce5.png"/>
+            <column name="size" valueNumeric="882921"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Пиво разливное Beliner pilsner 2л.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="53"/>
+            <column name="created_time" valueDate="2025-03-04T15:12:58.99261"/>
+            <column name="updated_time" valueDate="2025-03-04T15:12:58.99261"/>
+            <column name="url" value="http://localhost:9000/products/product-94ed6e9b-c56f-4d60-a5cc-6c41933f00c0.png"/>
+            <column name="filename" value="product-94ed6e9b-c56f-4d60-a5cc-6c41933f00c0.png"/>
+            <column name="size" valueNumeric="331199"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Двойной чизбургер говядина.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="54"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:04.867866"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:04.867866"/>
+            <column name="url" value="http://localhost:9000/products/product-1b344c9b-98b2-432f-a5d0-c11f447295db.png"/>
+            <column name="filename" value="product-1b344c9b-98b2-432f-a5d0-c11f447295db.png"/>
+            <column name="size" valueNumeric="331199"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Двойной чизбургер говядина.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="55"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:09.391301"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:09.391301"/>
+            <column name="url" value="http://localhost:9000/products/product-d34c01e6-51e6-49f3-80b0-2740b81a1fab.png"/>
+            <column name="filename" value="product-d34c01e6-51e6-49f3-80b0-2740b81a1fab.png"/>
+            <column name="size" valueNumeric="331199"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Двойной чизбургер говядина.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="56"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:13.998965"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:13.998965"/>
+            <column name="url" value="http://localhost:9000/products/product-55c4a407-1b33-4f6d-bdf8-0c395eb11717.png"/>
+            <column name="filename" value="product-55c4a407-1b33-4f6d-bdf8-0c395eb11717.png"/>
+            <column name="size" valueNumeric="331199"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Двойной чизбургер говядина.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="57"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:18.235716"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:18.235716"/>
+            <column name="url" value="http://localhost:9000/products/product-1e780c12-dca7-4526-a7d9-b694143c44cd.png"/>
+            <column name="filename" value="product-1e780c12-dca7-4526-a7d9-b694143c44cd.png"/>
+            <column name="size" valueNumeric="331199"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Двойной чизбургер говядина.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="58"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:22.412877"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:22.412877"/>
+            <column name="url" value="http://localhost:9000/products/product-2e9b1f39-a372-42d1-815b-bd342f686189.png"/>
+            <column name="filename" value="product-2e9b1f39-a372-42d1-815b-bd342f686189.png"/>
+            <column name="size" valueNumeric="331199"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Двойной чизбургер говядина.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="59"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:26.76299"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:26.76299"/>
+            <column name="url" value="http://localhost:9000/products/product-f981c5fc-5860-4910-b32d-8e6904208332.png"/>
+            <column name="filename" value="product-f981c5fc-5860-4910-b32d-8e6904208332.png"/>
+            <column name="size" valueNumeric="331199"/>
+            <column name="content_type" value="image/png"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="Двойной чизбургер говядина.png"/>
+        </insert>
+        <insert tableName="images">
+            <column name="id" valueNumeric="60"/>
+            <column name="created_time" valueDate="2025-03-04T15:13:30.842143"/>
+            <column name="updated_time" valueDate="2025-03-04T15:13:30.842143"/>
+            <column name="url" value="http://localhost:9000/products/product-19c32e75-d53a-4d4e-bfb7-14e8a640cf01.jpeg"/>
+            <column name="filename" value="product-19c32e75-d53a-4d4e-bfb7-14e8a640cf01.jpeg"/>
+            <column name="size" valueNumeric="13215"/>
+            <column name="content_type" value="image/jpeg"/>
+            <column name="bucket" value="products"/>
+            <column name="original_filename" value="begemot.jpeg"/>
+        </insert>
+    </changeSet>
+    <changeSet author="malibuchka (generated)" id="1741083222727-3">
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="1"/>
+            <column name="image_id" valueNumeric="1"/>
+            <column name="entity_type" value="Category"/>
+            <column name="owner_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="2"/>
+            <column name="image_id" valueNumeric="2"/>
+            <column name="entity_type" value="Category"/>
+            <column name="owner_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="3"/>
+            <column name="image_id" valueNumeric="3"/>
+            <column name="entity_type" value="Category"/>
+            <column name="owner_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="4"/>
+            <column name="image_id" valueNumeric="4"/>
+            <column name="entity_type" value="Category"/>
+            <column name="owner_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="5"/>
+            <column name="image_id" valueNumeric="5"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="6"/>
+            <column name="image_id" valueNumeric="6"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="7"/>
+            <column name="image_id" valueNumeric="7"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="8"/>
+            <column name="image_id" valueNumeric="8"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="9"/>
+            <column name="image_id" valueNumeric="9"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="10"/>
+            <column name="image_id" valueNumeric="10"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="11"/>
+            <column name="image_id" valueNumeric="11"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="7"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="12"/>
+            <column name="image_id" valueNumeric="12"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="8"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="13"/>
+            <column name="image_id" valueNumeric="13"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="9"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="14"/>
+            <column name="image_id" valueNumeric="14"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="10"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="15"/>
+            <column name="image_id" valueNumeric="15"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="11"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="16"/>
+            <column name="image_id" valueNumeric="16"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="12"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="17"/>
+            <column name="image_id" valueNumeric="17"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="13"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="18"/>
+            <column name="image_id" valueNumeric="18"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="14"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="19"/>
+            <column name="image_id" valueNumeric="19"/>
+            <column name="entity_type" value="SubCategory"/>
+            <column name="owner_id" valueNumeric="15"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="20"/>
+            <column name="image_id" valueNumeric="20"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="21"/>
+            <column name="image_id" valueNumeric="21"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="22"/>
+            <column name="image_id" valueNumeric="22"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="23"/>
+            <column name="image_id" valueNumeric="23"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="24"/>
+            <column name="image_id" valueNumeric="24"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="25"/>
+            <column name="image_id" valueNumeric="25"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="26"/>
+            <column name="image_id" valueNumeric="26"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="7"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="27"/>
+            <column name="image_id" valueNumeric="27"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="8"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="28"/>
+            <column name="image_id" valueNumeric="28"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="9"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="29"/>
+            <column name="image_id" valueNumeric="29"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="10"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="30"/>
+            <column name="image_id" valueNumeric="30"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="11"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="31"/>
+            <column name="image_id" valueNumeric="31"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="12"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="32"/>
+            <column name="image_id" valueNumeric="32"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="13"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="33"/>
+            <column name="image_id" valueNumeric="33"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="14"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="34"/>
+            <column name="image_id" valueNumeric="34"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="15"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="35"/>
+            <column name="image_id" valueNumeric="35"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="16"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="36"/>
+            <column name="image_id" valueNumeric="36"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="17"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="37"/>
+            <column name="image_id" valueNumeric="37"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="18"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="38"/>
+            <column name="image_id" valueNumeric="38"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="19"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="39"/>
+            <column name="image_id" valueNumeric="39"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="20"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="40"/>
+            <column name="image_id" valueNumeric="40"/>
+            <column name="entity_type" value="Establishment"/>
+            <column name="owner_id" valueNumeric="21"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="41"/>
+            <column name="image_id" valueNumeric="41"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="42"/>
+            <column name="image_id" valueNumeric="42"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="43"/>
+            <column name="image_id" valueNumeric="43"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="44"/>
+            <column name="image_id" valueNumeric="44"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="45"/>
+            <column name="image_id" valueNumeric="45"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="46"/>
+            <column name="image_id" valueNumeric="46"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="47"/>
+            <column name="image_id" valueNumeric="47"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="7"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="48"/>
+            <column name="image_id" valueNumeric="48"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="8"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="49"/>
+            <column name="image_id" valueNumeric="49"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="9"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="50"/>
+            <column name="image_id" valueNumeric="50"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="10"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="51"/>
+            <column name="image_id" valueNumeric="51"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="11"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="52"/>
+            <column name="image_id" valueNumeric="52"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="12"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="53"/>
+            <column name="image_id" valueNumeric="53"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="13"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="54"/>
+            <column name="image_id" valueNumeric="54"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="14"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="55"/>
+            <column name="image_id" valueNumeric="55"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="15"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="56"/>
+            <column name="image_id" valueNumeric="56"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="16"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="57"/>
+            <column name="image_id" valueNumeric="57"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="17"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="58"/>
+            <column name="image_id" valueNumeric="58"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="18"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="59"/>
+            <column name="image_id" valueNumeric="59"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="19"/>
+        </insert>
+        <insert tableName="image_associations">
+            <column name="id" valueNumeric="60"/>
+            <column name="image_id" valueNumeric="60"/>
+            <column name="entity_type" value="Product"/>
+            <column name="owner_id" valueNumeric="20"/>
+        </insert>
+    </changeSet>
+    <changeSet id="update-sequences-002" author="malibuchka">
+        <sql splitStatements="false" stripComments="true">
+            DO $$
+        DECLARE
+            table_record RECORD;
+            sequence_name TEXT;
+            BEGIN
+            FOR table_record IN (
+                SELECT
+                    c.relname AS table_name,
+                    a.attname AS column_name,
+                    pg_get_serial_sequence(n.nspname || '.' || c.relname, a.attname) AS seq_name
+                FROM
+                    pg_class c
+                    JOIN pg_namespace n ON n.oid = c.relnamespace
+                    JOIN pg_attribute a ON a.attrelid = c.oid
+                WHERE
+                    n.nspname = 'public'
+                    AND c.relkind = 'r'
+                    AND a.attnum > 0
+                    AND NOT a.attisdropped
+                    AND pg_get_serial_sequence(n.nspname || '.' || c.relname, a.attname) IS NOT NULL
+            ) LOOP
+                IF table_record.seq_name IS NOT NULL THEN
+                    sequence_name := table_record.seq_name;
+            EXECUTE format(
+                    'SELECT setval(%L, (SELECT COALESCE(MAX(%I), 1) FROM %I.%I))',
+                    sequence_name,
+                    table_record.column_name,
+                    'public',
+                    table_record.table_name
+                    );
+            RAISE NOTICE 'Updated sequence % for table %.%', sequence_name, 'public', table_record.table_name;
+            ELSE
+                    RAISE NOTICE 'No sequence found for table %.%', 'public', table_record.table_name;
+            END IF;
+            END LOOP;
+            END $$;
+        </sql>
+    </changeSet>
+
+
+
+</databaseChangeLog>

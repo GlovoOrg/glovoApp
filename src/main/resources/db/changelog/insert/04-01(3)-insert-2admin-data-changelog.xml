@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- Добавляем все роли -->
+    <changeSet id="add-all-roles" author="malibuchka">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM roles WHERE name IN ('ROLE_ADMIN', 'ROLE_CUSTOMER', 'ROLE_ESTABLISHMENT')
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="roles">
+            <column name="name" value="ROLE_ADMIN"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="ROLE_CUSTOMER"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="ROLE_ESTABLISHMENT"/>
+        </insert>
+    </changeSet>
+
+    <!-- Добавляем администраторов с chatId -->
+    <changeSet id="add-admin-users" author="malibuchka">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM users WHERE username IN ('malibuchka', 'alinurchik')
+            </sqlCheck>
+        </preConditions>
+
+        <!-- Для первого администратора -->
+        <insert tableName="users">
+            <column name="username" value="malibuchka"/>
+            <column name="email" value="malikkadyraliev332@gmail.com"/>
+            <column name="phone_number" value="+1234567899"/>
+            <column name="password" value="$2a$10$A.vABL1.o0P.qydcc7o6j.gxQVYq9vo88EG7Ebjen7By3aVEUSg7i"/>
+            <column name="status" value="ACTIVE"/>
+            <column name="last_login_date" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="login" value="malibuchka"/>
+            <column name="chat_id" value="1058635656"/>
+            <column name="created_time" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_time" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <!-- Для второго администратора -->
+        <insert tableName="users">
+            <column name="username" value="alinurchik"/>
+            <column name="email" value="alinurTashtanbekov@gmail.com"/>
+            <column name="phone_number" value="+0987654321"/>
+            <column name="password" value="$2a$10$A.vABL1.o0P.qydcc7o6j.gxQVYq9vo88EG7Ebjen7By3aVEUSg7i"/>
+            <column name="status" value="ACTIVE"/>
+            <column name="last_login_date" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="login" value="alinurchik"/>
+            <column name="chat_id" value="admin_chat_002"/>
+            <column name="created_time" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_time" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <!-- Назначение ролей -->
+        <sql>
+            INSERT INTO user_roles (user_id, role_id)
+            SELECT u.id, r.id
+            FROM users u, roles r
+            WHERE u.username IN ('malibuchka', 'alinurchik')
+              AND r.name IN ('ROLE_ADMIN', 'ROLE_CUSTOMER', 'ROLE_ESTABLISHMENT');
+        </sql>
+    </changeSet>
+</databaseChangeLog>

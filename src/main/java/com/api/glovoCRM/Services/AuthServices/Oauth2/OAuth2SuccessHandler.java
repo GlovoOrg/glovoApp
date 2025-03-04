@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services.AuthServices.Oauth2;
 
-import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
+import com.api.glovoCRM.Repositories.UserRepositories.UserRepository;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Rest.Responses.Auth.oauth2Response;
 import com.api.glovoCRM.Services.AuthServices.TokenService;
@@ -32,15 +32,16 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     }
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        if (authentication == null || !(authentication.getPrincipal() instanceof OAuth2User)) {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        if (authentication == null || !(authentication.getPrincipal() instanceof OAuth2User oAuth2User)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        String email = oAuth2User.getAttribute("email");
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+        String accessToken = oAuth2User.getAttribute("access_token");
+        String refreshToken = oAuth2User.getAttribute("refresh_token");
+
+        userRepository.flush();
+
 
         oauth2Response oauth2Response;
         if ("Пользователь успешно создан".equals(oAuth2User.getAttribute("message"))) {
@@ -48,18 +49,18 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             response.setStatus(HttpServletResponse.SC_CREATED);
         } else if("Пользователь успешно привязал социальный аккаунт к существующему аккаунту Glovo"
                 .equals(oAuth2User.getAttribute("message"))) {
-            Map<String, String> tokens = tokenService.generateTokens(user);
+
             oauth2Response = new oauth2Response(
-                    tokens.get("access_token").toString(),
-                    tokens.get("refresh_token").toString(),
+                    accessToken,
+                    refreshToken,
                     "Поздравляю вы успешно привязали социальный аккаунт к вашему существующему аккаунту Glovo"
                     );
             response.setStatus(HttpServletResponse.SC_OK);
         }else {
-        Map<String, String> map = tokenService.generateTokens(user);
+
         oauth2Response = new oauth2Response(
-                map.get("access_token").toString(),
-                map.get("refresh_token").toString()
+                accessToken,
+                refreshToken
         );
         response.setStatus(HttpServletResponse.SC_OK);
         }

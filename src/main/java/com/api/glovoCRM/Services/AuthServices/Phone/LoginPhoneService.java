@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services.AuthServices.Phone;
 
-import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
+import com.api.glovoCRM.Repositories.UserRepositories.UserRepository;
 import com.api.glovoCRM.Exceptions.AuthExceptions.InvalidCredentialsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.UserModels.User;
@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
@@ -50,6 +51,7 @@ public class LoginPhoneService {
         User user = userRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new SuchResourceNotFoundEx("Пользователь не найден"));
         user.setStatus(EUserStatuses.ACTIVE);
+        user.setLastLoginDate(LocalDateTime.now());
         userRepository.save(user);
         Map<String, String> tokens = tokenService.generateTokens(user);
         PhoneAuthenticationToken authenticatedToken = new PhoneAuthenticationToken(

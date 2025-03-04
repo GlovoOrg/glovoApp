@@ -8,6 +8,7 @@ import com.api.glovoCRM.Rest.Requests.UserRequests.CustomerPatchRequest;
 import com.api.glovoCRM.Services.UserServices.CustomerService;
 import com.api.glovoCRM.mappers.CustomerMapper;
 import com.api.glovoCRM.mappers.OrderMappers.OrderMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,8 +44,9 @@ public class CustomerController {
         customerService.deleteUserProfile();
         return ResponseEntity.noContent().build();
     }
-
-
-
-
+    @GetMapping
+    public ResponseEntity<?> getCustomerProfile(){
+        User user = customerService.getUserProfileFromContext();
+        return ResponseEntity.ok(customerMapper.toDTO(user));
+    }
 }

@@ -5,8 +5,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <!-- Ребята, это файлВВ, который загружает файл с таблицами-->
-<!--    <include file="init/create-tables-changelog.xml" relativeToChangelogFile="true" />-->
-    <include file="db/changelog/generated-changelog.xml"/>
-    <include file="insert/insert-data-changelog.xml" relativeToChangelogFile="true" />
+
+    <include file="/db/changelog/init/04-01-init-all-tables-changelog.xml"/>
+    <include file="db/changelog/insert/04-01(2)-insert-main-data-changelog.xml" />
+    <include file="db/changelog/insert/04-01(3)-insert-2admin-data-changelog.xml" />
 </databaseChangeLog>

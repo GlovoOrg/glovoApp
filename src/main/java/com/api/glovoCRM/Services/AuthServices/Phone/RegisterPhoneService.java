@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services.AuthServices.Phone;
 
-import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
+import com.api.glovoCRM.Repositories.UserRepositories.UserRepository;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Rest.Requests.AuthRequests.RegisterRequestPhone;

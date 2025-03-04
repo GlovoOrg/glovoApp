@@ -1,7 +1,6 @@
 package com.api.glovoCRM.Models.UserModels;
 
 import com.api.glovoCRM.Models.BaseEntity;
-import com.api.glovoCRM.Models.OrderDetailModels.Cart;
 import com.api.glovoCRM.Models.OrderDetailModels.Order;
 import com.api.glovoCRM.constants.EUserStatuses;
 import jakarta.persistence.*;
@@ -11,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,12 +36,10 @@ public class User extends BaseEntity implements UserDetails {
     @Length(min = 3, max = 50, message = "Имя пользователя должно быть в диапозоне 3-50 символов")
 //    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Имя пользователя может содержать только буквы, цифры и подчеркивания")
     @Column(name = "username", unique = true, nullable = false)
-
     private String name;
 
     @Email(message = "Невалидная почта")
     @Column(name = "email", unique = true, length = 122)
-
     private String email;
 
 //    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Неверный формат номера телефона")
@@ -66,17 +62,8 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "login")
     private String login;
 
-    @Column(name = "isStaff")
-    private boolean isStaff = false;
-
     @Column(name = "chatId")
     private String chatId;
-
-    @Transient
-    private String emailCode; //todo в redis
-
-    @Transient
-    private String phoneCode; //todo в redis
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",

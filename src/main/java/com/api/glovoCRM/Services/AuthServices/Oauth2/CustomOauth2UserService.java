@@ -1,8 +1,9 @@
 package com.api.glovoCRM.Services.AuthServices.Oauth2;
 
-import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
+
 import com.api.glovoCRM.Models.UserModels.SocialAccount;
 import com.api.glovoCRM.Models.UserModels.User;
+import com.api.glovoCRM.Repositories.UserRepositories.UserRepository;
 import com.api.glovoCRM.Services.AuthServices.TokenService;
 import com.api.glovoCRM.Services.AuthServices.AuthService;
 import com.api.glovoCRM.constants.AuthProviders;
@@ -14,6 +15,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -22,8 +25,12 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
 import java.util.*;
 /* todo вроде как пока все ок
 * Для OAuth2 не нужно создавать отдельный провайдер, так как Spring Security предоставляет встроенную поддержку.
@@ -43,13 +50,14 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
         this.authService = authService;
         this.tokenService = tokenService;
     }
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("Начало обработки OAuth2-запроса для провайдера: {}", userRequest.getClientRegistration().getRegistrationId());
 
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
+        log.info("Атрибуты пользователя: {}", oAuth2User.getAttributes());
         String provider = userRequest.getClientRegistration().getRegistrationId();
         String email = extractEmail(oAuth2User, provider, userRequest);
         String name = extractName(oAuth2User, provider);
@@ -97,13 +105,12 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
     private String extractName(OAuth2User oAuth2User, String provider) {
         switch (provider.toLowerCase()) {
-            case "google", "facebook", "twitter" -> {
-                return oAuth2User.getAttribute("name");
+            case "google", "facebook" -> {
+                return oAuth2User.getAttribute("name").toString();
             }
             case "github" -> {
-                Map<String, Object> attributes = oAuth2User.getAttributes();
-                return Optional.ofNullable(attributes.get("name"))
-                        .orElseGet(() -> attributes.get("login")).toString();
+                return Optional.ofNullable((String) oAuth2User.getAttribute("name"))
+                        .orElseGet(() -> oAuth2User.getAttribute("login"));
             }
             default -> throw new OAuth2AuthenticationException(
                     new OAuth2Error("unsupported_provider"),
@@ -116,7 +123,11 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
         log.info("Создание нового пользователя с email={} и name={}", email, name);
         User user = new User();
         user.setEmail(email);
-        user.setName(name);
+
+        String baseName = (name != null && !name.isEmpty()) ? name : oAuth2User.getAttribute("login");
+        String uniqueUsername = generateUniqueUsername(baseName);
+
+        user.setName(uniqueUsername);
         user.setPassword("");
         user.setStatus(EUserStatuses.PENDING_LOGIN_TO_THE_SYSTEM);
 
@@ -133,10 +144,12 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         log.info("Пользователь с email={} успешно создан", email);
 
+        String nameAttributeKey = provider.equalsIgnoreCase("github") ? "login" : "email";
+        log.info("Проверяем сохраненного пользователя в БД: {}", userRepository.findByEmail(email));
         return new DefaultOAuth2User(
                 user.getAuthorities(),
                 mapResponse,
-                "email"
+                nameAttributeKey
         );
     }
 
@@ -145,9 +158,16 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
         boolean hasSocialAccount = user.getSocialAccounts().stream()
                 .anyMatch(sa -> sa.getProvider().name().equals("AUTH_PROVIDERS_" + provider.toUpperCase()));
         user.setStatus(EUserStatuses.ACTIVE);
+        user.setLastLoginDate(LocalDateTime.now());
         userRepository.save(user);
 
         Map<String, Object> mapOfAccessAndRefresh = generateTokens(oAuth2User, user);
+
+        OAuth2AuthenticationToken authentication = new OAuth2AuthenticationToken( oAuth2User, user.getAuthorities(), provider );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        log.info("OAuth2AuthenticationToken: user={}, authorities={}, provider={}",
+                authentication.getPrincipal(), authentication.getAuthorities(), authentication.getAuthorizedClientRegistrationId());
+
         if(!hasSocialAccount && user.getPassword() != null) {
             linkSocialAccount(oAuth2User, user, provider);
             HashMap<String, Object> response = new HashMap<>(oAuth2User.getAttributes());
@@ -171,13 +191,22 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 
         log.info("Токены сгенерированы для существующего пользователя: {}", user.getEmail());
-
+        String nameAttributeKey = provider.equalsIgnoreCase("github") ? "login" : "email";
         return new DefaultOAuth2User(
                 user.getAuthorities(),
                 mapOfAccessAndRefresh,
-                "email"
+                nameAttributeKey
         );
     }
+    private String generateUniqueUsername(String baseName) {
+        String username = baseName.replaceAll("\\s+", "_").toLowerCase(); // Убираем пробелы и приводим к нижнему регистру
+        int suffix = 1;
+        while (userRepository.existsByName(username)) {
+            username = baseName.replaceAll("\\s+", "_").toLowerCase() + "_" + suffix++;
+        }
+        return username;
+    }
+
     private void linkSocialAccount(OAuth2User oAuth2User,User user, String provider){
         SocialAccount socialAccount = new SocialAccount();
         socialAccount.setProvider(AuthProviders.valueOf("AUTH_PROVIDERS_" + provider.toUpperCase()));
@@ -236,4 +265,3 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
         }
     }
 }
-

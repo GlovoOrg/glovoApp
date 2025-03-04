@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services.UserServices;
 
-import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
+import com.api.glovoCRM.Repositories.UserRepositories.UserRepository;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.constants.EUserStatuses;
 import jakarta.transaction.Transactional;

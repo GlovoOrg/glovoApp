@@ -1,7 +1,7 @@
 package com.api.glovoCRM.Services.AuthServices;
 
 import com.api.glovoCRM.Repositories.RefreshTokenRepository;
-import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
+import com.api.glovoCRM.Repositories.UserRepositories.UserRepository;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.UserModels.RefreshToken;
 import com.api.glovoCRM.Security.jwt.JwtCore;
@@ -28,11 +28,11 @@ public class LogoutService {
         this.jwtCore = jwtCore;
     }
     public void logout(String authorizationHeader) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Lasvegas ")) {
             throw new IllegalArgumentException("Невалидный заголовок Authorization");
         }
 
-        String accessToken= authorizationHeader.substring(7);
+        String accessToken= authorizationHeader.substring(9);
         try {
             String name = jwtCore.getSubjectFromAccessToken(accessToken);
             Long userId = userRepository.findByName(name)

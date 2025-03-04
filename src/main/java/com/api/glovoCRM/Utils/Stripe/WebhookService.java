@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Utils.Stripe;
 
-import com.api.glovoCRM.Repositories.UserDAOs.PaymentDetailRepository;
+import com.api.glovoCRM.Repositories.UserRepositories.PaymentDetailRepository;
 import com.api.glovoCRM.Models.OrderDetailModels.PaymentDetail;
 import com.api.glovoCRM.constants.PaymentStatus;
 import com.stripe.model.Event;

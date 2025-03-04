@@ -1,6 +1,6 @@
 package com.api.glovoCRM.Services.AuthServices.Stuff;
 
-import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
+import com.api.glovoCRM.Repositories.UserRepositories.UserRepository;
 import com.api.glovoCRM.Exceptions.AuthExceptions.UserNotVerifiedEx;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Rest.Responses.Auth.LoginResponse;

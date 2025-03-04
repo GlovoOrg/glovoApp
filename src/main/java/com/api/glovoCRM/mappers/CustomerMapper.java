@@ -9,13 +9,14 @@ import org.mapstruct.Mapping;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = SocialAccountMapper.class)
 public interface CustomerMapper extends BaseMapper<User, CustomerDTO> {
     @Override
     @Mapping(source = "id", target = "id")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "email", target = "email")
     @Mapping(source = "phoneNumber", target = "phone")
+    @Mapping(source = "socialAccounts", target = "socialAccounts")
     CustomerDTO toDTO(User user);
 
     @Override

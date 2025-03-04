@@ -1,4 +1,4 @@
-package com.api.glovoCRM.Repositories.UserDAOs;
+package com.api.glovoCRM.Repositories.UserRepositories;
 
 import com.api.glovoCRM.Models.UserModels.Role;
 import com.api.glovoCRM.constants.ERoles;

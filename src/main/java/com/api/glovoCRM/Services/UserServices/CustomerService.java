@@ -1,10 +1,16 @@
 package com.api.glovoCRM.Services.UserServices;
 
-import com.api.glovoCRM.Repositories.UserDAOs.UserRepository;
+import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
+import com.api.glovoCRM.Repositories.UserRepositories.UserRepository;
 import com.api.glovoCRM.Models.OrderDetailModels.Order;
 import com.api.glovoCRM.Models.UserModels.User;
 import com.api.glovoCRM.Rest.Requests.UserRequests.CustomerPatchRequest;
+import com.api.glovoCRM.Security.AuthenticationTokens.PhoneAuthenticationToken;
 import com.api.glovoCRM.Services.BaseUserService;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +23,12 @@ public class CustomerService extends BaseUserService {
         super(userRepository);
         this.userRepository = userRepository;
     }
+
+    public User getUserProfileFromContext() {
+        return super.getUserFromSecurityContext();
+    }
+
+
 
     public List<Order> getAllOrders() {
         User user = getUserFromSecurityContext();
