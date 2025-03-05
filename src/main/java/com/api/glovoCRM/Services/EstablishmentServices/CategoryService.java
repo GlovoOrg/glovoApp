@@ -5,6 +5,8 @@ import com.api.glovoCRM.DAOs.ImageAssociationsDAO;
 import com.api.glovoCRM.DAOs.ImageDAO;
 import com.api.glovoCRM.Exceptions.BaseExceptions.AlreadyExistsEx;
 import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
+import com.api.glovoCRM.Services.OpenAIService.OpenAIService;
+import com.api.glovoCRM.Services.OpenAIService.PlacesService;
 import com.api.glovoCRM.Specifications.BaseSpecification;
 import com.api.glovoCRM.Specifications.EstablimentSpecifications.CategorySpecification;
 import com.api.glovoCRM.Utils.Minio.MinioService;
@@ -23,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -32,12 +36,16 @@ import java.util.List;
 public class CategoryService extends BaseService<Category, CategoryCreateRequest, CategoryUpdateRequest, CategoryPatchRequest> {
     private final CategoryDAO categoryDAO;
     private final CategorySpecification categorySpecification;
+    private final OpenAIService openAIService;  // Сервис для OpenAI
+    private final PlacesService placesService;
 
     @Autowired
-    public CategoryService(CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, CategorySpecification categorySpecification) {
+    public CategoryService(CategoryDAO categoryDAO, ImageDAO imageDAO, ImageAssociationsDAO imageAssociationsDAO, MinioService minioService, CategorySpecification categorySpecification, OpenAIService openAIService, PlacesService placesService) {
         super(imageDAO, imageAssociationsDAO, minioService);
         this.categoryDAO = categoryDAO;
         this.categorySpecification = categorySpecification;
+        this.openAIService = openAIService;
+        this.placesService = placesService;
     }
 
 
@@ -45,13 +53,13 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
 //    @CacheEvict(allEntries = true)
     public Category createEntity(CategoryCreateRequest request) {
 
-            if (categoryDAO.existsByName(request.getName())) {
-                throw new AlreadyExistsEx("Такая категория уже существует");
-            }
+        if (categoryDAO.existsByName(request.getName())) {
+            throw new AlreadyExistsEx("Такая категория уже существует");
+        }
 
-            Category category = new Category();
-            category.setName(request.getName());
-            Category savedCategory = categoryDAO.save(category);
+        Category category = new Category();
+        category.setName(request.getName());
+        Category savedCategory = categoryDAO.save(category);
         try {
             if (request.getImage() != null) {
                 super.createImageRecord(request.getImage(), "categories", EntityType.Category, savedCategory.getId());
@@ -124,4 +132,37 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
         Specification<Category> spec = categorySpecification.getBySimilarNameFilter(name);
         return categoryDAO.findAll(spec);
     }
+
+    public List<Category> getCategories() {
+        List<Category> categories = categoryDAO.findAll();  // Получаем категории из базы данных
+        if (categories.isEmpty()) {
+            // Если нет категорий в базе данных, получаем их через OpenAI или Google Places
+            categories.addAll(fetchCategoriesFromExternalSources());
+        }
+        return categories;
+    }
+
+    private List<Category> fetchCategoriesFromExternalSources() {
+        List<Category> categories = new ArrayList<>();
+
+        // Пример использования OpenAI для получения категорий
+        String openAIResponse = openAIService.getCategoryAdvice();
+        if (openAIResponse != null && !openAIResponse.isEmpty()) {
+            categories.add(new Category("OpenAI Рекомендации"));
+        }
+
+        // Пример использования Google Places для получения категорий
+        List<String> placesCategories = placesService.getNearbyCategories(42.8667, 74.5667);
+
+        if (placesCategories != null) {
+            for (String placeCategory : placesCategories) {
+                categories.add(new Category(placeCategory));
+            }
+        } else {
+            log.warn("placesService.getNearbyCategories() вернул null, категории не загружены.");
+        }
+
+        return categories;
+    }
 }
+

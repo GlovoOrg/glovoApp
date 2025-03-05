@@ -1,5 +1,8 @@
 package com.api.glovoCRM.TelegramBot;
 
+import com.api.glovoCRM.Models.EstablishmentModels.Category;
+import com.api.glovoCRM.Services.EstablishmentServices.CategoryService;
+import com.api.glovoCRM.Services.EstablishmentServices.ProductService;
 import com.api.glovoCRM.Services.OpenAIService.OpenAIService;
 import com.api.glovoCRM.Services.OpenAIService.PlacesService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +31,12 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final OpenAIService openAIService;
     private final PlacesService placesService;
+    private final CategoryService categoryService;
 
-    public TelegramBot(OpenAIService openAIService, PlacesService placesService) {
+    public TelegramBot(OpenAIService openAIService, PlacesService placesService, CategoryService categoryService) {
         this.openAIService = openAIService;
         this.placesService = placesService;
+        this.categoryService = categoryService;
     }
 
     @Override
@@ -89,17 +94,23 @@ public class TelegramBot extends TelegramLongPollingBot {
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
 
+        List<Category> categories = categoryService.getCategories();
+        for (Category category : categories) {
+            InlineKeyboardButton categoryButton = new InlineKeyboardButton(category.getName());
+            categoryButton.setCallbackData("category_" + category.getName().toLowerCase().replace(" ", "_"));
+            keyboard.add(List.of(categoryButton));
+        }
         InlineKeyboardButton marketsButton = new InlineKeyboardButton("🏪 Маркеты");
         marketsButton.setCallbackData("category_markets");
 
         InlineKeyboardButton restaurantsButton = new InlineKeyboardButton("🍽 Рестораны");
         restaurantsButton.setCallbackData("category_restaurants");
 
-        InlineKeyboardButton fastfoodsButton = new InlineKeyboardButton("🍔 Быстрое питание");
-        fastfoodsButton.setCallbackData("category_fast-food");
+        InlineKeyboardButton fast_foodsButton = new InlineKeyboardButton("🍔 Быстрое питание");
+        fast_foodsButton.setCallbackData("category_fast-food");
 
         keyboard.add(List.of(marketsButton, restaurantsButton));
-        keyboard.add(List.of(fastfoodsButton));
+        keyboard.add(List.of(fast_foodsButton));
 
         markup.setKeyboard(keyboard);
         message.setReplyMarkup(markup);

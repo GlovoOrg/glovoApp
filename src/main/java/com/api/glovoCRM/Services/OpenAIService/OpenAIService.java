@@ -15,7 +15,7 @@ import java.util.Collections;
 @Service
 public class OpenAIService {
 
-    @Value("${openrouter.api.key}")
+    @Value("${open.router.api.key}")
     private String apiKey;
 
     private static final String API_URL = "https://openrouter.ai/api/v1/chat/completions";
@@ -71,6 +71,9 @@ public class OpenAIService {
         return "🍔 Захватите бургер или шаурму в одном из заведений поблизости!";
     }
 
+    public String getCategoryAdvice() {
+        return null;
+    }
 }
 
 

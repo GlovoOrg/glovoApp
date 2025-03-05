@@ -25,10 +25,14 @@ public class Category extends BaseEntity {
     @NotNull(message = "Название категории не может быть null")
     @NotBlank(message = "Название категории не может быть пустым")
     @Size(max = 355, message = "Максимальная длина названия — 355 символов")
-    @Column(name = "name",nullable = false, length = 355)
+    @Column(name = "name", nullable = false, length = 355)
     private String name;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @OrderBy("name asc")
     private List<SubCategory> subCategories = new ArrayList<>();
+
+    public Category(String placeCategory) {
+        super();
+    }
 }

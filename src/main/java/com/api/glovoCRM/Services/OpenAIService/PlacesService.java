@@ -12,6 +12,8 @@ import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Slf4j
@@ -38,7 +40,7 @@ public class PlacesService {
                 JSONObject json = new JSONObject(response.body().string());
                 JSONArray results = json.optJSONArray("results");
 
-                if (results == null || results.length() == 0) {
+                if (results == null || results.isEmpty()) {
                     return "❌ Не удалось найти рестораны поблизости.";
                 }
 
@@ -74,7 +76,7 @@ public class PlacesService {
                 JSONObject json = new JSONObject(response.body().string());
                 JSONArray results = json.optJSONArray("results");
 
-                if (results == null || results.length() == 0) {
+                if (results == null || results.isEmpty()) {
                     return "❌ Не удалось найти маркеты поблизости.";
                 }
 
@@ -94,7 +96,7 @@ public class PlacesService {
                 return marketsList.toString();
             }
         } catch (IOException e) {
-            log.error("Ошибка при запросе маркетов", e);
+            log.error("Ошибка при запросе супермаркетов", e);
         }
         return "⚠ Ошибка при получении данных о маркетах.";
     }
@@ -110,7 +112,7 @@ public class PlacesService {
                 JSONObject json = new JSONObject(response.body().string());
                 JSONArray results = json.optJSONArray("results");
 
-                if (results == null || results.length() == 0) {
+                if (results == null || results.isEmpty()) {
                     return "❌ Не удалось найти сети быстрых питании поблизости.";
                 }
 
@@ -132,7 +134,7 @@ public class PlacesService {
         } catch (IOException e) {
             log.error("Ошибка при запросе фастфуда", e);
         }
-        return "⚠ Ошибка при получении данных о фастфудах.";
+        return "⚠ Ошибка при получении данных о фаст-фуд.";
     }
 
     private String getPlaceReview(String placeId) {
@@ -147,7 +149,7 @@ public class PlacesService {
 
                 if (result != null) {
                     JSONArray reviews = result.optJSONArray("reviews");
-                    if (reviews != null && reviews.length() > 0) {
+                    if (reviews != null && !reviews.isEmpty()) {
                         String review = reviews.getJSONObject(0).optString("text", "");
                         return review.length() > 60 ? review.substring(0, 60) + "..." : review;
                     }
@@ -158,5 +160,16 @@ public class PlacesService {
         }
         return "Нет отзывов.";
     }
+
+    public List<String> callPlacesAPI(double latitude, double longitude) {
+        // Логика вызова Google Places API
+        return new ArrayList<>(); // Временно возвращаем пустой список
+    }
+
+    public List<String> getNearbyCategories(double latitude, double longitude) {
+        List<String> categories = callPlacesAPI(latitude, longitude);
+        return categories != null ? categories : new ArrayList<>(); // Вместо null возвращаем пустой список
+    }
+
 }
 
