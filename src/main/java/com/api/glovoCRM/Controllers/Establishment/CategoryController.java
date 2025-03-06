@@ -11,9 +11,12 @@ import com.api.glovoCRM.Rest.Requests.CategoryRequests.CategoryUpdateRequest;
 import com.api.glovoCRM.Services.EstablishmentServices.CategoryService;
 import com.api.glovoCRM.mappers.CategoryMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasRole;
 
 @RestController
 @RequestMapping("/api/v1/non-secured/categories")
@@ -27,6 +30,7 @@ public class CategoryController extends BaseControllerEstablishment<CategoryDTO,
         this.categoryMapper = categoryMapper;
         this.categoryService = categoryService;
     }
+
     @GetMapping("/categories-with-subcategories")
     public ResponseEntity<List<CategoryWithSubcategoriesDTO>> getCategoriesWithSubcategories() {
         List<Category> categories = categoryService.getCategoriesWithSubcategoriesOnly();
@@ -35,6 +39,7 @@ public class CategoryController extends BaseControllerEstablishment<CategoryDTO,
                 .toList();
         return ResponseEntity.ok(result);
     }
+
 
     @GetMapping("/categories-with-subcategories-and-establishments")
     public ResponseEntity<List<CategoryWithSubcategoriesAndEstablishmentsDTO>> getCategoriesWithSubcategoriesAndEstablishments() {

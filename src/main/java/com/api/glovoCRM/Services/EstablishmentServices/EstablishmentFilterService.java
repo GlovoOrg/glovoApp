@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +36,7 @@ public class EstablishmentFilterService {
         this.establishmentFilterRepository = establishmentFilterRepository;
         this.establishmentFilterSpecification = establishmentFilterSpecification;
     }
-
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Caching (
             put = @CachePut (value = "app_filters", key = "#result.id"),
             evict = {
@@ -62,7 +63,7 @@ public class EstablishmentFilterService {
         return savedFilter;
 
     }
-
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Transactional
     @Caching (
             put = @CachePut (value = "app_filters", key = "#id"),
@@ -86,7 +87,7 @@ public class EstablishmentFilterService {
             log.info("Обновлен фильтр с ID: {}", updatedFilter.getId());
             return updatedFilter;
     }
-
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Caching (
             put = @CachePut (value = "app_filters", key = "#id"),
             evict = {
@@ -110,7 +111,7 @@ public class EstablishmentFilterService {
             }
             return establishmentFilterRepository.save(filter);
     }
-
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Caching (
             evict = {
                     @CacheEvict (value = "app_filters", key = "#id"),

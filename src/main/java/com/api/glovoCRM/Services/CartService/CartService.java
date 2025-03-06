@@ -6,6 +6,8 @@ import com.api.glovoCRM.Exceptions.BaseExceptions.SuchResourceNotFoundEx;
 import com.api.glovoCRM.Models.EstablishmentModels.Product;
 import com.api.glovoCRM.Models.OrderDetailModels.Cart;
 import com.api.glovoCRM.Models.OrderDetailModels.CartItem;
+import com.api.glovoCRM.Services.BaseService;
+import com.api.glovoCRM.Services.BaseUserService;
 import com.api.glovoCRM.Services.EstablishmentServices.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

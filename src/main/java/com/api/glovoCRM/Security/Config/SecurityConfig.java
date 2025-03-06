@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@EnableMethodSecurity
 @Configuration
 @EnableWebSecurity
 @Slf4j
@@ -52,7 +54,7 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("api/v1/non-secured/**", "api/v1/auth/**", "/oauth2/**", "api/v1", "/api/v1/payments/webhook").permitAll()
+                        .requestMatchers("api/v1/non-secured/**","/api/v1/search/**", "api/v1/auth/**", "/oauth2/**", "/api/v1/payments/webhook").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/login/oauth2/code/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 ->

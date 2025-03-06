@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,6 +70,7 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
         return subCategoryRepository.findAllSubCategories();
     }
 
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Override
     @Caching(
             put = @CachePut(value = "app_subcategories", key = "#result.id"),
@@ -100,7 +102,7 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
             throw new RuntimeException("Не удалось создать подкатегорию", e);
         }
     }
-
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Override
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Caching(
@@ -129,6 +131,7 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
         }
     }
 
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Override
     @Caching(
             put = @CachePut(value = "app_subcategories", key = "#id"),
@@ -158,7 +161,7 @@ public class SubCategoryService extends BaseService<SubCategory, SubCategoryCrea
         Specification<SubCategory> spec = subcategorySpecification.getBySimilarNameFilter(name);
         return subCategoryRepository.findAll(spec);
     }
-
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Override
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Caching(

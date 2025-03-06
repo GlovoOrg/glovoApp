@@ -19,6 +19,7 @@ import com.api.glovoCRM.constants.EntityType;
 import io.minio.errors.MinioException;
 import org.springframework.cache.annotation.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +46,7 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
         this.categorySpecification = categorySpecification;
         this.transactionTemplate = transactionTemplate;
     }
-
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Override
     @Caching(
             put = @CachePut(value = "app_categories", key = "#result.id"),
@@ -73,7 +74,7 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
             throw new RuntimeException("Не удалось создать категорию", e);
         }
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Override
     @Caching(
             evict = {
@@ -101,7 +102,7 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
             }
         });
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Caching(
             put = @CachePut(value = "app_categories", key = "#categoryId"),
             evict = {
@@ -136,6 +137,8 @@ public class CategoryService extends BaseService<Category, CategoryCreateRequest
                     @CacheEvict(value = "app_subcategories", allEntries = true)
             }
     )
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Override
     public Category patchEntity(Long id, CategoryPatchRequest request) {

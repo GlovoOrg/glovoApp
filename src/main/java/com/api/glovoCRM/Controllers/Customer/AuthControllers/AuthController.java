@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ public class AuthController {
     private final TokenService tokenService;
     private final LogoutService logoutService;
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestBody @Valid RefreshAccessTokenRequest request) {
         String refreshToken = request.getRefreshToken();
@@ -40,15 +42,16 @@ public class AuthController {
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String authorizationHeader) {
         try {
             logoutService.logout(authorizationHeader);
-            return ResponseEntity.ok().build(); // Успешный выход
+            return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage()); // Невалидный заголовок
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (SuchResourceNotFoundEx e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // Токен не найден
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             log.error("Ошибка при выходе пользователя: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка сервера");

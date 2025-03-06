@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -71,6 +72,8 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
     public List<Establishment> findAll() {
         return establishmentRepository.findAll();
     }
+
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Override
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Caching(
@@ -109,7 +112,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
         }
     }
 
-
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Override
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Caching(
@@ -141,7 +144,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
             }
         });
     }
-
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Override
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Caching(
@@ -185,7 +188,7 @@ public class EstablishmentService extends BaseService<Establishment, Establishme
         details.setSubCategoryId(request.getSubCategoryId());
         return establishmentRepository.save(establishment);
     }
-
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Override
     @Transactional (propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Caching(

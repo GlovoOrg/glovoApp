@@ -17,6 +17,7 @@ import io.minio.errors.MinioException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +68,7 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
         return productRepository.findAll();
     }
 
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Caching (
             put = @CachePut (value = "app_products", key = "#result.id"),
             evict = {
@@ -116,6 +118,7 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
         return product;
     }
 
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Caching (
             evict = {
                     @CacheEvict (value = "app_products", key = "#entityId"),
@@ -149,6 +152,7 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
 
     }
 
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Caching (
             put = @CachePut (value = "app_products", key = "#entityId"),
             evict = {
@@ -179,7 +183,7 @@ public class ProductService extends BaseService<Product, ProductWithDiscountCrea
         discountProduct.setActive(true);
         return productRepository.save(existingProduct);
     }
-
+    @PreAuthorize ("hasAnyRole('ROLE_ADMIN', 'ROLE_ESTABLISHMENT')")
     @Caching (
             put = @CachePut (value = "app_products", key = "#entityId"),
             evict = {
